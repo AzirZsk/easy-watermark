@@ -1,11 +1,14 @@
 package org.azir.allwatermark.entity;
 
+import lombok.Data;
+
 /**
  * watermark params
  * 
  * @author zhangshukun
  * @date 2022/11/8
  */
+@Data
 public class WatermarkParam {
 
     /**
@@ -22,5 +25,7 @@ public class WatermarkParam {
      * 0-360 range.
      */
     private float inclination;
+
+    private boolean isOverspread;
 
 }
