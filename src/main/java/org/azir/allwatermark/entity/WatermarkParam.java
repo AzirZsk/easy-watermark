@@ -1,6 +1,11 @@
 package org.azir.allwatermark.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.awt.*;
 
 /**
  * watermark params
@@ -8,7 +13,9 @@ import lombok.Data;
  * @author zhangshukun
  * @date 2022/11/8
  */
-@Data
+@Getter
+@Setter
+@ToString
 public class WatermarkParam {
 
     /**
@@ -18,19 +25,15 @@ public class WatermarkParam {
 
     /**
      * 0.0-1.0 range.
+     * 0.0----transparent
+     * 1.0----color
      */
-    private double transparency;
+    private double transparency = 1.0;
 
     /**
      * 0-360 range.
      */
     private double inclination;
-
-    /**
-     * overspread option.
-     * if true, {@link #x} and {@link #y} will be failure。
-     */
-    private boolean isOverspread;
 
     /**
      * Horizontal coordinate with the upper left corner of the page as the origin.
@@ -43,4 +46,28 @@ public class WatermarkParam {
     private double y;
 
     private int fontSize;
+
+    private Color fontColor = Color.BLACK;
+
+    /**
+     * overspread option.
+     * if true, {@link #x} and {@link #y} will be failure。
+     */
+    private boolean overspread;
+
+    /**
+     * overspread option.
+     * if true, {@link #x} and {@link #y} will be failure。
+     */
+    private boolean horizontalCenter;
+
+    /**
+     * overspread option.
+     * if true, {@link #x} and {@link #y} will be failure。
+     */
+    private boolean verticalCenter;
+
+    public WatermarkParam(String text) {
+        this.text = text;
+    }
 }
