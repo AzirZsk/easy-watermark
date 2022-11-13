@@ -45,6 +45,8 @@ public class WatermarkParam {
      */
     private double y;
 
+    private String fontFileUrl;
+
     private int fontSize;
 
     private Color fontColor = Color.BLACK;
