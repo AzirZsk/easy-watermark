@@ -61,13 +61,11 @@ public class WatermarkParam {
     private boolean overspread;
 
     /**
-     * overspread option.
      * if true, {@link #x} and {@link #y} will be failure。
      */
     private boolean horizontalCenter;
 
     /**
-     * overspread option.
      * if true, {@link #x} and {@link #y} will be failure。
      */
     private boolean verticalCenter;
