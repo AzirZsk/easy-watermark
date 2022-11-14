@@ -2,6 +2,7 @@ package org.azir.allwatermark.core;
 
 import org.azir.allwatermark.entity.WatermarkParam;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -18,5 +19,5 @@ public interface WatermarkHandler {
      * @param param       watermark param
      * @return output stream containing the watermark.
      */
-    OutputStream addWatermark(InputStream inputStream, WatermarkParam param);
+    OutputStream addWatermark(InputStream inputStream, WatermarkParam param) throws IOException;
 }
