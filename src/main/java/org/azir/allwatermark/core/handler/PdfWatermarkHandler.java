@@ -69,7 +69,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont> {
             return font;
         }
         try {
-            font = PDType0Font.load(document, getClass().getResourceAsStream(param.getFontFileUrl()));
+            font = PDType0Font.load(document, getClass().getResourceAsStream(param.getFontFilePath()));
             FONT_THREAD_LOCAL.set(font);
             return font;
         } catch (IOException e) {

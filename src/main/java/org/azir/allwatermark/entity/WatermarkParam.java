@@ -1,6 +1,5 @@
 package org.azir.allwatermark.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -45,7 +44,11 @@ public class WatermarkParam {
      */
     private double y;
 
-    private String fontFileUrl;
+    /**
+     * font in the resource path.
+     * Current only support TrueTypeFont(.ttf) fonts;
+     */
+    private String fontFilePath;
 
     private int fontSize;
 
