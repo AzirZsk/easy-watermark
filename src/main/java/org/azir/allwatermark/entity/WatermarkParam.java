@@ -3,6 +3,7 @@ package org.azir.allwatermark.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.azir.allwatermark.enums.OverspreadTypeEnum;
 
 import java.awt.*;
 
@@ -59,6 +60,11 @@ public class WatermarkParam {
      * if true, {@link #x} and {@link #y} will be failure。
      */
     private boolean overspread;
+
+    /**
+     * if {@link #overspread} is true, will take effect.
+     */
+    private OverspreadTypeEnum overspreadType = OverspreadTypeEnum.NORMAL;
 
     /**
      * if true, {@link #x} and {@link #y} will be failure。
