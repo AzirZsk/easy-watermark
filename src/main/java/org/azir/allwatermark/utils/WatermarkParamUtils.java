@@ -3,6 +3,9 @@ package org.azir.allwatermark.utils;
 import org.azir.allwatermark.entity.WatermarkParam;
 import org.azir.allwatermark.exception.WatermarkParamException;
 
+import java.util.List;
+import java.util.Objects;
+
 /**
  * @author Azir
  * @date 2022/11/12
@@ -18,11 +21,13 @@ public class WatermarkParamUtils {
         if (param == null) {
             throw new NullPointerException("Watermark param is null.");
         }
-        if (param.getText() == null) {
-            throw new NullPointerException("Watermark text is null.");
-        }
         if (param.getTransparency() < 0 || param.getTransparency() > 1) {
             throw new IllegalArgumentException("Transparency should be more than 0 and less than 1.");
+        }
+        String text = param.getText();
+        List<String> texts = param.getTexts();
+        if (Objects.nonNull(text) && !text.isEmpty() && Objects.nonNull(texts) && !texts.isEmpty()) {
+            throw new WatermarkParamException("");
         }
         boolean isCenter = param.isHorizontalCenter() || param.isOverspread();
         if (param.isOverspread() && isCenter) {

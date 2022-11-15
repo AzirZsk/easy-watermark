@@ -6,6 +6,8 @@ import lombok.ToString;
 import org.azir.allwatermark.enums.OverspreadTypeEnum;
 
 import java.awt.*;
+import java.util.List;
+
 
 /**
  * watermark params
@@ -22,6 +24,11 @@ public class WatermarkParam {
      * watermark text.
      */
     private String text;
+
+    /**
+     * Multi-line watermark, with {@link #text} mutex.
+     */
+    private List<String> texts;
 
     /**
      * 0.0-1.0 range.
