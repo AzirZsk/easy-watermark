@@ -76,4 +76,14 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont> {
             throw new PdfWatermarkException(e.getMessage(), e);
         }
     }
+
+    @Override
+    public double getStringWidth(String text) {
+        PDFont font = FONT_THREAD_LOCAL.get();
+        try {
+            return font.getStringWidth(text);
+        } catch (IOException e) {
+            throw new AllWatermarkException(e.getMessage(), e);
+        }
+    }
 }

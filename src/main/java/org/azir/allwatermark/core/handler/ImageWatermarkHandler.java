@@ -3,6 +3,7 @@ package org.azir.allwatermark.core.handler;
 import org.azir.allwatermark.core.AbstractWatermarkHandler;
 import org.azir.allwatermark.entity.WatermarkParam;
 import org.azir.allwatermark.exception.PdfWatermarkException;
+import sun.font.FontDesignMetrics;
 
 
 import java.awt.*;
@@ -45,5 +46,12 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font> {
         } catch (Exception e) {
             throw new PdfWatermarkException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public double getStringWidth(String text) {
+        Font font = FONT_THREAD_LOCAL.get();
+        FontDesignMetrics metrics = FontDesignMetrics.getMetrics(font);
+        return metrics.stringWidth(text);
     }
 }

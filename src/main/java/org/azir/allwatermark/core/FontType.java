@@ -15,4 +15,12 @@ public interface FontType<F> {
      * @return dependency font
      */
     F getFont(WatermarkParam param);
+
+    /**
+     * Get {@code text} width in the font.
+     *
+     * @param text watermark text
+     * @return text width
+     */
+    double getStringWidth(String text);
 }
