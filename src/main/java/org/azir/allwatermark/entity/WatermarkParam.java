@@ -30,6 +30,8 @@ public class WatermarkParam {
      */
     private List<String> texts;
 
+    private double lineSpace;
+
     /**
      * 0.0-1.0 range.
      * 0.0----transparent
