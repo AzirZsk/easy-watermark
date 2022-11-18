@@ -1,5 +1,11 @@
 package org.azir.allwatermark;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.encoding.StandardEncoding;
+import org.junit.Test;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -29,5 +35,14 @@ public class ImageWatermarkTest {
         graphics.dispose();
         File file = new File("D:\\work\\all-watermark\\target\\2.jpg");
         ImageIO.write(image, "jpg", new FileOutputStream(file));
+    }
+
+    @Test
+    public void test() throws IOException {
+        PDDocument document = PDDocument.load(getClass().getResourceAsStream("/test.pdf"));
+        PDType0Font font = PDType0Font.load(document, getClass().getResourceAsStream("/STZHONGS.TTF"));
+        PDTrueTypeFont load = PDTrueTypeFont.load(document, getClass().getResourceAsStream("/simsun.ttc"), StandardEncoding.INSTANCE);
+
+        System.out.println();
     }
 }

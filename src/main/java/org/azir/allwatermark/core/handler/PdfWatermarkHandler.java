@@ -2,11 +2,17 @@ package org.azir.allwatermark.core.handler;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.azir.allwatermark.constant.WatermarkConstant;
 import org.azir.allwatermark.core.AbstractWatermarkHandler;
 import org.azir.allwatermark.entity.WatermarkParam;
+import org.azir.allwatermark.exception.AllWatermarkException;
 import org.azir.allwatermark.exception.PdfWatermarkException;
+import org.azir.allwatermark.utils.WatermarkParamUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,16 +29,15 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont> {
 
     private static final ThreadLocal<PDDocument> DOCUMENT_THREAD_LOCAL = new ThreadLocal<>();
 
-    private static final ThreadLocal<PDFont> FONT_THREAD_LOCAL = new ThreadLocal<>();
-
     @Override
     public OutputStream addWatermark(InputStream inputStream, WatermarkParam param) throws IOException {
+        WatermarkParamUtils.checkParam(param);
         try {
             PDDocument document = PDDocument.load(inputStream);
             DOCUMENT_THREAD_LOCAL.set(document);
             document.setAllSecurityToBeRemoved(true);
             for (PDPage page : document.getPages()) {
-                handlerPdfPage(document, page, param);
+                handlerPdfPage(page, param);
             }
             OutputStream res = new ByteArrayOutputStream();
             document.save(res);
@@ -45,12 +50,29 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont> {
     /**
      * pdf page to add watermark.
      *
-     * @param document pdf word
      * @param page     pdf page
      * @param param    watermark param
      */
-    private void handlerPdfPage(PDDocument document, PDPage page, WatermarkParam param) throws IOException {
+    private void handlerPdfPage(PDPage page, WatermarkParam param) throws IOException {
+        PDPageContentStream stream =
+                new PDPageContentStream(DOCUMENT_THREAD_LOCAL.get(), page, PDPageContentStream.AppendMode.APPEND, true, true);
 
+        PDExtendedGraphicsState r = new PDExtendedGraphicsState();
+        r.setNonStrokingAlphaConstant((float) param.getTransparency());
+        r.setAlphaSourceFlag(true);
+        stream.setGraphicsStateParameters(r);
+
+        PDRectangle mediaBox = page.getMediaBox();
+        float pdfHeight = mediaBox.getHeight();
+        float pdfWidth = mediaBox.getWidth();
+
+        PDFont font = getFont(param);
+        int fontSize = param.getFontSize();
+        float textWidth = font.getStringWidth(param.getText()) / WatermarkConstant.FONT_SCALE * fontSize;
+
+
+        stream.setFont(font, fontSize);
+        stream.setNonStrokingColor(param.getFontColor());
     }
 
     private void clearThreadLocal() {
