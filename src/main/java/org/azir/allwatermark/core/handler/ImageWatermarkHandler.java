@@ -32,8 +32,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font> {
 
     @Override
     public Font getFont(WatermarkParam param) {
-        try {
-            InputStream resourceAsStream = getClass().getResourceAsStream(param.getFontFilePath());
+        try (InputStream resourceAsStream = getClass().getResourceAsStream(param.getFontFilePath());) {
             Objects.requireNonNull(resourceAsStream, "Font file can not load");
             Font font = Font.createFont(Font.TRUETYPE_FONT, resourceAsStream);
             Field pointSizeField = Font.class.getDeclaredField(FIELD_POINT_SIZE);
@@ -50,7 +49,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font> {
 
     @Override
     public double getStringWidth(String text) {
-        Font font = FONT_THREAD_LOCAL.get();
+        Font font = fontThreadLocal.get();
         FontDesignMetrics metrics = FontDesignMetrics.getMetrics(font);
         return metrics.stringWidth(text);
     }

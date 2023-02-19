@@ -77,7 +77,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont> {
 
     private void clearThreadLocal() {
         DOCUMENT_THREAD_LOCAL.remove();
-        FONT_THREAD_LOCAL.remove();
+        fontThreadLocal.remove();
     }
 
     @Override
@@ -86,13 +86,13 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont> {
         if (document == null) {
             throw new PdfWatermarkException("Handler pdf document thread local is null");
         }
-        PDFont font = FONT_THREAD_LOCAL.get();
+        PDFont font = fontThreadLocal.get();
         if (font != null) {
             return font;
         }
         try {
             font = PDType0Font.load(document, getClass().getResourceAsStream(param.getFontFilePath()));
-            FONT_THREAD_LOCAL.set(font);
+            fontThreadLocal.set(font);
             return font;
         } catch (Exception e) {
             throw new PdfWatermarkException(e.getMessage(), e);
@@ -101,7 +101,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont> {
 
     @Override
     public double getStringWidth(String text) {
-        PDFont font = FONT_THREAD_LOCAL.get();
+        PDFont font = fontThreadLocal.get();
         try {
             return font.getStringWidth(text);
         } catch (IOException e) {

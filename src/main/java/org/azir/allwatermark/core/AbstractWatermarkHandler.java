@@ -2,6 +2,11 @@ package org.azir.allwatermark.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.azir.allwatermark.entity.WatermarkParam;
+import org.azir.allwatermark.utils.StringUtils;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author zhangshukun
@@ -10,21 +15,42 @@ import org.azir.allwatermark.entity.WatermarkParam;
 @Slf4j
 public abstract class AbstractWatermarkHandler<F> implements WatermarkHandler, FontType<F> {
 
-    protected final ThreadLocal<F> FONT_THREAD_LOCAL = new ThreadLocal<>();
+    protected final ThreadLocal<F> fontThreadLocal = new ThreadLocal<>();
 
-    protected void handler(double pageHeight, double pageWidth, WatermarkParam watermarkParam) {
+    /**
+     * @param pageHeight
+     * @param pageWidth
+     * @param watermarkParam
+     */
+    protected void calculateLocation(double pageHeight, double pageWidth, WatermarkParam watermarkParam) {
         if (watermarkParam.isOverspread()) {
             if (log.isDebugEnabled()) {
                 log.debug("Watermark param is overspread, break calculate watermark in the page location.");
             }
             return;
         }
-        if (watermarkParam.isHorizontalCenter()) {
-            watermarkParam.setX(pageWidth / 2);
-        }
-        if (watermarkParam.isVerticalCenter()) {
-            watermarkParam.setY(pageHeight / 2);
-        }
+        watermarkParam.setX(calculateHorizontalLocation(pageWidth, watermarkParam));
+        watermarkParam.setY(calculateVerticalLocation(pageHeight, watermarkParam));
     }
+
+    private double calculateHorizontalLocation(double pageWidth, WatermarkParam watermarkParam) {
+        if (watermarkParam.isHorizontalCenter()) {
+            String text = watermarkParam.getText();
+            if (StringUtils.isEmpty(text)) {
+                List<String> texts = watermarkParam.getTexts();
+                Optional<String> max = texts.stream().max(Comparator.comparing(String::length));
+                text = max.orElseThrow(() -> new IllegalArgumentException("Multi-line watermark is empty."));
+            }
+            double textWidth = getStringWidth(text);
+            return (pageWidth - textWidth) / 2;
+        }
+        return 0;
+    }
+
+    private double calculateVerticalLocation(double pageHeight, WatermarkParam watermarkParam) {
+
+        return 0;
+    }
+
 
 }
