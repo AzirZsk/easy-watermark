@@ -6,13 +6,13 @@ import java.io.IOException;
  * @author Azir
  * @date 2022/11/12
  */
-public class AllWatermarkException extends RuntimeException {
+public class EasyWatermarkException extends RuntimeException {
 
-    public AllWatermarkException(String message) {
+    public EasyWatermarkException(String message) {
         super(message);
     }
 
-    public AllWatermarkException(String message, Throwable cause) {
+    public EasyWatermarkException(String message, Throwable cause) {
         super(message, cause);
     }
 }
