@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.azir</groupId>
-    <artifactId>all-watermark</artifactId>
+    <artifactId>easy-watermark</artifactId>
     <version>1.0</version>
 
     <properties>
