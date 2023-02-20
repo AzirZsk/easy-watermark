@@ -10,7 +10,7 @@ import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.azir.allwatermark.constant.WatermarkConstant;
 import org.azir.allwatermark.core.AbstractWatermarkHandler;
 import org.azir.allwatermark.entity.WatermarkParam;
-import org.azir.allwatermark.exception.AllWatermarkException;
+import org.azir.allwatermark.exception.EasyWatermarkException;
 import org.azir.allwatermark.exception.PdfWatermarkException;
 import org.azir.allwatermark.utils.WatermarkParamUtils;
 
@@ -105,7 +105,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont> {
         try {
             return font.getStringWidth(text);
         } catch (IOException e) {
-            throw new AllWatermarkException(e.getMessage(), e);
+            throw new EasyWatermarkException(e.getMessage(), e);
         }
     }
 }
