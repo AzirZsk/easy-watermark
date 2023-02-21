@@ -21,36 +21,28 @@ import java.util.Objects;
  */
 public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font> {
 
-    private static final String FIELD_POINT_SIZE = "pointSize";
-
-    private static final String FIELD_SIZE = "size";
-
     @Override
-    public OutputStream addWatermark(InputStream inputStream, WatermarkParam param) throws IOException {
+    public Font loadFont(WatermarkParam param) {
         return null;
     }
 
     @Override
-    public Font getFont(WatermarkParam param) {
-        try (InputStream resourceAsStream = getClass().getResourceAsStream(param.getFontFilePath());) {
-            Objects.requireNonNull(resourceAsStream, "Font file can not load");
-            Font font = Font.createFont(Font.TRUETYPE_FONT, resourceAsStream);
-            Field pointSizeField = Font.class.getDeclaredField(FIELD_POINT_SIZE);
-            Field sizeField = Font.class.getDeclaredField(FIELD_SIZE);
-            pointSizeField.setAccessible(true);
-            sizeField.setAccessible(true);
-            pointSizeField.set(font, param.getFontSize());
-            sizeField.set(font, param.getFontSize());
-            return font;
-        } catch (Exception e) {
-            throw new PdfWatermarkException(e.getMessage(), e);
-        }
+    public double getStringWidth(String text) {
+        return 0;
     }
 
     @Override
-    public double getStringWidth(String text) {
-        Font font = fontThreadLocal.get();
-        FontDesignMetrics metrics = FontDesignMetrics.getMetrics(font);
-        return metrics.stringWidth(text);
+    public OutputStream execute() {
+        return null;
+    }
+
+    @Override
+    public void load(byte[] data) {
+
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 }

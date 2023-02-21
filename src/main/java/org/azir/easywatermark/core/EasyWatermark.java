@@ -1,5 +1,7 @@
 package org.azir.easywatermark.core;
 
+import org.azir.easywatermark.core.handler.PdfWatermarkHandler;
+import org.azir.easywatermark.enums.FileTypeEnums;
 import org.azir.easywatermark.exception.LoadFileException;
 
 import java.io.File;
@@ -20,7 +22,7 @@ public class EasyWatermark {
      * @return watermark handler
      * @see #load(byte[])
      */
-    public static WatermarkHandler load(File file) throws IOException {
+    public static AbstractWatermarkHandler<?> load(File file) throws IOException {
         return load(new FileInputStream(file));
     }
 
@@ -31,7 +33,7 @@ public class EasyWatermark {
      * @return watermark handler
      * @see #load(byte[])
      */
-    public static WatermarkHandler load(InputStream inputStream) throws IOException {
+    public static AbstractWatermarkHandler<?> load(InputStream inputStream) throws IOException {
         try {
             int available = inputStream.available();
             byte[] data = new byte[available];
@@ -51,7 +53,19 @@ public class EasyWatermark {
      * @param bytes file byte data.
      * @return The file type corresponding to the watermark processor;
      */
-    public static WatermarkHandler load(byte[] bytes) {
+    public static AbstractWatermarkHandler<?> load(byte[] bytes) {
+        AbstractWatermarkHandler<?> handler;
+        switch (FileTypeEnums.parseFileType(bytes)) {
+            case PDF:
+                handler = new PdfWatermarkHandler(bytes);
+                break;
+            case IMAGE:
+                break;
+            case OFFICE:
+                break;
+            default:
+                break;
+        }
         return null;
     }
 }

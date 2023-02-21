@@ -9,12 +9,13 @@ import org.azir.easywatermark.entity.WatermarkParam;
 public interface FontType<F> {
 
     /**
-     * Access to different dependency on the fonts.
+     * Load fonts
      *
      * @param param watermark param
      * @return dependency font
      */
-    F getFont(WatermarkParam param);
+    F loadFont(WatermarkParam param);
+
 
     /**
      * Get {@code text} width in the font.
