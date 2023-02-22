@@ -38,7 +38,7 @@ public class EasyWatermark {
             int available = inputStream.available();
             byte[] data = new byte[available];
             int read = inputStream.read(data);
-            if (read != -1) {
+            if (read != available) {
                 throw new LoadFileException("Part of this data is not read.");
             }
             return load(data);
@@ -60,12 +60,15 @@ public class EasyWatermark {
                 handler = new PdfWatermarkHandler(bytes);
                 break;
             case IMAGE:
+                handler = new PdfWatermarkHandler(bytes);
                 break;
             case OFFICE:
+                handler = new PdfWatermarkHandler(bytes);
                 break;
             default:
+                handler = new PdfWatermarkHandler(bytes);
                 break;
         }
-        return null;
+        return handler;
     }
 }
