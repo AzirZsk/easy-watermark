@@ -18,6 +18,9 @@ public enum FileTypeEnums {
      */
     PDF,
 
+    /**
+     * word, excel, ppt
+     */
     OFFICE;
 
 
