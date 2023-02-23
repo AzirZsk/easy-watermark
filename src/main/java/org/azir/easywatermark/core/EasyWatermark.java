@@ -22,8 +22,12 @@ public class EasyWatermark {
      * @return watermark handler
      * @see #load(byte[])
      */
-    public static AbstractWatermarkHandler<?> load(File file) throws IOException {
-        return load(new FileInputStream(file));
+    public static AbstractWatermarkHandler<?> load(File file) {
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            return load(inputStream);
+        } catch (Exception e) {
+            throw new LoadFileException(e.getMessage(), e);
+        }
     }
 
     /**
