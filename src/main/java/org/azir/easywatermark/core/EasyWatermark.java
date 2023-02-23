@@ -34,17 +34,13 @@ public class EasyWatermark {
      * @see #load(byte[])
      */
     public static AbstractWatermarkHandler<?> load(InputStream inputStream) throws IOException {
-        try {
-            int available = inputStream.available();
-            byte[] data = new byte[available];
-            int read = inputStream.read(data);
-            if (read != available) {
-                throw new LoadFileException("Part of this data is not read.");
-            }
-            return load(data);
-        } finally {
-            inputStream.close();
+        int available = inputStream.available();
+        byte[] data = new byte[available];
+        int read = inputStream.read(data);
+        if (read != available) {
+            throw new LoadFileException("Part of this data is not read.");
         }
+        return load(data);
     }
 
     /**
