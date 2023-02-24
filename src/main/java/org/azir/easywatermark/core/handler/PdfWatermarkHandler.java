@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Objects;
 
 
@@ -111,13 +112,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, PDPage
 
     @Override
     public byte[] execute() {
-        checkParam();
-        for (PDPage page : document.getPages()) {
-            if (config.isIgnoreRotation()) {
-                ignoreRotation(page);
-            }
-            addWatermark(page);
-        }
+        execute0();
         // return result
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
@@ -125,6 +120,36 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, PDPage
             return outputStream.toByteArray();
         } catch (IOException e) {
             throw new PdfWatermarkException(e);
+        }
+    }
+
+    @Override
+    public void execute(OutputStream outputStream) {
+        execute0();
+        try {
+            document.save(outputStream);
+        } catch (IOException e) {
+            throw new PdfWatermarkException(e);
+        }
+    }
+
+    @Override
+    public void execute(File file) {
+        execute0();
+        try {
+            document.save(file);
+        } catch (IOException e) {
+            throw new PdfWatermarkException(e);
+        }
+    }
+
+    private void execute0() {
+        checkParam();
+        for (PDPage page : document.getPages()) {
+            if (config.isIgnoreRotation()) {
+                ignoreRotation(page);
+            }
+            addWatermark(page);
         }
     }
 

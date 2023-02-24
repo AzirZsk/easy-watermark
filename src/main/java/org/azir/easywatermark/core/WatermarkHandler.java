@@ -15,12 +15,21 @@ import java.io.OutputStream;
 public interface WatermarkHandler extends Closeable {
 
     /**
-     * add watermark to input stream, return handler output stream.
+     * add watermark, return handler file bytes.
      *
-     * @return output stream containing the watermark.
+     * @return Byte array after adding watermark
      */
     byte[] execute();
 
+    /**
+     * add watermark, write result into output stream.
+     */
+    void execute(OutputStream outputStream);
+
+    /**
+     * add watermark, write result into file.
+     */
+    void execute(File file);
 
     /**
      * Load file data.
