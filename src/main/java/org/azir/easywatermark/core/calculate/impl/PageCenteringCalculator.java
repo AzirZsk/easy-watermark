@@ -26,7 +26,8 @@ public class PageCenteringCalculator extends AbstractCalculate {
 
         double topLeftCornerPointY = topLeftCornerPoint.getY();
         double bottomRightCornerPointY = bottomRightCornerPoint.getY();
-        res.setY(Math.abs(topLeftCornerPointY + bottomRightCornerPointY) / 2);
+        double stringHeight = fontMetrics.getStringHeight();
+        res.setY(Math.abs(topLeftCornerPointY + bottomRightCornerPointY) / 2 - stringHeight / 4);
         return res;
     }
 
