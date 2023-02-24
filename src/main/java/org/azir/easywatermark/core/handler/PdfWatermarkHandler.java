@@ -161,7 +161,8 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, PDPage
             PDRectangle mediaBox = page.getMediaBox();
             Point topLeftCornerPoint = new Point(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY());
             Point bottomRightCornerPoint = new Point(mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
-            WatermarkParam watermarkParam = calculate.calculateLocation(topLeftCornerPoint, bottomRightCornerPoint, this);
+            WatermarkParam watermarkParam = calculate.calculateLocation(topLeftCornerPoint, bottomRightCornerPoint,
+                    this, watermark);
             Matrix matrix = Matrix.getRotateInstance(Math.toRadians(config.getAngle()),
                     (float) watermarkParam.getX(), (float) watermarkParam.getY());
 

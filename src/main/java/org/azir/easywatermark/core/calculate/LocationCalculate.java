@@ -10,5 +10,6 @@ import org.azir.easywatermark.entity.WatermarkParam;
  */
 public interface LocationCalculate {
 
-   WatermarkParam calculateLocation(Point topLeftCornerPoint, Point bottomRightCornerPoint, FontMetrics fontMetrics);
+    WatermarkParam calculateLocation(Point topLeftCornerPoint, Point bottomRightCornerPoint,
+                                     FontMetrics fontMetrics, String watermarkText);
 }

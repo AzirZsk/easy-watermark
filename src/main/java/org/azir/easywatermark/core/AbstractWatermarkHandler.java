@@ -2,9 +2,8 @@ package org.azir.easywatermark.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.calculate.AbstractCalculate;
-import org.azir.easywatermark.core.calculate.DefaultCalculate;
+import org.azir.easywatermark.core.calculate.impl.DefaultCalculator;
 import org.azir.easywatermark.core.font.FontProvider;
-import org.azir.easywatermark.core.font.FontType;
 import org.azir.easywatermark.entity.WatermarkConfig;
 
 import java.io.File;
@@ -22,7 +21,7 @@ public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler
 
     protected WatermarkConfig config = new WatermarkConfig();
 
-    protected AbstractCalculate calculate = new DefaultCalculate();
+    protected AbstractCalculate calculate = new DefaultCalculator();
 
     public abstract AbstractWatermarkHandler<F, G> font(File file);
 

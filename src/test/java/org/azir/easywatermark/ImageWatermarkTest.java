@@ -35,7 +35,8 @@ public class ImageWatermarkTest {
                 .font(getClass().getResourceAsStream("/STZHONGS.TTF"))
                 .calculate(new AbstractCalculate() {
                     @Override
-                    public WatermarkParam calculateLocation(Point topLeftCornerPoint, Point bottomRightCornerPoint, FontMetrics fontMetrics) {
+                    public WatermarkParam calculateLocation(Point topLeftCornerPoint, Point bottomRightCornerPoint,
+                                                            FontMetrics fontMetrics, String watermarkText) {
                         double topLeftCornerPointX = topLeftCornerPoint.getX();
                         double topLeftCornerPointY = topLeftCornerPoint.getY();
 
@@ -44,7 +45,7 @@ public class ImageWatermarkTest {
 
                         WatermarkParam res = new WatermarkParam();
                         res.setY(Math.abs(topLeftCornerPointY + bottomRightCornerPointY) / 2);
-                        double stringWidth = fontMetrics.getStringWidth(text);
+                        double stringWidth = fontMetrics.getStringWidth(watermarkText);
                         res.setX(Math.abs(topLeftCornerPointX + bottomRightCornerPointX - stringWidth) / 2);
                         return res;
                     }
