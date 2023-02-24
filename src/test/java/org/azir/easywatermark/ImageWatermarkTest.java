@@ -5,6 +5,7 @@ import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.encoding.StandardEncoding;
 import org.azir.easywatermark.core.EasyWatermark;
+import org.azir.easywatermark.core.calculate.impl.PageCenteringCalculator;
 import org.azir.easywatermark.core.font.FontMetrics;
 import org.azir.easywatermark.core.calculate.AbstractCalculate;
 import org.azir.easywatermark.entity.Point;
@@ -29,29 +30,13 @@ public class ImageWatermarkTest {
 
     @Test
     public void test() throws IOException {
-        String text = "hhhhhhhh";
+        String text = "张树焜是帅哥AaBbCcDd";
         byte[] hhhhhhhh = EasyWatermark.load(new FileInputStream("D:\\file\\watermark\\qqq.pdf"))
                 .watermark(text)
                 .font(getClass().getResourceAsStream("/STZHONGS.TTF"))
-                .calculate(new AbstractCalculate() {
-                    @Override
-                    public WatermarkParam calculateLocation(Point topLeftCornerPoint, Point bottomRightCornerPoint,
-                                                            FontMetrics fontMetrics, String watermarkText) {
-                        double topLeftCornerPointX = topLeftCornerPoint.getX();
-                        double topLeftCornerPointY = topLeftCornerPoint.getY();
-
-                        double bottomRightCornerPointX = bottomRightCornerPoint.getX();
-                        double bottomRightCornerPointY = bottomRightCornerPoint.getY();
-
-                        WatermarkParam res = new WatermarkParam();
-                        res.setY(Math.abs(topLeftCornerPointY + bottomRightCornerPointY) / 2);
-                        double stringWidth = fontMetrics.getStringWidth(watermarkText);
-                        res.setX(Math.abs(topLeftCornerPointX + bottomRightCornerPointX - stringWidth) / 2);
-                        return res;
-                    }
-                })
+                .calculate(new PageCenteringCalculator())
                 .execute();
-        FileOutputStream fileOutputStream = new FileOutputStream("D:\\file\\watermark\\target1.pdf");
+        FileOutputStream fileOutputStream = new FileOutputStream("D:\\file\\watermark\\target4.pdf");
         fileOutputStream.write(hhhhhhhh);
         fileOutputStream.close();
     }

@@ -17,7 +17,7 @@ public class WatermarkConfig {
 
     private double alpha = 1;
 
-    private double fontSize = 20;
+    private double fontSize = 60;
 
     /**
      * An angle, in degrees

@@ -13,4 +13,11 @@ public interface FontMetrics {
      * @return text width
      */
     double getStringWidth(String text);
+
+    /**
+     * Get {@code text} height in the font.
+     *
+     * @return text height
+     */
+    double getStringHeight();
 }

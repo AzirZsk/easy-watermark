@@ -7,6 +7,7 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.graphics.blend.BlendMode;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.util.Matrix;
 import org.azir.easywatermark.core.AbstractWatermarkHandler;
@@ -111,6 +112,11 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, PDPage
     }
 
     @Override
+    public double getStringHeight() {
+        return config.getFontSize();
+    }
+
+    @Override
     public byte[] execute() {
         execute0();
         // return result
@@ -163,11 +169,11 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, PDPage
             Point bottomRightCornerPoint = new Point(mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
             WatermarkParam watermarkParam = calculate.calculateLocation(topLeftCornerPoint, bottomRightCornerPoint,
                     this, watermark);
-            Matrix matrix = Matrix.getRotateInstance(Math.toRadians(config.getAngle()),
-                    (float) watermarkParam.getX(), (float) watermarkParam.getY());
+            Matrix matrix = Matrix.getRotateInstance(Math.toRadians(config.getAngle()), 0, 0);
 
             stream.transform(matrix);
             stream.beginText();
+            stream.newLineAtOffset((float) watermarkParam.getX(), (float) watermarkParam.getY());
             stream.showText(watermark);
             stream.endText();
             stream.restoreGraphicsState();
@@ -178,16 +184,18 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, PDPage
 
     @Override
     protected void initGraphics(PDPageContentStream graphics) throws IOException {
-        setAlpha(graphics);
+        setGraphicsState(graphics);
         graphics.setNonStrokingColor(config.getColor());
         graphics.setFont(font, (float) config.getFontSize());
+
     }
 
-    private void setAlpha(PDPageContentStream stream) throws IOException {
-        PDExtendedGraphicsState r = new PDExtendedGraphicsState();
-        r.setNonStrokingAlphaConstant((float) config.getAlpha());
-        r.setAlphaSourceFlag(true);
-        stream.setGraphicsStateParameters(r);
+    private void setGraphicsState(PDPageContentStream stream) throws IOException {
+        PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
+        gs.setNonStrokingAlphaConstant((float) config.getAlpha());
+        gs.setAlphaSourceFlag(true);
+        gs.setBlendMode(BlendMode.MULTIPLY);
+        stream.setGraphicsStateParameters(gs);
     }
 
     /**
