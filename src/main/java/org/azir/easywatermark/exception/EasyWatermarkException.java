@@ -6,6 +6,10 @@ package org.azir.easywatermark.exception;
  */
 public class EasyWatermarkException extends RuntimeException {
 
+    public EasyWatermarkException(Throwable cause) {
+        super(cause);
+    }
+
     public EasyWatermarkException(String message) {
         super(message);
     }

@@ -22,7 +22,7 @@ public class EasyWatermark {
      * @return watermark handler
      * @see #load(byte[])
      */
-    public static AbstractWatermarkHandler<?> load(File file) {
+    public static AbstractWatermarkHandler<?, ?> load(File file) {
         try (FileInputStream inputStream = new FileInputStream(file)) {
             return load(inputStream);
         } catch (Exception e) {
@@ -37,7 +37,7 @@ public class EasyWatermark {
      * @return watermark handler
      * @see #load(byte[])
      */
-    public static AbstractWatermarkHandler<?> load(InputStream inputStream) throws IOException {
+    public static AbstractWatermarkHandler<?, ?> load(InputStream inputStream) throws IOException {
         int available = inputStream.available();
         byte[] data = new byte[available];
         int read = inputStream.read(data);
@@ -53,8 +53,8 @@ public class EasyWatermark {
      * @param bytes file byte data.
      * @return The file type corresponding to the watermark processor;
      */
-    public static AbstractWatermarkHandler<?> load(byte[] bytes) {
-        AbstractWatermarkHandler<?> handler;
+    public static AbstractWatermarkHandler<?, ?> load(byte[] bytes) {
+        AbstractWatermarkHandler<?, ?> handler;
         switch (FileTypeEnums.parseFileType(bytes)) {
             case PDF:
                 handler = new PdfWatermarkHandler(bytes);

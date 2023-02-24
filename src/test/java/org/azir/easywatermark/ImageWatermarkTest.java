@@ -4,6 +4,11 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.encoding.StandardEncoding;
+import org.azir.easywatermark.core.EasyWatermark;
+import org.azir.easywatermark.core.font.FontMetrics;
+import org.azir.easywatermark.core.calculate.AbstractCalculate;
+import org.azir.easywatermark.entity.Point;
+import org.azir.easywatermark.entity.WatermarkParam;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -22,37 +27,31 @@ import java.util.Objects;
  */
 public class ImageWatermarkTest {
 
-    public static void main(String[] args) throws IOException, FontFormatException, NoSuchFieldException, IllegalAccessException {
-        BufferedImage image = ImageIO.read(new File("C:\\Users\\Administrator\\Pictures\\Camera Roll\\WIN_20200317_20_03_20_Pro.jpg"));
-        Graphics2D graphics = image.createGraphics();
-        graphics.setColor(Color.BLACK);
-        Font font = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(ImageWatermarkTest.class.getResourceAsStream("/STZHONGS.TTF")));
-        Field declaredField = Font.class.getDeclaredField("pointSize");
-        declaredField.setAccessible(true);
-        declaredField.setInt(font, 50);
-
-        graphics.setFont(font);
-        graphics.drawString("阿斯蒂芬阿斯蒂芬阿斯蒂芬", 10, 100);
-        graphics.dispose();
-        File file = new File("D:\\work\\all-watermark\\target\\2.jpg");
-        ImageIO.write(image, "jpg", new FileOutputStream(file));
-    }
-
     @Test
     public void test() throws IOException {
-        PDDocument document = PDDocument.load(getClass().getResourceAsStream("/test.pdf"));
-        PDType0Font font = PDType0Font.load(document, getClass().getResourceAsStream("/STZHONGS.TTF"));
-        PDTrueTypeFont load = PDTrueTypeFont.load(document, getClass().getResourceAsStream("/simsun.ttc"), StandardEncoding.INSTANCE);
+        String text = "hhhhhhhh";
+        byte[] hhhhhhhh = EasyWatermark.load(new FileInputStream("D:\\file\\watermark\\qqq.pdf"))
+                .watermark(text)
+                .font(getClass().getResourceAsStream("/STZHONGS.TTF"))
+                .calculate(new AbstractCalculate() {
+                    @Override
+                    public WatermarkParam calculateLocation(Point topLeftCornerPoint, Point bottomRightCornerPoint, FontMetrics fontMetrics) {
+                        double topLeftCornerPointX = topLeftCornerPoint.getX();
+                        double topLeftCornerPointY = topLeftCornerPoint.getY();
 
-        System.out.println();
-    }
+                        double bottomRightCornerPointX = bottomRightCornerPoint.getX();
+                        double bottomRightCornerPointY = bottomRightCornerPoint.getY();
 
-    @Test
-    public void test1() throws IOException {
-        FileInputStream fileInputStream = new FileInputStream("C:\\Users\\Administrator\\Downloads\\劳动合同1_jpeg.jpeg");
-        int available = fileInputStream.available();
-        byte[] data = new byte[available];
-        int read = fileInputStream.read(data);
-        System.out.println();
+                        WatermarkParam res = new WatermarkParam();
+                        res.setY(Math.abs(topLeftCornerPointY + bottomRightCornerPointY) / 2);
+                        double stringWidth = fontMetrics.getStringWidth(text);
+                        res.setX(Math.abs(topLeftCornerPointX + bottomRightCornerPointX - stringWidth) / 2);
+                        return res;
+                    }
+                })
+                .execute();
+        FileOutputStream fileOutputStream = new FileOutputStream("D:\\file\\watermark\\target1.pdf");
+        fileOutputStream.write(hhhhhhhh);
+        fileOutputStream.close();
     }
 }

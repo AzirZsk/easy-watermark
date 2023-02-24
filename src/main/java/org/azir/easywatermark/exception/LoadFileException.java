@@ -9,4 +9,8 @@ public class LoadFileException extends EasyWatermarkException {
     public LoadFileException(String message) {
         super(message);
     }
+
+    public LoadFileException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

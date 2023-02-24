@@ -3,6 +3,7 @@ package org.azir.easywatermark.core;
 import org.azir.easywatermark.entity.WatermarkParam;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,12 +19,18 @@ public interface WatermarkHandler extends Closeable {
      *
      * @return output stream containing the watermark.
      */
-    OutputStream execute();
+    byte[] execute();
+
 
     /**
      * Load file data.
      *
      * @param data file data
      */
-    void load(byte[] data);
+    void loadFile(byte[] data);
+
+    /**
+     * Check class param is present.
+     */
+    void checkParam();
 }

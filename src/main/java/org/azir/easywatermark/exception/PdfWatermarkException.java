@@ -6,6 +6,10 @@ package org.azir.easywatermark.exception;
  */
 public class PdfWatermarkException extends EasyWatermarkException {
 
+    public PdfWatermarkException(Throwable cause) {
+        super(cause);
+    }
+
     public PdfWatermarkException(String message) {
         super(message);
     }
