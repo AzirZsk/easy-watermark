@@ -9,8 +9,8 @@ public interface FontType {
     /**
      * Load fonts, Current only support TrueTypeFont(.ttf) fonts;
      *
-     * @param file font file
+     * @param fontFile font fontFile
      */
-    void load(byte[] file);
+    void load(byte[] fontFile);
 
 }

@@ -39,13 +39,13 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, PDPage
     private String watermark;
 
     public PdfWatermarkHandler(byte[] data) {
-        loadFile(data);
+        super(data);
     }
 
     @Override
-    public void load(byte[] file) {
+    public void load(byte[] fontFile) {
         Objects.requireNonNull(document);
-        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(file)) {
+        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fontFile)) {
             font = PDType0Font.load(document, byteArrayInputStream);
         } catch (IOException e) {
             throw new PdfWatermarkException("Load font file error.", e);

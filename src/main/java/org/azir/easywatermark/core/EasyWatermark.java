@@ -1,5 +1,7 @@
 package org.azir.easywatermark.core;
 
+import org.azir.easywatermark.core.config.WatermarkConfig;
+import org.azir.easywatermark.core.handler.ImageWatermarkHandler;
 import org.azir.easywatermark.core.handler.PdfWatermarkHandler;
 import org.azir.easywatermark.enums.FileTypeEnums;
 import org.azir.easywatermark.exception.LoadFileException;
@@ -14,6 +16,40 @@ import java.io.InputStream;
  * @date 2023/02/19
  */
 public class EasyWatermark {
+
+    private FileTypeEnums fileTypeEnums;
+
+    private String text;
+
+    private File imageFile;
+
+    private WatermarkConfig watermarkConfig;
+
+    private EasyWatermark() {
+    }
+
+    public static EasyWatermark create() {
+        return new EasyWatermark();
+    }
+
+    public EasyWatermark text(String text) {
+        this.text = text;
+        return this;
+    }
+
+    public EasyWatermark image(File imageFile) {
+        this.imageFile = imageFile;
+        return this;
+    }
+
+    public EasyWatermark config(WatermarkConfig watermarkConfig) {
+        this.watermarkConfig = watermarkConfig;
+        return this;
+    }
+
+    public byte[] executor() {
+        return null;
+    }
 
     /**
      * Load file and auto recognition type.
@@ -60,7 +96,7 @@ public class EasyWatermark {
                 handler = new PdfWatermarkHandler(bytes);
                 break;
             case IMAGE:
-                handler = new PdfWatermarkHandler(bytes);
+                handler = new ImageWatermarkHandler(bytes);
                 break;
             case OFFICE:
                 handler = new PdfWatermarkHandler(bytes);

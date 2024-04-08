@@ -17,6 +17,10 @@ import java.io.InputStream;
 @Slf4j
 public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler, FontProvider {
 
+    public AbstractWatermarkHandler(byte[] data) {
+        loadFile(data);
+    }
+
     protected F font;
 
     protected WatermarkConfig config = new WatermarkConfig();
