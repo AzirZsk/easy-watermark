@@ -1,5 +1,6 @@
 package org.azir.easywatermark.core.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.AbstractWatermarkHandler;
 import sun.font.FontDesignMetrics;
 
@@ -17,6 +18,7 @@ import java.util.Objects;
  * @author zhangshukun
  * @date 2023/02/28
  */
+@Slf4j
 public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphics2D> {
 
     private BufferedImage image;
@@ -74,6 +76,11 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
+    public byte[] execute(String exportFileName) {
+
+    }
+
+    @Override
     public void execute(OutputStream outputStream) {
 
     }
@@ -88,7 +95,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         try (InputStream inputStream = new ByteArrayInputStream(data)) {
             this.image = ImageIO.read(inputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Load image file error.", e);
         }
     }
 

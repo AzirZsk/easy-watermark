@@ -1,5 +1,6 @@
 package org.azir.easywatermark;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
@@ -26,18 +27,16 @@ import java.util.Objects;
  * @author Azir
  * @date 2022/11/13
  */
+@Slf4j
 public class ImageWatermarkTest {
 
     @Test
-    public void test() throws IOException {
-        String text = "张树焜是帅哥AaBbCcDd";
-        byte[] hhhhhhhh = EasyWatermark.load(new FileInputStream("D:\\file\\watermark\\qqq.pdf"))
-                .watermark(text)
-                .font(getClass().getResourceAsStream("/STZHONGS.TTF"))
-                .calculate(new PageCenteringCalculator())
-                .execute();
-        FileOutputStream fileOutputStream = new FileOutputStream("D:\\file\\watermark\\target4.pdf");
-        fileOutputStream.write(hhhhhhhh);
-        fileOutputStream.close();
+    public void run() {
+        byte[] asdfasdfs = EasyWatermark.create()
+                .text("asdfasdf")
+                // 获取resources的test.png
+                .file(new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("test.png")).getFile()))
+                .executor();
+
     }
 }

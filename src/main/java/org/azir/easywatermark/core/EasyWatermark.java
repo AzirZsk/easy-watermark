@@ -1,20 +1,27 @@
 package org.azir.easywatermark.core;
 
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.core.handler.ImageWatermarkHandler;
 import org.azir.easywatermark.core.handler.PdfWatermarkHandler;
 import org.azir.easywatermark.enums.FileTypeEnums;
+import org.azir.easywatermark.exception.FileTypeNotSupportException;
 import org.azir.easywatermark.exception.LoadFileException;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author Azir
  * @date 2023/02/19
  */
+@Data
+@Slf4j
 public class EasyWatermark {
 
     private FileTypeEnums fileTypeEnums;
@@ -25,11 +32,18 @@ public class EasyWatermark {
 
     private WatermarkConfig watermarkConfig;
 
+    private File file;
+
     private EasyWatermark() {
     }
 
     public static EasyWatermark create() {
         return new EasyWatermark();
+    }
+
+    public EasyWatermark file(File file) {
+        this.file = file;
+        return this;
     }
 
     public EasyWatermark text(String text) {
@@ -48,7 +62,32 @@ public class EasyWatermark {
     }
 
     public byte[] executor() {
+        if (file == null) {
+            throw new LoadFileException("File is null.");
+        }
+        String fileName = file.getName();
+        String fileType = fileName.split("\\.")[0];
+        return executor("easy_watermark."  + fileType);
+    }
+
+    public byte[] executor(String exportFileName) {
+        checkParam();
+        try (AbstractWatermarkHandler<?, ?> handler = load(file)) {
+            handler.execute(exportFileName);
+        } catch (IOException e) {
+            log.error("Load file error.", e);
+            throw new RuntimeException(e);
+        }
         return null;
+    }
+
+    private void checkParam() {
+        if (this.file == null) {
+            throw new LoadFileException("File is null.");
+        }
+        if (text == null || imageFile == null) {
+            throw new NullPointerException("Text or image file is null.");
+        }
     }
 
     /**
@@ -98,12 +137,9 @@ public class EasyWatermark {
             case IMAGE:
                 handler = new ImageWatermarkHandler(bytes);
                 break;
-            case OFFICE:
-                handler = new PdfWatermarkHandler(bytes);
-                break;
             default:
-                handler = new PdfWatermarkHandler(bytes);
-                break;
+                log.warn("File type not support.");
+                throw new FileTypeNotSupportException("File type not support.");
         }
         return handler;
     }

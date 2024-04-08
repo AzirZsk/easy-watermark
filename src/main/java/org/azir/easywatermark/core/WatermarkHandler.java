@@ -21,6 +21,8 @@ public interface WatermarkHandler extends Closeable {
      */
     byte[] execute();
 
+    byte[] execute(String exportFileName);
+
     /**
      * add watermark, write result into output stream.
      */
