@@ -35,6 +35,9 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         super(data, fontConfig, watermarkConfig);
         this.fontMetrics = graphics.getFontMetrics(font);
         this.ascent = fontMetrics.getAscent();
+        if (log.isDebugEnabled()) {
+            log.debug("Image height:{}, width:{}", image.getHeight(), image.getWidth());
+        }
     }
 
     @Override
@@ -113,6 +116,9 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
         int x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
         int y = (int) ((image.getHeight() - getStringHeight() ) / 2 + ascent);
+        if (log.isDebugEnabled()) {
+            log.debug("Draw diagonal watermark. x:{},y:{}", x, y);
+        }
         graphics.drawString(watermarkText, x, y);
     }
 
