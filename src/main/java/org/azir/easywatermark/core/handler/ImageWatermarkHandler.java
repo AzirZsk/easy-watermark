@@ -70,6 +70,10 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
         switch (watermarkType) {
             case CUSTOM:
+                if (log.isDebugEnabled()) {
+                    log.debug("Draw custom watermark. x:{},y:{}", watermarkConfig.getLocationX(),
+                            watermarkConfig.getLocationY() + (float) ascent);
+                }
                 graphics.drawString(watermarkText, watermarkConfig.getLocationX(), watermarkConfig.getLocationY() + (float) ascent);
                 break;
             case CENTER:
@@ -126,6 +130,9 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 break;
             default:
                 throw new ImageWatermarkHandlerException("Unsupported center watermark type.");
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Draw center watermark. x:{},y:{}", x, y + (float) ascent);
         }
         graphics.drawString(watermarkText, x, y + (float) ascent);
 
