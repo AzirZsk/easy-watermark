@@ -13,9 +13,9 @@ import java.awt.*;
 @Data
 public class WatermarkConfig {
 
-    private float locationX = 21;
+    private float locationX;
 
-    private float locationY = 21;
+    private float locationY;
 
     private Color color = Color.BLACK;
 

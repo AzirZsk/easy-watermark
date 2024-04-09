@@ -25,9 +25,12 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     private final FontMetrics fontMetrics;
 
+    private final double ascent;
+
     public ImageWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         super(data, fontConfig, watermarkConfig);
         this.fontMetrics = graphics.getFontMetrics(font);
+        this.ascent = fontMetrics.getAscent();
     }
 
     @Override
@@ -66,7 +69,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
         switch (watermarkType) {
             case CUSTOM:
-                graphics.drawString(watermarkText, watermarkConfig.getLocationX(), watermarkConfig.getLocationY());
+                graphics.drawString(watermarkText, watermarkConfig.getLocationX(), watermarkConfig.getLocationY() + (float) ascent);
                 break;
             case CENTER:
                 break;
