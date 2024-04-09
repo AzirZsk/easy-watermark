@@ -1,12 +1,8 @@
 package org.azir.easywatermark.core;
 
-import org.azir.easywatermark.entity.WatermarkParam;
+import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
 
 import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @author zhangshukun
@@ -19,19 +15,7 @@ public interface WatermarkHandler extends Closeable {
      *
      * @return Byte array after adding watermark
      */
-    byte[] execute();
-
-    byte[] execute(String exportFileName);
-
-    /**
-     * add watermark, write result into output stream.
-     */
-    void execute(OutputStream outputStream);
-
-    /**
-     * add watermark, write result into file.
-     */
-    void execute(File file);
+    byte[] execute(WatermarkLocationTypeEnum watermarkType);
 
     /**
      * Load file data.
@@ -39,9 +23,4 @@ public interface WatermarkHandler extends Closeable {
      * @param data file data
      */
     void loadFile(byte[] data);
-
-    /**
-     * Check class param is present.
-     */
-    void checkParam();
 }

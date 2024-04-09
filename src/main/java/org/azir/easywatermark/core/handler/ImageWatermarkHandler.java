@@ -2,17 +2,17 @@ package org.azir.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.AbstractWatermarkHandler;
-import sun.font.FontDesignMetrics;
+import org.azir.easywatermark.core.config.FontConfig;
+import org.azir.easywatermark.core.config.WatermarkConfig;
+import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
+import org.azir.easywatermark.exception.EasyWatermarkException;
+import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
+import org.azir.easywatermark.exception.LoadFontException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Objects;
+import java.io.*;
 
 /**
  * @author zhangshukun
@@ -23,71 +23,73 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     private BufferedImage image;
 
-    public ImageWatermarkHandler(byte[] data) {
-        super(data);
+    private final FontMetrics fontMetrics;
+
+    public ImageWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
+        super(data, fontConfig, watermarkConfig);
+        this.fontMetrics = graphics.getFontMetrics(font);
     }
 
     @Override
-    public AbstractWatermarkHandler<Font, Graphics2D> font(File file) {
+    protected void initGraphics() {
+        this.graphics = image.createGraphics();
+        AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, watermarkConfig.getAlpha());
+        graphics.setComposite(alphaComposite);
+        graphics.setColor(watermarkConfig.getColor());
+        graphics.setFont(font);
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        graphics.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+    }
+
+    @Override
+    protected void initFont() {
         try {
-            Font font = Font.createFont(Font.TRUETYPE_FONT, file);
-            this.font = font.deriveFont((float) config.getFontSize());
-        } catch (Exception e) {
-            e.printStackTrace();
+            Font font;
+            if (fontConfig.getFontFile() != null) {
+                font = Font.createFont(Font.TRUETYPE_FONT, fontConfig.getFontFile());
+            } else {
+                font = new Font(fontConfig.getFontName(), fontConfig.getFontStyle(), fontConfig.getFontSize());
+            }
+            this.font = font.deriveFont(fontConfig.getFontStyle(), (float) fontConfig.getFontSize());
+        } catch (FontFormatException | IOException e) {
+            log.error("Load font error. Font file:{}", fontConfig.getFontFile(), e);
+            throw new LoadFontException("Load font error.", e);
         }
-        return this;
     }
 
     @Override
-    public AbstractWatermarkHandler<Font, Graphics2D> font(InputStream fontFile) {
-        try {
-            Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
-            this.font = font.deriveFont((float) config.getFontSize());
-        } catch (Exception e) {
-            e.printStackTrace();
+    public byte[] execute(WatermarkLocationTypeEnum watermarkType) {
+        if (log.isDebugEnabled()) {
+            log.debug("Add watermark. Watermark type:{}", watermarkType);
         }
-        return this;
-    }
-
-    @Override
-    public AbstractWatermarkHandler<Font, Graphics2D> font(byte[] data) {
-        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(data)) {
-            Font font = Font.createFont(Font.TRUETYPE_FONT, inputStream);
-            this.font = font.deriveFont((float) config.getFontSize());
-        } catch (Exception e) {
-            e.printStackTrace();
+        switch (watermarkType) {
+            case CUSTOM:
+                graphics.drawString(watermarkText, watermarkConfig.getLocationX(), watermarkConfig.getLocationY());
+                break;
+            case CENTER:
+                break;
+            case DIAGONAL:
+                log.warn("Diagonal watermark type is not supported yet.");
+                break;
+            case OVERSPREAD:
+                log.warn("Overspread watermark type is not supported yet.");
+                break;
+            default:
+                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
         }
-        return this;
-    }
-
-    @Override
-    public AbstractWatermarkHandler<Font, Graphics2D> watermark(String watermarkText) {
-        return null;
-    }
-
-    @Override
-    protected void initGraphics(Graphics2D graphics) throws IOException {
-
-    }
-
-    @Override
-    public byte[] execute() {
-        return new byte[0];
-    }
-
-    @Override
-    public byte[] execute(String exportFileName) {
-
-    }
-
-    @Override
-    public void execute(OutputStream outputStream) {
-
-    }
-
-    @Override
-    public void execute(File file) {
-
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            boolean writeResult = ImageIO.write(image, "jpeg", outputStream);
+            if (writeResult) {
+                log.info("Add watermark success.");
+                return outputStream.toByteArray();
+            } else {
+                throw new ImageWatermarkHandlerException("Write image error.");
+            }
+        } catch (IOException e) {
+            throw new EasyWatermarkException("Write image error.", e);
+        }
     }
 
     @Override
@@ -96,34 +98,22 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             this.image = ImageIO.read(inputStream);
         } catch (IOException e) {
             log.error("Load image file error.", e);
+            throw new EasyWatermarkException("Load image file error.", e);
         }
     }
 
     @Override
-    public void checkParam() {
-        if (Objects.isNull(image)) {
-            throw new NullPointerException("Image must not null.");
-        }
-    }
-
-    @Override
-    public void close() throws IOException {
-        // nothing
+    public void close() {
+        graphics.dispose();
     }
 
     @Override
     public double getStringWidth(String text) {
-        FontDesignMetrics metrics = FontDesignMetrics.getMetrics(font);
-        return metrics.stringWidth(text);
+        return fontMetrics.stringWidth(text);
     }
 
     @Override
     public double getStringHeight() {
-        return 0;
-    }
-
-    @Override
-    public void load(byte[] fontFile) {
-        font(fontFile);
+        return fontMetrics.getHeight();
     }
 }

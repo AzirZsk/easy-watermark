@@ -3,8 +3,9 @@ package org.azir.easywatermark.core;
 import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.calculate.AbstractCalculate;
 import org.azir.easywatermark.core.calculate.impl.DefaultCalculator;
+import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.font.FontProvider;
-import org.azir.easywatermark.entity.WatermarkConfig;
+import org.azir.easywatermark.core.config.WatermarkConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,33 +18,43 @@ import java.io.InputStream;
 @Slf4j
 public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler, FontProvider {
 
-    public AbstractWatermarkHandler(byte[] data) {
+    public AbstractWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
+        this.fontConfig = fontConfig;
+        this.watermarkConfig = watermarkConfig;
         loadFile(data);
+        initFont();
+        initGraphics();
+        log.info("{} init success", this.getClass().getSimpleName());
     }
+
+    protected String watermarkText;
+
+    protected File watermarkFile;
 
     protected F font;
 
-    protected WatermarkConfig config = new WatermarkConfig();
+    protected G graphics;
+
+    protected FontConfig fontConfig;
+
+    protected WatermarkConfig watermarkConfig;
 
     protected AbstractCalculate calculate = new DefaultCalculator();
 
-    public abstract AbstractWatermarkHandler<F, G> font(File file);
+    protected abstract void initGraphics();
 
-    public abstract AbstractWatermarkHandler<F, G> font(InputStream fontFile);
-
-    public abstract AbstractWatermarkHandler<F, G> font(byte[] data);
-
-    public AbstractWatermarkHandler<F, G> config(WatermarkConfig config) {
-        this.config = config;
-        return this;
-    }
+    protected abstract void initFont();
 
     public AbstractWatermarkHandler<F, G> calculate(AbstractCalculate calculate) {
         this.calculate = calculate;
         return this;
     }
 
-    public abstract AbstractWatermarkHandler<F, G> watermark(String watermarkText);
+    public void watermark(String watermarkText) {
+        this.watermarkText = watermarkText;
+    }
 
-    protected abstract void initGraphics(G graphics) throws IOException;
+    public void watermark(File watermarkFile) {
+        this.watermarkFile = watermarkFile;
+    }
 }

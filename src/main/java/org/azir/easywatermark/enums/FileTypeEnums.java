@@ -1,6 +1,6 @@
 package org.azir.easywatermark.enums;
 
-import org.azir.easywatermark.exception.FileTypeNotSupportException;
+import org.azir.easywatermark.exception.FileTypeUnSupportException;
 
 /**
  * @author Azir
@@ -54,7 +54,7 @@ public enum FileTypeEnums {
         if (isImage(date)) {
             return IMAGE;
         }
-        throw new FileTypeNotSupportException("Byte data file is not support.");
+        throw new FileTypeUnSupportException("Byte data file is not support.");
     }
 
     private static boolean isOffice(byte[] data) {
