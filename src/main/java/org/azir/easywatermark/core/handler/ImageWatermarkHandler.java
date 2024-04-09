@@ -10,9 +10,11 @@ import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
 import org.azir.easywatermark.exception.EasyWatermarkException;
 import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
 import org.azir.easywatermark.exception.LoadFontException;
+import org.azir.easywatermark.utils.EasyWatermarkUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
@@ -81,7 +83,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 drawCenterWatermark();
                 break;
             case DIAGONAL:
-                log.warn("Diagonal watermark type is not supported yet.");
+                drawDiagonalWatermark();
                 break;
             case OVERSPREAD:
                 drawOverspreadWatermark();
@@ -100,6 +102,18 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         } catch (IOException e) {
             throw new EasyWatermarkException("Write image error.", e);
         }
+    }
+
+    /**
+     * Draw diagonal watermark.
+     */
+    private void drawDiagonalWatermark() {
+        double radians = EasyWatermarkUtils.calcRadians(image.getWidth(), image.getHeight());
+        graphics.rotate(radians, (double) image.getWidth() / 2, (double) image.getHeight() / 2);
+
+        int x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
+        int y = (int) ((image.getHeight() - getStringHeight() ) / 2 + ascent);
+        graphics.drawString(watermarkText, x, y);
     }
 
     /**
@@ -146,7 +160,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
      */
     private void drawCenterWatermark() {
         CenterLocationTypeEnum centerLocationType = watermarkConfig.getCenterLocationType();
-        int x,y;
+        int x, y;
         switch (centerLocationType) {
             case VERTICAL_CENTER:
                 x = (image.getWidth() - fontMetrics.stringWidth(watermarkText)) / 2;

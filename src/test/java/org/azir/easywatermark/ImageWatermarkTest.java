@@ -32,11 +32,11 @@ public class ImageWatermarkTest {
                 .config(new FontConfig() {
                     {
                         setFontName("宋体");
-                        setFontSize(20);
+                        setFontSize(40);
                         setFontStyle(Font.PLAIN);
                     }
                 })
-                .watermarkType(WatermarkLocationTypeEnum.OVERSPREAD)
+                .watermarkType(WatermarkLocationTypeEnum.DIAGONAL)
                 .config(new WatermarkConfig(){
                     {
                         setOverspreadType(OverspreadTypeEnum.HIGH);
