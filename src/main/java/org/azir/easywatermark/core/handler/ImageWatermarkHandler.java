@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.AbstractWatermarkHandler;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
+import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
 import org.azir.easywatermark.exception.EasyWatermarkException;
 import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
@@ -72,6 +73,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 graphics.drawString(watermarkText, watermarkConfig.getLocationX(), watermarkConfig.getLocationY() + (float) ascent);
                 break;
             case CENTER:
+                drawCenterWatermark();
                 break;
             case DIAGONAL:
                 log.warn("Diagonal watermark type is not supported yet.");
@@ -93,6 +95,40 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         } catch (IOException e) {
             throw new EasyWatermarkException("Write image error.", e);
         }
+    }
+
+    /**
+     * Draw center watermark.
+     */
+    private void drawCenterWatermark() {
+        CenterLocationTypeEnum centerLocationType = watermarkConfig.getCenterLocationType();
+        int x,y;
+        switch (centerLocationType) {
+            case VERTICAL_CENTER:
+                x = (image.getWidth() - fontMetrics.stringWidth(watermarkText)) / 2;
+                y = (image.getHeight() - fontMetrics.getHeight()) / 2;
+                break;
+            case TOP_CENTER:
+                x = (image.getWidth() - fontMetrics.stringWidth(watermarkText)) / 2;
+                y = 0;
+                break;
+            case BOTTOM_CENTER:
+                x = (image.getWidth() - fontMetrics.stringWidth(watermarkText)) / 2;
+                y = image.getHeight() - fontMetrics.getHeight();
+                break;
+            case LEFT_CENTER:
+                x = 0;
+                y = (image.getHeight() - fontMetrics.getHeight()) / 2;
+                break;
+            case RIGHT_CENTER:
+                x = image.getWidth() - fontMetrics.stringWidth(watermarkText);
+                y = (image.getHeight() - fontMetrics.getHeight()) / 2;
+                break;
+            default:
+                throw new ImageWatermarkHandlerException("Unsupported center watermark type.");
+        }
+        graphics.drawString(watermarkText, x, y + (float) ascent);
+
     }
 
     @Override
