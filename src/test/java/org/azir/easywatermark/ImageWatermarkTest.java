@@ -6,6 +6,7 @@ import org.azir.easywatermark.core.EasyWatermark;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.enums.CenterLocationTypeEnum;
+import org.azir.easywatermark.enums.OverspreadTypeEnum;
 import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
 import org.junit.Test;
 
@@ -35,7 +36,12 @@ public class ImageWatermarkTest {
                         setFontStyle(Font.PLAIN);
                     }
                 })
-                .watermarkType(WatermarkLocationTypeEnum.CENTER)
+                .watermarkType(WatermarkLocationTypeEnum.OVERSPREAD)
+                .config(new WatermarkConfig(){
+                    {
+                        setOverspreadType(OverspreadTypeEnum.HIGH);
+                    }
+                })
                 .executor();
         // 输出到桌面
         FileOutputStream fileOutputStream = new FileOutputStream(System.getProperty("user.home") + "/Desktop/test.jpeg");

@@ -12,12 +12,12 @@ public interface FontMetrics {
      * @param text watermark text
      * @return text width
      */
-    double getStringWidth(String text);
+    int getStringWidth(String text);
 
     /**
      * Get {@code text} height in the font.
      *
      * @return text height
      */
-    double getStringHeight();
+    int getStringHeight();
 }
