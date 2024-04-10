@@ -1,6 +1,6 @@
 package org.azir.easywatermark.core;
 
-import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
+import org.azir.easywatermark.enums.WatermarkTypeEnum;
 
 import java.io.Closeable;
 
@@ -15,7 +15,7 @@ public interface WatermarkHandler extends Closeable {
      *
      * @return Byte array after adding watermark
      */
-    byte[] execute(WatermarkLocationTypeEnum watermarkType);
+    byte[] execute(WatermarkTypeEnum watermarkType);
 
     /**
      * Load file data.

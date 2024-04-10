@@ -7,7 +7,7 @@ import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
-import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
+import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.azir.easywatermark.exception.EasyWatermarkException;
 import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
 import org.azir.easywatermark.exception.LoadFontException;
@@ -73,7 +73,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
-    public byte[] execute(WatermarkLocationTypeEnum watermarkType) {
+    public byte[] execute(WatermarkTypeEnum watermarkType) {
         if (log.isDebugEnabled()) {
             log.debug("Add watermark. Watermark type:{}", watermarkType);
         }

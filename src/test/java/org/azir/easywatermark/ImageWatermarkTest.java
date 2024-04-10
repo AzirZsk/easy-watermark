@@ -7,7 +7,7 @@ import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
-import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
+import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.junit.Test;
 
 import java.awt.*;
@@ -36,7 +36,7 @@ public class ImageWatermarkTest {
                         setFontStyle(Font.PLAIN);
                     }
                 })
-                .watermarkType(WatermarkLocationTypeEnum.DIAGONAL)
+                .watermarkType(WatermarkTypeEnum.DIAGONAL)
                 .config(new WatermarkConfig(){
                     {
                         setOverspreadType(OverspreadTypeEnum.HIGH);

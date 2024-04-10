@@ -6,7 +6,7 @@ import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.core.handler.ImageWatermarkHandler;
 import org.azir.easywatermark.enums.FileTypeEnums;
-import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
+import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.azir.easywatermark.exception.FileTypeUnSupportException;
 import org.azir.easywatermark.exception.LoadFileException;
 
@@ -35,7 +35,7 @@ public class EasyWatermark {
 
     private File file;
 
-    private WatermarkLocationTypeEnum watermarkLocationType = WatermarkLocationTypeEnum.CENTER;
+    private WatermarkTypeEnum watermarkLocationType = WatermarkTypeEnum.CENTER;
 
     private EasyWatermark() {
     }
@@ -69,8 +69,8 @@ public class EasyWatermark {
         return this;
     }
 
-    public EasyWatermark watermarkType(WatermarkLocationTypeEnum watermarkLocationTypeEnum) {
-        this.watermarkLocationType = watermarkLocationTypeEnum;
+    public EasyWatermark watermarkType(WatermarkTypeEnum watermarkTypeEnum) {
+        this.watermarkLocationType = watermarkTypeEnum;
         return this;
     }
 
