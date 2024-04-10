@@ -5,6 +5,7 @@ import org.azir.easywatermark.core.AbstractWatermarkHandler;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.enums.CenterLocationTypeEnum;
+import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
 import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
 import org.azir.easywatermark.exception.EasyWatermarkException;
@@ -14,9 +15,11 @@ import org.azir.easywatermark.utils.EasyWatermarkUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author zhangshukun
@@ -112,14 +115,25 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
      */
     private void drawDiagonalWatermark() {
         double radians = EasyWatermarkUtils.calcRadians(image.getWidth(), image.getHeight());
+        DiagonalDirectionTypeEnum diagonalDirectionType = watermarkConfig.getDiagonalDirectionType();
+        switch (diagonalDirectionType) {
+            case TOP_TO_BOTTOM:
+                break;
+            case BOTTOM_TO_TOP:
+                radians = -radians;
+                break;
+            default:
+                throw new ImageWatermarkHandlerException("Unsupported diagonal watermark type.");
+        }
         graphics.rotate(radians, (double) image.getWidth() / 2, (double) image.getHeight() / 2);
 
         int x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
-        int y = (int) ((image.getHeight() - getStringHeight() ) / 2 + ascent);
+        int y = (image.getHeight() - getStringHeight()) / 2;
         if (log.isDebugEnabled()) {
             log.debug("Draw diagonal watermark. x:{},y:{}", x, y);
         }
-        graphics.drawString(watermarkText, x, y);
+        graphics.drawString(watermarkText, x, (int) (y + ascent));
+        graphics.drawRect(x, y, getStringWidth(watermarkText), getStringHeight());
     }
 
     /**

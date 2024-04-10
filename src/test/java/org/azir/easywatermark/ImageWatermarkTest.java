@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.EasyWatermark;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
-import org.azir.easywatermark.enums.CenterLocationTypeEnum;
+import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
 import org.azir.easywatermark.enums.WatermarkLocationTypeEnum;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class ImageWatermarkTest {
         byte[] executor = EasyWatermark.create()
                 .text("今天天气真好")
                 // 获取resources的test.png
-                .file(new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("center-test.png")).getFile()))
+                .file(new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("600-400.png")).getFile()))
                 .config(new FontConfig() {
                     {
                         setFontName("宋体");
@@ -40,6 +40,7 @@ public class ImageWatermarkTest {
                 .config(new WatermarkConfig(){
                     {
                         setOverspreadType(OverspreadTypeEnum.HIGH);
+                        setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
                     }
                 })
                 .executor();
