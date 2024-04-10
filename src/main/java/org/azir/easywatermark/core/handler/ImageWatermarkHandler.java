@@ -133,7 +133,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             log.debug("Draw diagonal watermark. x:{},y:{}", x, y);
         }
         graphics.drawString(watermarkText, x, (int) (y + ascent));
-        graphics.drawRect(x, y, getStringWidth(watermarkText), getStringHeight());
     }
 
     /**
