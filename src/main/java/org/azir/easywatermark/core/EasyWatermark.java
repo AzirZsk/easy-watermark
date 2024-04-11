@@ -125,10 +125,10 @@ public class EasyWatermark {
         if (this.file == null) {
             throw new LoadFileException("File is null.");
         }
-        if ((text == null && textList == null) && imageFile == null) {
+        if (text == null && textList == null && imageFile == null) {
             throw new NullPointerException("Watermark text or image file is null.");
         }
-        if ((text == null && textList == null) || imageFile == null) {
+        if ((text != null || textList != null) && imageFile != null) {
             throw new IllegalArgumentException("Watermark text and image file must not null.");
         }
     }

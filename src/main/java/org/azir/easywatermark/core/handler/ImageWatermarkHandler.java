@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.AbstractWatermarkHandler;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
+import org.azir.easywatermark.entity.Point;
 import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
@@ -178,6 +179,23 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
      * Draw center watermark.
      */
     private void drawCenterWatermark() {
+        if (isSingleWatermark()) {
+            Point point = drawCenterWatermark0(watermarkText);
+            drawString(point.getX(), point.getY(), watermarkText);
+            return;
+        } else if (isMultiWatermark()) {
+            for (int i = 0; i < watermarkTextList.size(); i++) {
+                String curWatermarkText = watermarkTextList.get(i);
+                Point point = drawCenterWatermark0(curWatermarkText);
+                drawString(point.getX(), point.getY() + (i * getStringHeight()), curWatermarkText);
+            }
+            return;
+        } else if (isImageWatermark()) {
+            // todo
+        }
+    }
+
+    private Point drawCenterWatermark0(String watermarkText) {
         CenterLocationTypeEnum centerLocationType = watermarkConfig.getCenterLocationType();
         int x, y;
         switch (centerLocationType) {
@@ -204,7 +222,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             default:
                 throw new ImageWatermarkHandlerException("Unsupported center watermark type.");
         }
-        drawString(x, y, watermarkText);
+        return new Point(x, y);
     }
 
     @Override

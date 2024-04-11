@@ -29,7 +29,7 @@ public class ImageWatermarkTest {
     @Test
     public void run() {
         byte[] executor = EasyWatermark.create()
-                .text("今天天气真好")
+                .text("今天天气真好", "明天天气也不错", "后天天气也不错")
                 // 获取resources的test.png
                 .file(new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("600-400.png")).getFile()))
                 .config(new FontConfig() {
