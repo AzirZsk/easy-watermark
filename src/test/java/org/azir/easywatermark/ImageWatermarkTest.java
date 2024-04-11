@@ -12,6 +12,7 @@ import org.azir.easywatermark.enums.OverspreadTypeEnum;
 import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.junit.Test;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,11 +39,12 @@ public class ImageWatermarkTest {
                         setFontStyle(Font.PLAIN);
                     }
                 })
-                .watermarkType(WatermarkTypeEnum.CUSTOM)
-                .config(new WatermarkConfig(){
+                .watermarkType(WatermarkTypeEnum.CENTER)
+                .config(new WatermarkConfig() {
                     {
                         setOverspreadType(OverspreadTypeEnum.HIGH);
                         setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
+                        setAlpha(0.4f);
                     }
                 })
                 .customDraw(new CustomDraw() {

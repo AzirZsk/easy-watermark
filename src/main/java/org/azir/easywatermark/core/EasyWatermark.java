@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Azir
@@ -26,6 +29,8 @@ public class EasyWatermark {
     private FileTypeEnums fileTypeEnums;
 
     private String text;
+
+    private List<String> textList;
 
     private File imageFile;
 
@@ -53,6 +58,18 @@ public class EasyWatermark {
 
     public EasyWatermark text(String text) {
         this.text = text;
+        return this;
+    }
+
+    public EasyWatermark text(List<String> textList) {
+        this.textList = textList;
+        return this;
+    }
+
+    public EasyWatermark text(String... text) {
+        List<String> list = new ArrayList<>();
+        Collections.addAll(list, text);
+        this.textList = list;
         return this;
     }
 
@@ -89,6 +106,8 @@ public class EasyWatermark {
         try (AbstractWatermarkHandler<?, ?> handler = load(file, fontConfig, watermarkConfig)) {
             if (text != null) {
                 handler.watermark(text);
+            } else if (textList != null) {
+                handler.watermark(textList);
             } else {
                 handler.watermark(imageFile);
             }
@@ -106,10 +125,10 @@ public class EasyWatermark {
         if (this.file == null) {
             throw new LoadFileException("File is null.");
         }
-        if (text == null && imageFile == null) {
+        if ((text == null && textList == null) && imageFile == null) {
             throw new NullPointerException("Watermark text or image file is null.");
         }
-        if (text != null && imageFile != null) {
+        if ((text == null && textList == null) || imageFile == null) {
             throw new IllegalArgumentException("Watermark text and image file must not null.");
         }
     }

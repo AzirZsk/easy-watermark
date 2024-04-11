@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * @author zhangshukun
@@ -236,6 +237,16 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             log.debug("Draw text. x:{},y:{},text:{}", x, y, text);
         }
         graphics.drawString(text, x, (int) (y + ascent));
+    }
+
+    @Override
+    public void drawMultiLineString(float x, float y, List<String> text) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw multi-line text. x:{},y:{},text:{}", x, y, text);
+        }
+        for (int i = 0; i < text.size(); i++) {
+            drawString(x, y + i * fontMetrics.getHeight(), text.get(i));
+        }
     }
 
     @Override

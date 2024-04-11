@@ -12,6 +12,7 @@ import org.azir.easywatermark.exception.EasyWatermarkException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * @param <F> Font
@@ -37,6 +38,8 @@ public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler
     }
 
     protected String watermarkText;
+
+    protected List<String> watermarkTextList;
 
     protected File watermarkFile;
 
@@ -66,5 +69,21 @@ public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler
 
     public void watermark(File watermarkFile) {
         this.watermarkFile = watermarkFile;
+    }
+
+    public void watermark(List<String> watermarkTextList) {
+        this.watermarkTextList = watermarkTextList;
+    }
+
+    protected boolean isSingleWatermark() {
+        return watermarkText != null;
+    }
+
+    protected boolean isMultiWatermark() {
+        return watermarkTextList != null;
+    }
+
+    protected boolean isImageWatermark() {
+        return watermarkFile != null;
     }
 }
