@@ -7,6 +7,7 @@ import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.font.FontProvider;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.core.graphics.GraphicsProvider;
+import org.azir.easywatermark.exception.EasyWatermarkException;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +23,16 @@ import java.io.InputStream;
 public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler, FontProvider, GraphicsProvider {
 
     public AbstractWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
-        this.fontConfig = fontConfig;
-        this.watermarkConfig = watermarkConfig;
-        loadFile(data);
-        initFont();
-        initGraphics();
+        try {
+            this.fontConfig = fontConfig;
+            this.watermarkConfig = watermarkConfig;
+            loadFile(data);
+            initFont();
+            initGraphics();
+        } catch (Exception e) {
+            log.warn("{} init error", this.getClass().getSimpleName(), e);
+            throw new EasyWatermarkException(this.getClass().getSimpleName() + " init error");
+        }
         log.info("{} init success", this.getClass().getSimpleName());
     }
 
