@@ -2,9 +2,11 @@ package org.azir.easywatermark;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.azir.easywatermark.core.CustomDraw;
 import org.azir.easywatermark.core.EasyWatermark;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
+import org.azir.easywatermark.core.graphics.GraphicsProvider;
 import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
 import org.azir.easywatermark.enums.WatermarkTypeEnum;
@@ -36,11 +38,17 @@ public class ImageWatermarkTest {
                         setFontStyle(Font.PLAIN);
                     }
                 })
-                .watermarkType(WatermarkTypeEnum.DIAGONAL)
+                .watermarkType(WatermarkTypeEnum.CUSTOM)
                 .config(new WatermarkConfig(){
                     {
                         setOverspreadType(OverspreadTypeEnum.HIGH);
                         setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
+                    }
+                })
+                .customDraw(new CustomDraw() {
+                    @Override
+                    public <F, G> void draw(F f, G g, int imageWidth, int imageHeight, GraphicsProvider graphicsProvider) {
+                        graphicsProvider.drawString(0, 0, "自定义绘制");
                     }
                 })
                 .executor();

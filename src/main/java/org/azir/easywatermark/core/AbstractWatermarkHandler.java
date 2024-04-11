@@ -6,17 +6,20 @@ import org.azir.easywatermark.core.calculate.impl.DefaultCalculator;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.font.FontProvider;
 import org.azir.easywatermark.core.config.WatermarkConfig;
+import org.azir.easywatermark.core.graphics.GraphicsProvider;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * @param <F> Font
+ * @param <G> Graphics
  * @author zhangshukun
  * @date 2022/11/8
  */
 @Slf4j
-public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler, FontProvider {
+public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler, FontProvider, GraphicsProvider {
 
     public AbstractWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         this.fontConfig = fontConfig;
@@ -39,15 +42,16 @@ public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler
 
     protected WatermarkConfig watermarkConfig;
 
-    protected AbstractCalculate calculate = new DefaultCalculator();
+    protected CustomDraw customDraw;
 
     protected abstract void initGraphics();
 
     protected abstract void initFont();
 
-    public AbstractWatermarkHandler<F, G> calculate(AbstractCalculate calculate) {
-        this.calculate = calculate;
-        return this;
+    protected abstract void customDraw();
+
+    public void setCustomDraw(CustomDraw customDraw) {
+        this.customDraw = customDraw;
     }
 
     public void watermark(String watermarkText) {

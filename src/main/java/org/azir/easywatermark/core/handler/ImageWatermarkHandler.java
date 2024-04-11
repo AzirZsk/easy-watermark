@@ -8,9 +8,7 @@ import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
 import org.azir.easywatermark.enums.WatermarkTypeEnum;
-import org.azir.easywatermark.exception.EasyWatermarkException;
-import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
-import org.azir.easywatermark.exception.LoadFontException;
+import org.azir.easywatermark.exception.*;
 import org.azir.easywatermark.utils.EasyWatermarkUtils;
 
 import javax.imageio.ImageIO;
@@ -73,17 +71,21 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
+    protected void customDraw() {
+        if (customDraw == null) {
+            log.warn("Custom draw is null.");
+        }
+        customDraw.draw(font, graphics, image.getWidth(), image.getHeight(), this);
+    }
+
+    @Override
     public byte[] execute(WatermarkTypeEnum watermarkType) {
         if (log.isDebugEnabled()) {
             log.debug("Add watermark. Watermark type:{}", watermarkType);
         }
         switch (watermarkType) {
             case CUSTOM:
-                if (log.isDebugEnabled()) {
-                    log.debug("Draw custom watermark. x:{},y:{}", watermarkConfig.getLocationX(),
-                            watermarkConfig.getLocationY() + (float) ascent);
-                }
-                graphics.drawString(watermarkText, watermarkConfig.getLocationX(), watermarkConfig.getLocationY() + (float) ascent);
+                customDraw();
                 break;
             case CENTER:
                 drawCenterWatermark();
@@ -132,7 +134,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         if (log.isDebugEnabled()) {
             log.debug("Draw diagonal watermark. x:{},y:{}", x, y);
         }
-        graphics.drawString(watermarkText, x, (int) (y + ascent));
+        drawString(x, y, watermarkText);
     }
 
     /**
@@ -168,8 +170,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         int yCount = height / stringHeight + 1;
         for (int i = 0; i < xCount; i++) {
             for (int j = 0; j < yCount; j++) {
-                graphics.drawString(watermarkText, x + i * (stringWidth + blankWidth),
-                        y + j * (stringHeight + blankHeight) + (float) ascent);
+                drawString(x + i * (stringWidth + blankWidth), y + j * (stringHeight + blankHeight), watermarkText);
             }
         }
     }
@@ -207,7 +208,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         if (log.isDebugEnabled()) {
             log.debug("Draw center watermark. x:{},y:{}", x, y + (float) ascent);
         }
-        graphics.drawString(watermarkText, x, y + (float) ascent);
+        drawString(x, y, watermarkText);
     }
 
     @Override
@@ -233,5 +234,25 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     @Override
     public int getStringHeight() {
         return fontMetrics.getHeight();
+    }
+
+    @Override
+    public void drawString(float x, float y, String text) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw text. x:{},y:{},text:{}", x, y, text);
+        }
+        graphics.drawString(text, x, (int) (y + ascent));
+    }
+
+    @Override
+    public void drawImage(float x, float y, byte[] data) {
+        BufferedImage bufferedImage;
+        try {
+            bufferedImage = ImageIO.read(new ByteArrayInputStream(data));
+            graphics.drawImage(bufferedImage, (int) x, (int) y, null);
+        } catch (IOException e) {
+            log.warn("Load image error.", e);
+            throw new LoadFileException("Load image error.", e);
+        }
     }
 }

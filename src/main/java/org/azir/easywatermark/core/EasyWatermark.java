@@ -37,6 +37,8 @@ public class EasyWatermark {
 
     private WatermarkTypeEnum watermarkLocationType = WatermarkTypeEnum.CENTER;
 
+    private CustomDraw customDraw;
+
     private EasyWatermark() {
     }
 
@@ -74,6 +76,11 @@ public class EasyWatermark {
         return this;
     }
 
+    public EasyWatermark customDraw(CustomDraw customDraw) {
+        this.customDraw = customDraw;
+        return this;
+    }
+
     public byte[] executor() {
         if (file == null) {
             throw new LoadFileException("File is null.");
@@ -84,6 +91,9 @@ public class EasyWatermark {
                 handler.watermark(text);
             } else {
                 handler.watermark(imageFile);
+            }
+            if (customDraw != null) {
+                handler.setCustomDraw(customDraw);
             }
             return handler.execute(watermarkLocationType);
         } catch (IOException e) {
