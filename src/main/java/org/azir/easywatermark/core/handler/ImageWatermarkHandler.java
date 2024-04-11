@@ -75,6 +75,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     protected void customDraw() {
         if (customDraw == null) {
             log.warn("Custom draw is null.");
+            return;
         }
         customDraw.draw(font, graphics, image.getWidth(), image.getHeight(), this);
     }
