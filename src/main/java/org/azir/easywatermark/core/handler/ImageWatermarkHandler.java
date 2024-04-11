@@ -131,9 +131,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
         int x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
         int y = (image.getHeight() - getStringHeight()) / 2;
-        if (log.isDebugEnabled()) {
-            log.debug("Draw diagonal watermark. x:{},y:{}", x, y);
-        }
         drawString(x, y, watermarkText);
     }
 
@@ -204,9 +201,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 break;
             default:
                 throw new ImageWatermarkHandlerException("Unsupported center watermark type.");
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("Draw center watermark. x:{},y:{}", x, y + (float) ascent);
         }
         drawString(x, y, watermarkText);
     }
