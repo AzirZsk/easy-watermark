@@ -5,6 +5,7 @@ import org.azir.easywatermark.core.AbstractWatermarkHandler;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.entity.Point;
+import org.azir.easywatermark.entity.WatermarkBox;
 import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
@@ -259,6 +260,24 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     @Override
     public int getStringHeight() {
         return fontMetrics.getHeight();
+    }
+
+    @Override
+    public WatermarkBox getStringBox(String... text) {
+        if (text.length == 0) {
+            throw new NullPointerException("Text is null.");
+        }
+        if (text.length == 1) {
+            return new WatermarkBox(getStringWidth(text[0]), getStringHeight());
+        } else {
+            int width = 0;
+            int height = 0;
+            for (String s : text) {
+                width = Math.max(width, getStringWidth(s));
+                height += getStringHeight();
+            }
+            return new WatermarkBox(width, height);
+        }
     }
 
     @Override

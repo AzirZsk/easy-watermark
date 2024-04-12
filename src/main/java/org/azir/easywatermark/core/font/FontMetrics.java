@@ -1,5 +1,7 @@
 package org.azir.easywatermark.core.font;
 
+import org.azir.easywatermark.entity.WatermarkBox;
+
 /**
  * @author zhangshukun
  * @date 2023/02/24
@@ -20,4 +22,6 @@ public interface FontMetrics {
      * @return text height
      */
     int getStringHeight();
+
+    WatermarkBox getStringBox(String... text);
 }
