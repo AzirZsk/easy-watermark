@@ -1,17 +1,13 @@
 package org.azir.easywatermark.core;
 
 import lombok.extern.slf4j.Slf4j;
-import org.azir.easywatermark.core.calculate.AbstractCalculate;
-import org.azir.easywatermark.core.calculate.impl.DefaultCalculator;
 import org.azir.easywatermark.core.config.FontConfig;
-import org.azir.easywatermark.core.font.FontProvider;
 import org.azir.easywatermark.core.config.WatermarkConfig;
+import org.azir.easywatermark.core.font.FontProvider;
 import org.azir.easywatermark.core.graphics.GraphicsProvider;
 import org.azir.easywatermark.exception.EasyWatermarkException;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -34,7 +30,8 @@ public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler
             log.warn("{} init error", this.getClass().getSimpleName(), e);
             throw new EasyWatermarkException(this.getClass().getSimpleName() + " init error");
         }
-        log.info("{} init success", this.getClass().getSimpleName());
+        String type = isImageWatermark() ? "image" : isSingleWatermark() ? "single text" : "multi text";
+        log.info("{} init success,watermark is {}", this.getClass().getSimpleName(), type);
     }
 
     protected String watermarkText;
