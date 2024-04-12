@@ -5,6 +5,7 @@ import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.core.font.FontProvider;
 import org.azir.easywatermark.core.graphics.GraphicsProvider;
+import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.azir.easywatermark.exception.EasyWatermarkException;
 
 import java.io.File;
@@ -30,8 +31,7 @@ public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler
             log.warn("{} init error", this.getClass().getSimpleName(), e);
             throw new EasyWatermarkException(this.getClass().getSimpleName() + " init error");
         }
-        String type = isImageWatermark() ? "image" : isSingleWatermark() ? "single text" : "multi text";
-        log.info("{} init success,watermark is {}", this.getClass().getSimpleName(), type);
+        log.info("{} init success,watermark is {}", this.getClass().getSimpleName(), getWatermarkType());
     }
 
     protected String watermarkText;
@@ -72,15 +72,13 @@ public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler
         this.watermarkTextList = watermarkTextList;
     }
 
-    protected boolean isSingleWatermark() {
-        return watermarkText != null;
-    }
-
-    protected boolean isMultiWatermark() {
-        return watermarkTextList != null;
-    }
-
-    protected boolean isImageWatermark() {
-        return watermarkFile != null;
+    protected WatermarkTypeEnum getWatermarkType() {
+        if (watermarkText != null) {
+            return WatermarkTypeEnum.SINGLE_TEXT;
+        } else if (watermarkTextList != null) {
+            return WatermarkTypeEnum.MULTI_TEXT;
+        } else {
+            return WatermarkTypeEnum.IMAGE;
+        }
     }
 }

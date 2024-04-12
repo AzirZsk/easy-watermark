@@ -6,10 +6,7 @@ import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.entity.Point;
 import org.azir.easywatermark.entity.WatermarkBox;
-import org.azir.easywatermark.enums.CenterLocationTypeEnum;
-import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
-import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
-import org.azir.easywatermark.enums.OverspreadTypeEnum;
+import org.azir.easywatermark.enums.*;
 import org.azir.easywatermark.exception.EasyWatermarkException;
 import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
 import org.azir.easywatermark.exception.LoadFileException;
@@ -183,27 +180,35 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
      * Draw center watermark.
      */
     private void drawCenterWatermark() {
-        if (isSingleWatermark()) {
-            Point point = calcCenterWatermarkPoint(watermarkText);
-            drawString(point.getX(), point.getY(), watermarkText);
-        } else if (isMultiWatermark()) {
-            int watermarkListHeight = getStringHeight() * watermarkTextList.size();
-            if (watermarkListHeight > image.getHeight()) {
-                throw new ImageWatermarkHandlerException("Watermark text list height is greater than image height.");
-            }
-            int startY = (image.getHeight() - watermarkListHeight) / 2;
-            if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.TOP_CENTER) {
-                startY = 0;
-            } else if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.BOTTOM_CENTER) {
-                startY = image.getHeight() - watermarkListHeight;
-            }
-            for (int i = 0; i < watermarkTextList.size(); i++) {
-                String curWatermarkText = watermarkTextList.get(i);
-                Point point = calcCenterWatermarkPoint(curWatermarkText);
-                drawString(point.getX(), startY + (i * getStringHeight()), curWatermarkText);
-            }
-        } else if (isImageWatermark()) {
-            // todo
+        WatermarkTypeEnum watermarkType = getWatermarkType();
+        Point point = null;
+        switch (watermarkType) {
+            case SINGLE_TEXT:
+                point = calcCenterWatermarkPoint(watermarkText);
+                drawString(point.getX(), point.getY(), watermarkText);
+                break;
+            case MULTI_TEXT:
+                int watermarkListHeight = getStringHeight() * watermarkTextList.size();
+                if (watermarkListHeight > image.getHeight()) {
+                    throw new ImageWatermarkHandlerException("Watermark text list height is greater than image height.");
+                }
+                int startY = (image.getHeight() - watermarkListHeight) / 2;
+                if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.TOP_CENTER) {
+                    startY = 0;
+                } else if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.BOTTOM_CENTER) {
+                    startY = image.getHeight() - watermarkListHeight;
+                }
+                for (int i = 0; i < watermarkTextList.size(); i++) {
+                    String curWatermarkText = watermarkTextList.get(i);
+                    point = calcCenterWatermarkPoint(curWatermarkText);
+                    drawString(point.getX(), startY + (i * getStringHeight()), curWatermarkText);
+                }
+                break;
+            case IMAGE:
+                // todo
+                break;
+            default:
+                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
         }
     }
 
