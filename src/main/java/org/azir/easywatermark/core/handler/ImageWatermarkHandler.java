@@ -9,7 +9,10 @@ import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
 import org.azir.easywatermark.enums.WatermarkTypeEnum;
-import org.azir.easywatermark.exception.*;
+import org.azir.easywatermark.exception.EasyWatermarkException;
+import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
+import org.azir.easywatermark.exception.LoadFileException;
+import org.azir.easywatermark.exception.LoadFontException;
 import org.azir.easywatermark.utils.EasyWatermarkUtils;
 
 import javax.imageio.ImageIO;
@@ -182,14 +185,22 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         if (isSingleWatermark()) {
             Point point = drawCenterWatermark0(watermarkText);
             drawString(point.getX(), point.getY(), watermarkText);
-            return;
         } else if (isMultiWatermark()) {
+            int watermarkListHeight = getStringHeight() * watermarkTextList.size();
+            if (watermarkListHeight > image.getHeight()) {
+                throw new ImageWatermarkHandlerException("Watermark text list height is greater than image height.");
+            }
+            int startY = (image.getHeight() - watermarkListHeight) / 2;
+            if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.TOP_CENTER) {
+                startY = 0;
+            } else if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.BOTTOM_CENTER) {
+                startY = image.getHeight() - watermarkListHeight;
+            }
             for (int i = 0; i < watermarkTextList.size(); i++) {
                 String curWatermarkText = watermarkTextList.get(i);
                 Point point = drawCenterWatermark0(curWatermarkText);
-                drawString(point.getX(), point.getY() + (i * getStringHeight()), curWatermarkText);
+                drawString(point.getX(), startY + (i * getStringHeight()), curWatermarkText);
             }
-            return;
         } else if (isImageWatermark()) {
             // todo
         }
