@@ -184,7 +184,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
      */
     private void drawCenterWatermark() {
         if (isSingleWatermark()) {
-            Point point = drawCenterWatermark0(watermarkText);
+            Point point = calcCenterWatermarkPoint(watermarkText);
             drawString(point.getX(), point.getY(), watermarkText);
         } else if (isMultiWatermark()) {
             int watermarkListHeight = getStringHeight() * watermarkTextList.size();
@@ -199,7 +199,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             }
             for (int i = 0; i < watermarkTextList.size(); i++) {
                 String curWatermarkText = watermarkTextList.get(i);
-                Point point = drawCenterWatermark0(curWatermarkText);
+                Point point = calcCenterWatermarkPoint(curWatermarkText);
                 drawString(point.getX(), startY + (i * getStringHeight()), curWatermarkText);
             }
         } else if (isImageWatermark()) {
@@ -207,7 +207,13 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
     }
 
-    private Point drawCenterWatermark0(String watermarkText) {
+    /**
+     * Calculate center watermark point.
+     *
+     * @param watermarkText watermark text
+     * @return center watermark point
+     */
+    private Point calcCenterWatermarkPoint(String watermarkText) {
         CenterLocationTypeEnum centerLocationType = watermarkConfig.getCenterLocationType();
         int x, y;
         switch (centerLocationType) {
