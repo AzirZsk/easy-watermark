@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.core.handler.ImageWatermarkHandler;
+import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.azir.easywatermark.enums.FileTypeEnums;
-import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.azir.easywatermark.exception.FileTypeUnSupportException;
 import org.azir.easywatermark.exception.LoadFileException;
 
@@ -40,7 +40,7 @@ public class EasyWatermark {
 
     private File file;
 
-    private WatermarkTypeEnum watermarkLocationType = WatermarkTypeEnum.CENTER;
+    private EasyWatermarkTypeEnum watermarkType = EasyWatermarkTypeEnum.CENTER;
 
     private CustomDraw customDraw;
 
@@ -88,8 +88,8 @@ public class EasyWatermark {
         return this;
     }
 
-    public EasyWatermark watermarkType(WatermarkTypeEnum watermarkTypeEnum) {
-        this.watermarkLocationType = watermarkTypeEnum;
+    public EasyWatermark easyWatermarkType(EasyWatermarkTypeEnum easyWatermarkTypeEnum) {
+        this.watermarkType = easyWatermarkTypeEnum;
         return this;
     }
 
@@ -114,7 +114,7 @@ public class EasyWatermark {
             if (customDraw != null) {
                 handler.setCustomDraw(customDraw);
             }
-            return handler.execute(watermarkLocationType);
+            return handler.execute(watermarkType);
         } catch (IOException e) {
             log.error("Load file error.", e);
             throw new RuntimeException(e);

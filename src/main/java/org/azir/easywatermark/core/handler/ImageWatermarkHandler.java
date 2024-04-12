@@ -8,8 +8,8 @@ import org.azir.easywatermark.entity.Point;
 import org.azir.easywatermark.entity.WatermarkBox;
 import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
+import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
-import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.azir.easywatermark.exception.EasyWatermarkException;
 import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
 import org.azir.easywatermark.exception.LoadFileException;
@@ -86,7 +86,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
-    public byte[] execute(WatermarkTypeEnum watermarkType) {
+    public byte[] execute(EasyWatermarkTypeEnum watermarkType) {
         if (log.isDebugEnabled()) {
             log.debug("Add watermark. Watermark type:{}", watermarkType);
         }
