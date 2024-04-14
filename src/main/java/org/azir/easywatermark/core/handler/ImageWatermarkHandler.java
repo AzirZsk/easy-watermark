@@ -2,6 +2,7 @@ package org.azir.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.AbstractWatermarkHandler;
+import org.azir.easywatermark.core.CustomDraw;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.entity.Point;
@@ -76,7 +77,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
-    protected void customDraw() {
+    public void customDraw(CustomDraw customDraw) {
         if (customDraw == null) {
             log.warn("Custom draw is null.");
             return;
@@ -91,7 +92,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
         switch (watermarkType) {
             case CUSTOM:
-                customDraw();
+                customDraw(customDraw);
                 break;
             case CENTER:
                 drawCenterWatermark();
@@ -118,10 +119,8 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
     }
 
-    /**
-     * Draw diagonal watermark.
-     */
-    private void drawDiagonalWatermark() {
+    @Override
+    public void drawDiagonalWatermark() {
         double radians = EasyWatermarkUtils.calcRadians(image.getWidth(), image.getHeight());
         DiagonalDirectionTypeEnum diagonalDirectionType = watermarkConfig.getDiagonalDirectionType();
         switch (diagonalDirectionType) {
@@ -140,11 +139,9 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         drawString(x, y, watermarkText);
     }
 
-    /**
-     * Draw overspread watermark.
-     */
-    private void drawOverspreadWatermark() {
 
+    @Override
+    public void drawOverspreadWatermark() {
         WatermarkTypeEnum watermarkType = getWatermarkType();
         WatermarkBox watermarkBox;
         switch (watermarkType) {
@@ -211,10 +208,8 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
     }
 
-    /**
-     * Draw center watermark.
-     */
-    private void drawCenterWatermark() {
+    @Override
+    public void drawCenterWatermark() {
         WatermarkTypeEnum watermarkType = getWatermarkType();
         Point point = null;
         switch (watermarkType) {

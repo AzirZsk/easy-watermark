@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2022/11/8
  */
 @Slf4j
-public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler, FontProvider, GraphicsProvider {
+public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHandler, FontProvider, GraphicsProvider {
 
     public AbstractWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         try {
@@ -53,8 +53,6 @@ public abstract class AbstractWatermarkHandler<F, G> implements WatermarkHandler
     protected abstract void initGraphics();
 
     protected abstract void initFont();
-
-    protected abstract void customDraw();
 
     public void setCustomDraw(CustomDraw customDraw) {
         this.customDraw = customDraw;
