@@ -38,11 +38,11 @@ public class ImageWatermarkTest {
                         setFontStyle(Font.PLAIN);
                     }
                 })
-                .easyWatermarkType(EasyWatermarkTypeEnum.DIAGONAL)
+                .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
                 .config(new WatermarkConfig() {
                     {
                         setOverspreadType(OverspreadTypeEnum.HIGH);
-                        setCenterLocationType(CenterLocationTypeEnum.BOTTOM_CENTER);
+                        setCenterLocationType(CenterLocationTypeEnum.VERTICAL_CENTER);
                         setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
                         setAlpha(0.4f);
                     }

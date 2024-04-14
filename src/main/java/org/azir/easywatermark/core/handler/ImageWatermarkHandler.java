@@ -157,7 +157,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
     }
 
-
     @Override
     public void drawOverspreadWatermark() {
         OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
@@ -245,10 +244,8 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 drawString(point.getX(), point.getY(), watermarkText);
                 break;
             case MULTI_TEXT:
-                int watermarkListHeight = getStringHeight() * watermarkTextList.size();
-                if (watermarkListHeight > image.getHeight()) {
-                    throw new ImageWatermarkHandlerException("Watermark text list height is greater than image height.");
-                }
+                WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
+                int watermarkListHeight = (int) watermarkBox.getHeight();
                 int startY = (image.getHeight() - watermarkListHeight) / 2;
                 if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.TOP_CENTER) {
                     startY = 0;
@@ -284,11 +281,11 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 y = (image.getHeight() - getStringHeight()) / 2;
                 break;
             case TOP_CENTER:
-                x = (image.getWidth() - fontMetrics.stringWidth(watermarkText)) / 2;
+                x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
                 y = 0;
                 break;
             case BOTTOM_CENTER:
-                x = (image.getWidth() - fontMetrics.stringWidth(watermarkText)) / 2;
+                x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
                 y = image.getHeight() - getStringHeight();
                 break;
             case LEFT_CENTER:
@@ -296,7 +293,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 y = (image.getHeight() - getStringHeight()) / 2;
                 break;
             case RIGHT_CENTER:
-                x = image.getWidth() - fontMetrics.stringWidth(watermarkText);
+                x = image.getWidth() - getStringWidth(watermarkText);
                 y = (image.getHeight() - getStringHeight()) / 2;
                 break;
             default:
