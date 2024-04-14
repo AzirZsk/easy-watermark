@@ -35,6 +35,8 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     private final double ascent;
 
+    private int fontHeight;
+
     public ImageWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         super(data, fontConfig, watermarkConfig);
         this.fontMetrics = graphics.getFontMetrics(font);
@@ -256,8 +258,8 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         int x, y;
         switch (centerLocationType) {
             case VERTICAL_CENTER:
-                x = (image.getWidth() - fontMetrics.stringWidth(watermarkText)) / 2;
-                y = (image.getHeight() - fontMetrics.getHeight()) / 2;
+                x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
+                y = (image.getHeight() - getStringHeight()) / 2;
                 break;
             case TOP_CENTER:
                 x = (image.getWidth() - fontMetrics.stringWidth(watermarkText)) / 2;
@@ -265,15 +267,15 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 break;
             case BOTTOM_CENTER:
                 x = (image.getWidth() - fontMetrics.stringWidth(watermarkText)) / 2;
-                y = image.getHeight() - fontMetrics.getHeight();
+                y = image.getHeight() - getStringHeight();
                 break;
             case LEFT_CENTER:
                 x = 0;
-                y = (image.getHeight() - fontMetrics.getHeight()) / 2;
+                y = (image.getHeight() - getStringHeight()) / 2;
                 break;
             case RIGHT_CENTER:
                 x = image.getWidth() - fontMetrics.stringWidth(watermarkText);
-                y = (image.getHeight() - fontMetrics.getHeight()) / 2;
+                y = (image.getHeight() - getStringHeight()) / 2;
                 break;
             default:
                 throw new ImageWatermarkHandlerException("Unsupported center watermark type.");
@@ -303,7 +305,10 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     @Override
     public int getStringHeight() {
-        return fontMetrics.getHeight();
+        if (fontHeight == 0) {
+            fontHeight = fontMetrics.getHeight();
+        }
+        return fontHeight;
     }
 
     @Override
@@ -338,7 +343,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             log.debug("Draw multi-line text. x:{},y:{},text:{}", x, y, text);
         }
         for (int i = 0; i < text.size(); i++) {
-            drawString(x, y + i * fontMetrics.getHeight(), text.get(i));
+            drawString(x, y + i * getStringHeight(), text.get(i));
         }
     }
 
