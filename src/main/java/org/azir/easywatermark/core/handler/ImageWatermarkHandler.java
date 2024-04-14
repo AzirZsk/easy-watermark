@@ -143,24 +143,8 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     @Override
     public void drawOverspreadWatermark() {
         WatermarkTypeEnum watermarkType = getWatermarkType();
-        WatermarkBox watermarkBox;
-        switch (watermarkType) {
-            case SINGLE_TEXT:
-                watermarkBox = getStringBox(watermarkText);
-                break;
-            case MULTI_TEXT:
-                watermarkBox = getStringBox(watermarkTextList.toArray(new String[0]));
-                break;
-            case IMAGE:
-                // todo
-                return;
-            default:
-                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
-        }
-        // check watermark box size is greater than image size
-        if (watermarkBox.getWidth() > image.getWidth() || watermarkBox.getHeight() > image.getHeight()) {
-            throw new ImageWatermarkHandlerException("Watermark box size is greater than image size.");
-        }
+        WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
+        if (watermarkBox == null) return;
 
         OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
         if (log.isDebugEnabled()) {
@@ -206,6 +190,34 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 y += watermarkBox.getHeight() + blankHeight;
             }
         }
+    }
+
+    /**
+     * Get watermark box.
+     *
+     * @param watermarkType watermark type
+     * @return watermark box
+     */
+    private WatermarkBox getWatermarkBox(WatermarkTypeEnum watermarkType) {
+        WatermarkBox watermarkBox;
+        switch (watermarkType) {
+            case SINGLE_TEXT:
+                watermarkBox = getStringBox(watermarkText);
+                break;
+            case MULTI_TEXT:
+                watermarkBox = getStringBox(watermarkTextList.toArray(new String[0]));
+                break;
+            case IMAGE:
+                // todo
+                return null;
+            default:
+                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+        }
+        // check watermark box size is greater than image size
+        if (watermarkBox.getWidth() > image.getWidth() || watermarkBox.getHeight() > image.getHeight()) {
+            throw new ImageWatermarkHandlerException("Watermark box size is greater than image size.");
+        }
+        return watermarkBox;
     }
 
     @Override
