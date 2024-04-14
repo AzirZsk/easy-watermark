@@ -29,8 +29,7 @@ public class ImageWatermarkTest {
     @Test
     public void run() {
         byte[] executor = EasyWatermark.create()
-                .text("今天天气真好")
-                // 获取resources的test.png
+                .text("今天天气真好", "明天天气也不错", "后天天气也不错", "大后天天气也不错")
                 .file(new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("600-400.png")).getFile()))
                 .config(new FontConfig() {
                     {
@@ -39,7 +38,7 @@ public class ImageWatermarkTest {
                         setFontStyle(Font.PLAIN);
                     }
                 })
-                .easyWatermarkType(EasyWatermarkTypeEnum.OVERSPREAD)
+                .easyWatermarkType(EasyWatermarkTypeEnum.DIAGONAL)
                 .config(new WatermarkConfig() {
                     {
                         setOverspreadType(OverspreadTypeEnum.HIGH);

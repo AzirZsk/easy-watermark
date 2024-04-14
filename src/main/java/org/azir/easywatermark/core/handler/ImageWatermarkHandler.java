@@ -133,23 +133,39 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 throw new ImageWatermarkHandlerException("Unsupported diagonal watermark type.");
         }
         graphics.rotate(radians, (double) image.getWidth() / 2, (double) image.getHeight() / 2);
-
-        int x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
-        int y = (image.getHeight() - getStringHeight()) / 2;
-        drawString(x, y, watermarkText);
+        WatermarkTypeEnum watermarkType = getWatermarkType();
+        int x, y;
+        switch (watermarkType) {
+            case SINGLE_TEXT:
+                x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
+                y = (image.getHeight() - getStringHeight()) / 2;
+                drawString(x, y, watermarkText);
+                break;
+            case MULTI_TEXT:
+                WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
+                y = (int) ((image.getHeight() - watermarkBox.getHeight()) / 2);
+                for (int i = 0; i < watermarkTextList.size(); i++) {
+                    x = (image.getWidth() - getStringWidth(watermarkTextList.get(i))) / 2;
+                    drawString(x, y + i * getStringHeight(), watermarkTextList.get(i));
+                }
+                break;
+            case IMAGE:
+                // todo
+                break;
+            default:
+                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+        }
     }
 
 
     @Override
     public void drawOverspreadWatermark() {
-        WatermarkTypeEnum watermarkType = getWatermarkType();
-        WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
-        if (watermarkBox == null) return;
-
         OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
         if (log.isDebugEnabled()) {
             log.debug("Overspread type:{}", overspreadType);
         }
+        WatermarkTypeEnum watermarkType = getWatermarkType();
+        WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
         // Calculate the number of watermarks that can be placed on the image.
         int watermarkCount = (int) (overspreadType.getCoverage() * image.getWidth() * image.getHeight()
                 / (watermarkBox.getWidth() * watermarkBox.getHeight()));
@@ -208,8 +224,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 watermarkBox = getStringBox(watermarkTextList.toArray(new String[0]));
                 break;
             case IMAGE:
-                // todo
-                return null;
+                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
             default:
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
         }
