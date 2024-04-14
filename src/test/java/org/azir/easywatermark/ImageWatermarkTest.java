@@ -7,12 +7,12 @@ import org.azir.easywatermark.core.EasyWatermark;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.core.graphics.GraphicsProvider;
+import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
+import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.azir.easywatermark.enums.OverspreadTypeEnum;
-import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.junit.Test;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +29,7 @@ public class ImageWatermarkTest {
     @Test
     public void run() {
         byte[] executor = EasyWatermark.create()
-                .text("今天天气真好", "明天天气也不错", "后天天气也不错")
+                .text("今天天气真好")
                 // 获取resources的test.png
                 .file(new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("600-400.png")).getFile()))
                 .config(new FontConfig() {
@@ -39,10 +39,11 @@ public class ImageWatermarkTest {
                         setFontStyle(Font.PLAIN);
                     }
                 })
-                .watermarkType(WatermarkTypeEnum.CENTER)
+                .easyWatermarkType(EasyWatermarkTypeEnum.OVERSPREAD)
                 .config(new WatermarkConfig() {
                     {
                         setOverspreadType(OverspreadTypeEnum.HIGH);
+                        setCenterLocationType(CenterLocationTypeEnum.BOTTOM_CENTER);
                         setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
                         setAlpha(0.4f);
                     }

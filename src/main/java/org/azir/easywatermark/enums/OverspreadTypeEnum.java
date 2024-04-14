@@ -11,15 +11,25 @@ public enum OverspreadTypeEnum {
     /**
      *
      */
-    LOW,
+    LOW(0.33f),
 
     /**
      *
      */
-    NORMAL,
+    NORMAL(0.66f),
 
     /**
      *
      */
-    HIGH;
+    HIGH(0.99f);
+
+    OverspreadTypeEnum(float coverage) {
+        this.coverage = coverage;
+    }
+
+    private final float coverage;
+
+    public float getCoverage() {
+        return coverage;
+    }
 }

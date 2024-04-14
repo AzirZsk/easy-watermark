@@ -142,36 +142,69 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
      * Draw overspread watermark.
      */
     private void drawOverspreadWatermark() {
-        OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
-        int blankWidth, blankHeight;
-        switch (overspreadType) {
-            case LOW:
-                blankWidth = image.getWidth() / 3;
-                blankHeight = image.getHeight() / 3;
+
+        WatermarkTypeEnum watermarkType = getWatermarkType();
+        WatermarkBox watermarkBox;
+        switch (watermarkType) {
+            case SINGLE_TEXT:
+                watermarkBox = getStringBox(watermarkText);
                 break;
-            case NORMAL:
-                blankWidth = image.getWidth() / 5;
-                blankHeight = image.getHeight() / 5;
+            case MULTI_TEXT:
+                watermarkBox = getStringBox(watermarkTextList.toArray(new String[0]));
                 break;
-            case HIGH:
-                blankWidth = image.getWidth() / 10;
-                blankHeight = image.getHeight() / 10;
-                break;
+            case IMAGE:
+                // todo
+                return;
             default:
-                throw new ImageWatermarkHandlerException("Unsupported overspread watermark type.");
+                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+        }
+        // check watermark box size is greater than image size
+        if (watermarkBox.getWidth() > image.getWidth() || watermarkBox.getHeight() > image.getHeight()) {
+            throw new ImageWatermarkHandlerException("Watermark box size is greater than image size.");
         }
 
-        int x = 0;
-        int y = 0;
-        int width = image.getWidth();
-        int height = image.getHeight();
-        int stringWidth = getStringWidth(watermarkText);
-        int stringHeight = getStringHeight();
-        int xCount = width / stringWidth + 1;
-        int yCount = height / stringHeight + 1;
-        for (int i = 0; i < xCount; i++) {
-            for (int j = 0; j < yCount; j++) {
-                drawString(x + i * (stringWidth + blankWidth), y + j * (stringHeight + blankHeight), watermarkText);
+        OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
+        if (log.isDebugEnabled()) {
+            log.debug("Overspread type:{}", overspreadType);
+        }
+        // Calculate the number of watermarks that can be placed on the image.
+        int watermarkCount = (int) (overspreadType.getCoverage() * image.getWidth() * image.getHeight()
+                / (watermarkBox.getWidth() * watermarkBox.getHeight()));
+        if (watermarkCount % 2 != 0) {
+            watermarkCount++;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Watermark count:{}", watermarkCount);
+        }
+        float boxWidth = watermarkBox.getWidth();
+        // Calculate the number of columns and rows of watermarks
+        int columnsWatermarkCount = (int) (image.getWidth() / boxWidth);
+        int lineCount = (int) Math.ceil((float) watermarkCount / columnsWatermarkCount);
+        // Calculate the width and height of the blank space
+        int blankWidth = (image.getWidth() - (int) (boxWidth * columnsWatermarkCount)) / (columnsWatermarkCount + 1);
+        int blankHeight = (image.getHeight() - (int) (watermarkBox.getHeight() * lineCount)) / (lineCount + 1);
+
+        // draw watermark
+        int x = blankWidth;
+        int y = blankHeight;
+        for (int i = 0; i < watermarkCount; i++) {
+            switch (watermarkType) {
+                case SINGLE_TEXT:
+                    drawString(x, y, watermarkText);
+                    break;
+                case MULTI_TEXT:
+                    drawMultiLineString(x, y, watermarkTextList);
+                    break;
+                case IMAGE:
+                    // todo
+                    break;
+                default:
+                    throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+            }
+            x += boxWidth + blankWidth;
+            if (x + boxWidth > image.getWidth()) {
+                x = blankWidth;
+                y += watermarkBox.getHeight() + blankHeight;
             }
         }
     }
