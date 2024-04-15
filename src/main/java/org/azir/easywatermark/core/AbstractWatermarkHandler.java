@@ -8,7 +8,6 @@ import org.azir.easywatermark.core.graphics.GraphicsProvider;
 import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.azir.easywatermark.exception.EasyWatermarkException;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -19,6 +18,22 @@ import java.util.List;
  */
 @Slf4j
 public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHandler, FontProvider, GraphicsProvider {
+
+    protected String watermarkText;
+
+    protected List<String> watermarkTextList;
+
+    protected byte[] watermarkImage;
+
+    protected F font;
+
+    protected G graphics;
+
+    protected FontConfig fontConfig;
+
+    protected WatermarkConfig watermarkConfig;
+
+    protected CustomDraw customDraw;
 
     public AbstractWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         try {
@@ -34,22 +49,6 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
         log.info("{} init success,watermark is {}", this.getClass().getSimpleName(), getWatermarkType());
     }
 
-    protected String watermarkText;
-
-    protected List<String> watermarkTextList;
-
-    protected File watermarkFile;
-
-    protected F font;
-
-    protected G graphics;
-
-    protected FontConfig fontConfig;
-
-    protected WatermarkConfig watermarkConfig;
-
-    protected CustomDraw customDraw;
-
     protected abstract void initGraphics();
 
     protected abstract void initFont();
@@ -62,8 +61,8 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
         this.watermarkText = watermarkText;
     }
 
-    public void watermark(File watermarkFile) {
-        this.watermarkFile = watermarkFile;
+    public void watermark(byte[] watermarkImage) {
+        this.watermarkImage = watermarkImage;
     }
 
     public void watermark(List<String> watermarkTextList) {

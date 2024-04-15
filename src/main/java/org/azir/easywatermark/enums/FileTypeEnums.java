@@ -65,7 +65,7 @@ public enum FileTypeEnums {
         return isType(data, PDF_BYTE);
     }
 
-    private static boolean isImage(byte[] data) {
+    public static boolean isImage(byte[] data) {
         return isType(data, PNG_BYTE) || isType(data, JPG_JPEG_BYTE)
                 || isType(data, WEBP_BYTE) || isType(data, BMP_BYTE);
     }

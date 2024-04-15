@@ -32,7 +32,7 @@ public class EasyWatermark {
 
     private List<String> textList;
 
-    private File imageFile;
+    private byte[] imageByte;
 
     private WatermarkConfig watermarkConfig = new WatermarkConfig();
 
@@ -73,8 +73,11 @@ public class EasyWatermark {
         return this;
     }
 
-    public EasyWatermark image(File imageFile) {
-        this.imageFile = imageFile;
+    public EasyWatermark image(byte[] imageFile) {
+        if (!FileTypeEnums.isImage(imageFile)) {
+            throw new LoadFileException("Image file is not support.");
+        }
+        this.imageByte = imageFile;
         return this;
     }
 
@@ -109,7 +112,7 @@ public class EasyWatermark {
             } else if (textList != null) {
                 handler.watermark(textList);
             } else {
-                handler.watermark(imageFile);
+                handler.watermark(imageByte);
             }
             if (customDraw != null) {
                 handler.setCustomDraw(customDraw);
@@ -125,10 +128,10 @@ public class EasyWatermark {
         if (this.file == null) {
             throw new LoadFileException("File is null.");
         }
-        if (text == null && textList == null && imageFile == null) {
+        if (text == null && textList == null && imageByte == null) {
             throw new NullPointerException("Watermark text or image file is null.");
         }
-        if ((text != null || textList != null) && imageFile != null) {
+        if ((text != null || textList != null) && imageByte != null) {
             throw new IllegalArgumentException("Watermark text and image file must not null.");
         }
     }
