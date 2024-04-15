@@ -160,7 +160,10 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 }
                 break;
             case IMAGE:
-                // todo
+                BufferedImage watermarkImage = getWatermarkImage();
+                x = (getFileWidth(0) - watermarkImage.getWidth()) / 2;
+                y = (getFileHeight(0) - watermarkImage.getHeight()) / 2;
+                drawImage(x, y, super.watermarkImage);
                 break;
             default:
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
