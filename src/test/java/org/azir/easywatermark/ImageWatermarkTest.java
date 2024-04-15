@@ -25,12 +25,14 @@ import java.util.Objects;
 @Slf4j
 public class ImageWatermarkTest {
 
+    private static final String OUT_PUT_DIR = System.getProperty("user.home") + "/Desktop/easywatermark/";
+
     @SneakyThrows
     @Test
     public void run() {
         byte[] executor = EasyWatermark.create()
                 .text("今天天气真好", "明天天气也不错", "后天天气也不错", "大后天天气也不错")
-                .file(new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("600-400.png")).getFile()))
+                .file(getFile("500-500.png"))
                 .config(new FontConfig() {
                     {
                         setFontName("宋体");
@@ -55,8 +57,27 @@ public class ImageWatermarkTest {
                 })
                 .executor();
         // 输出到桌面
-        FileOutputStream fileOutputStream = new FileOutputStream(System.getProperty("user.home") + "/Desktop/test.jpeg");
+        FileOutputStream fileOutputStream = new FileOutputStream(getOutPutFileName("jpeg"));
         fileOutputStream.write(executor);
         fileOutputStream.close();
+    }
+
+    @Test
+    public void testWatermarkImageCenter() {
+
+    }
+
+    private File getFile(String fileName) {
+        return new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource(fileName)).getFile());
+    }
+
+    private String getOutPutFileName(String suffix) {
+        Exception exception = new Exception();
+        StackTraceElement[] stackTrace = exception.getStackTrace();
+        File file = new File(OUT_PUT_DIR);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return OUT_PUT_DIR + stackTrace[1].getMethodName() + "." + suffix;
     }
 }
