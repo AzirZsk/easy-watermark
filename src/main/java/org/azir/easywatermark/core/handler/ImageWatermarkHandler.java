@@ -247,7 +247,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     @Override
     public void drawCenterWatermark() {
         WatermarkTypeEnum watermarkType = getWatermarkType();
-        Point point = null;
+        Point point;
         switch (watermarkType) {
             case SINGLE_TEXT:
                 point = calcCenterWatermarkPoint(watermarkText);
@@ -269,9 +269,25 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 }
                 break;
             case IMAGE:
+                point = calcCenterWatermarkPoint(getWatermarkImage());
+                drawImage(point.getX(), point.getY(), watermarkImage);
                 break;
             default:
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+        }
+    }
+
+    /**
+     * Get watermark image.
+     *
+     * @return watermark image
+     */
+    private BufferedImage getWatermarkImage() {
+        try {
+            return ImageIO.read(new ByteArrayInputStream(watermarkImage));
+        } catch (IOException e) {
+            log.warn("Load image error.", e);
+            throw new LoadFileException("Load image error.", e);
         }
     }
 
@@ -283,6 +299,10 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
      */
     private Point calcCenterWatermarkPoint(String watermarkText) {
         return calcCenterWatermarkPoint(getStringWidth(watermarkText), getStringHeight());
+    }
+
+    private Point calcCenterWatermarkPoint(BufferedImage watermarkImage) {
+        return calcCenterWatermarkPoint(watermarkImage.getWidth(), watermarkImage.getHeight());
     }
 
     @Override
@@ -351,6 +371,9 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     @Override
     public void drawImage(float x, float y, byte[] data) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw image. x:{},y:{}", x, y);
+        }
         BufferedImage bufferedImage;
         try {
             bufferedImage = ImageIO.read(new ByteArrayInputStream(data));

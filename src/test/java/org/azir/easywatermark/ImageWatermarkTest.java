@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Objects;
 
@@ -62,9 +63,30 @@ public class ImageWatermarkTest {
         fileOutputStream.close();
     }
 
+    @SneakyThrows
     @Test
     public void testWatermarkImageCenter() {
+        File file = getFile("100-50-blue.png");
+        // 读取file字节
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] watermarkImage = new byte[fileInputStream.available()];
+        fileInputStream.read(watermarkImage);
+        fileInputStream.close();
 
+        byte[] executor = EasyWatermark.create()
+                .file(getFile("500-500.png"))
+                .image(watermarkImage)
+                .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
+                .config(new WatermarkConfig() {
+                    {
+                        setCenterLocationType(CenterLocationTypeEnum.RIGHT_CENTER);
+                    }
+                })
+                .executor();
+
+        FileOutputStream fileOutputStream = new FileOutputStream(getOutPutFileName("jpeg"));
+        fileOutputStream.write(executor);
+        fileOutputStream.close();
     }
 
     private File getFile(String fileName) {
