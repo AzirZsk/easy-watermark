@@ -5,6 +5,8 @@ import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.core.font.FontProvider;
 import org.azir.easywatermark.core.graphics.GraphicsProvider;
+import org.azir.easywatermark.entity.Point;
+import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.azir.easywatermark.exception.EasyWatermarkException;
 
@@ -49,9 +51,31 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
         log.info("{} init success,watermark is {}", this.getClass().getSimpleName(), getWatermarkType());
     }
 
+    /**
+     * init graphics
+     */
     protected abstract void initGraphics();
 
+    /**
+     * init font
+     */
     protected abstract void initFont();
+
+    /**
+     * get current width
+     *
+     * @param page page
+     * @return width
+     */
+    protected abstract int getFileWidth(int page);
+
+    /**
+     * get current height
+     *
+     * @param page page
+     * @return height
+     */
+    protected abstract int getFileHeight(int page);
 
     public void setCustomDraw(CustomDraw customDraw) {
         this.customDraw = customDraw;
@@ -77,5 +101,42 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
         } else {
             return WatermarkTypeEnum.IMAGE;
         }
+    }
+
+    /**
+     * calculate watermark point
+     *
+     * @param watermarkWidth  watermark width
+     * @param watermarkHeight watermark height
+     * @return point
+     */
+    protected Point calcCenterWatermarkPoint(int watermarkWidth, int watermarkHeight) {
+        CenterLocationTypeEnum centerLocationType = watermarkConfig.getCenterLocationType();
+        int x, y;
+        switch (centerLocationType) {
+            case VERTICAL_CENTER:
+                x = (getFileWidth(0) - watermarkWidth) / 2;
+                y = (getFileHeight(0) - watermarkHeight) / 2;
+                break;
+            case TOP_CENTER:
+                x = (getFileWidth(0) - watermarkWidth) / 2;
+                y = 0;
+                break;
+            case BOTTOM_CENTER:
+                x = (getFileWidth(0) - watermarkWidth) / 2;
+                y = getFileHeight(0) - watermarkHeight;
+                break;
+            case LEFT_CENTER:
+                x = 0;
+                y = (getFileHeight(0) - getStringHeight()) / 2;
+                break;
+            case RIGHT_CENTER:
+                x = getFileWidth(0) - watermarkWidth;
+                y = (getFileHeight(0) - watermarkHeight) / 2;
+                break;
+            default:
+                throw new EasyWatermarkException("Unsupported center watermark type.");
+        }
+        return new Point(x, y);
     }
 }

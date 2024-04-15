@@ -43,7 +43,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         this.fontMetrics = graphics.getFontMetrics(font);
         this.ascent = fontMetrics.getAscent();
         if (log.isDebugEnabled()) {
-            log.debug("Image height:{}, width:{}", image.getHeight(), image.getWidth());
+            log.debug("Image height:{}, width:{}", getFileHeight(0), getFileWidth(0));
         }
     }
 
@@ -77,12 +77,22 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
+    protected int getFileWidth(int page) {
+        return image.getWidth();
+    }
+
+    @Override
+    protected int getFileHeight(int page) {
+        return image.getHeight();
+    }
+
+    @Override
     public void customDraw(CustomDraw customDraw) {
         if (customDraw == null) {
             log.warn("Custom draw is null.");
             return;
         }
-        customDraw.draw(font, graphics, image.getWidth(), image.getHeight(), this);
+        customDraw.draw(font, graphics, getFileWidth(0), getFileHeight(0), this);
     }
 
     @Override
@@ -121,7 +131,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     @Override
     public void drawDiagonalWatermark() {
-        double radians = EasyWatermarkUtils.calcRadians(image.getWidth(), image.getHeight());
+        double radians = EasyWatermarkUtils.calcRadians(getFileWidth(0), getFileHeight(0));
         DiagonalDirectionTypeEnum diagonalDirectionType = watermarkConfig.getDiagonalDirectionType();
         switch (diagonalDirectionType) {
             case TOP_TO_BOTTOM:
@@ -132,20 +142,20 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             default:
                 throw new ImageWatermarkHandlerException("Unsupported diagonal watermark type.");
         }
-        graphics.rotate(radians, (double) image.getWidth() / 2, (double) image.getHeight() / 2);
+        graphics.rotate(radians, (double) getFileWidth(0) / 2, (double) getFileHeight(0) / 2);
         WatermarkTypeEnum watermarkType = getWatermarkType();
         int x, y;
         switch (watermarkType) {
             case SINGLE_TEXT:
-                x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
-                y = (image.getHeight() - getStringHeight()) / 2;
+                x = (getFileWidth(0) - getStringWidth(watermarkText)) / 2;
+                y = (getFileHeight(0) - getStringHeight()) / 2;
                 drawString(x, y, watermarkText);
                 break;
             case MULTI_TEXT:
                 WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
-                y = (int) ((image.getHeight() - watermarkBox.getHeight()) / 2);
+                y = (int) ((getFileHeight(0) - watermarkBox.getHeight()) / 2);
                 for (int i = 0; i < watermarkTextList.size(); i++) {
-                    x = (image.getWidth() - getStringWidth(watermarkTextList.get(i))) / 2;
+                    x = (getFileWidth(0) - getStringWidth(watermarkTextList.get(i))) / 2;
                     drawString(x, y + i * getStringHeight(), watermarkTextList.get(i));
                 }
                 break;
@@ -166,7 +176,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         WatermarkTypeEnum watermarkType = getWatermarkType();
         WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
         // Calculate the number of watermarks that can be placed on the image.
-        int watermarkCount = (int) (overspreadType.getCoverage() * image.getWidth() * image.getHeight()
+        int watermarkCount = (int) (overspreadType.getCoverage() * getFileWidth(0) * getFileHeight(0)
                 / (watermarkBox.getWidth() * watermarkBox.getHeight()));
         if (watermarkCount % 2 != 0) {
             watermarkCount++;
@@ -176,11 +186,11 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
         float boxWidth = watermarkBox.getWidth();
         // Calculate the number of columns and rows of watermarks
-        int columnsWatermarkCount = (int) (image.getWidth() / boxWidth);
+        int columnsWatermarkCount = (int) (getFileWidth(0) / boxWidth);
         int lineCount = (int) Math.ceil((float) watermarkCount / columnsWatermarkCount);
         // Calculate the width and height of the blank space
-        int blankWidth = (image.getWidth() - (int) (boxWidth * columnsWatermarkCount)) / (columnsWatermarkCount + 1);
-        int blankHeight = (image.getHeight() - (int) (watermarkBox.getHeight() * lineCount)) / (lineCount + 1);
+        int blankWidth = (getFileWidth(0) - (int) (boxWidth * columnsWatermarkCount)) / (columnsWatermarkCount + 1);
+        int blankHeight = (getFileHeight(0) - (int) (watermarkBox.getHeight() * lineCount)) / (lineCount + 1);
 
         // draw watermark
         int x = blankWidth;
@@ -200,7 +210,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                     throw new ImageWatermarkHandlerException("Unsupported watermark type.");
             }
             x += boxWidth + blankWidth;
-            if (x + boxWidth > image.getWidth()) {
+            if (x + boxWidth > getFileWidth(0)) {
                 x = blankWidth;
                 y += watermarkBox.getHeight() + blankHeight;
             }
@@ -228,7 +238,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
         }
         // check watermark box size is greater than image size
-        if (watermarkBox.getWidth() > image.getWidth() || watermarkBox.getHeight() > image.getHeight()) {
+        if (watermarkBox.getWidth() > getFileWidth(0) || watermarkBox.getHeight() > getFileHeight(0)) {
             throw new ImageWatermarkHandlerException("Watermark box size is greater than image size.");
         }
         return watermarkBox;
@@ -246,11 +256,11 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             case MULTI_TEXT:
                 WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
                 int watermarkListHeight = (int) watermarkBox.getHeight();
-                int startY = (image.getHeight() - watermarkListHeight) / 2;
+                int startY = (getFileHeight(0) - watermarkListHeight) / 2;
                 if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.TOP_CENTER) {
                     startY = 0;
                 } else if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.BOTTOM_CENTER) {
-                    startY = image.getHeight() - watermarkListHeight;
+                    startY = getFileHeight(0) - watermarkListHeight;
                 }
                 for (int i = 0; i < watermarkTextList.size(); i++) {
                     String curWatermarkText = watermarkTextList.get(i);
@@ -259,7 +269,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 }
                 break;
             case IMAGE:
-                // todo
                 break;
             default:
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
@@ -273,33 +282,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
      * @return center watermark point
      */
     private Point calcCenterWatermarkPoint(String watermarkText) {
-        CenterLocationTypeEnum centerLocationType = watermarkConfig.getCenterLocationType();
-        int x, y;
-        switch (centerLocationType) {
-            case VERTICAL_CENTER:
-                x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
-                y = (image.getHeight() - getStringHeight()) / 2;
-                break;
-            case TOP_CENTER:
-                x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
-                y = 0;
-                break;
-            case BOTTOM_CENTER:
-                x = (image.getWidth() - getStringWidth(watermarkText)) / 2;
-                y = image.getHeight() - getStringHeight();
-                break;
-            case LEFT_CENTER:
-                x = 0;
-                y = (image.getHeight() - getStringHeight()) / 2;
-                break;
-            case RIGHT_CENTER:
-                x = image.getWidth() - getStringWidth(watermarkText);
-                y = (image.getHeight() - getStringHeight()) / 2;
-                break;
-            default:
-                throw new ImageWatermarkHandlerException("Unsupported center watermark type.");
-        }
-        return new Point(x, y);
+        return calcCenterWatermarkPoint(getStringWidth(watermarkText), getStringHeight());
     }
 
     @Override
