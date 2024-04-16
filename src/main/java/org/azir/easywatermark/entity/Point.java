@@ -9,11 +9,11 @@ import lombok.Getter;
 @Getter
 public class Point {
 
-    private double x;
+    private float x;
 
-    private double y;
+    private float y;
 
-    public Point(double x, double y) {
+    public Point(float x, float y) {
         this.x = x;
         this.y = y;
     }

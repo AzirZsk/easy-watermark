@@ -1,43 +1,165 @@
 package org.azir.easywatermark;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.encoding.StandardEncoding;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.azir.easywatermark.core.CustomDraw;
 import org.azir.easywatermark.core.EasyWatermark;
-import org.azir.easywatermark.core.calculate.impl.PageCenteringCalculator;
-import org.azir.easywatermark.core.font.FontMetrics;
-import org.azir.easywatermark.core.calculate.AbstractCalculate;
-import org.azir.easywatermark.entity.Point;
-import org.azir.easywatermark.entity.WatermarkParam;
+import org.azir.easywatermark.core.config.FontConfig;
+import org.azir.easywatermark.core.config.WatermarkConfig;
+import org.azir.easywatermark.core.graphics.GraphicsProvider;
+import org.azir.easywatermark.enums.CenterLocationTypeEnum;
+import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
+import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
+import org.azir.easywatermark.enums.OverspreadTypeEnum;
 import org.junit.Test;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
  * @author Azir
  * @date 2022/11/13
  */
+@Slf4j
 public class ImageWatermarkTest {
 
+    private static final String OUT_PUT_DIR = System.getProperty("user.home") + "/Desktop/easywatermark/";
+
+    @SneakyThrows
     @Test
-    public void test() throws IOException {
-        String text = "张树焜是帅哥AaBbCcDd";
-        byte[] hhhhhhhh = EasyWatermark.load(new FileInputStream("D:\\file\\watermark\\qqq.pdf"))
-                .watermark(text)
-                .font(getClass().getResourceAsStream("/STZHONGS.TTF"))
-                .calculate(new PageCenteringCalculator())
-                .execute();
-        FileOutputStream fileOutputStream = new FileOutputStream("D:\\file\\watermark\\target4.pdf");
-        fileOutputStream.write(hhhhhhhh);
+    public void run() {
+        byte[] executor = EasyWatermark.create()
+                .text("今天天气真好", "明天天气也不错", "后天天气也不错", "大后天天气也不错")
+                .file(getFile("500-500.png"))
+                .config(new FontConfig() {
+                    {
+                        setFontName("宋体");
+                        setFontSize(40);
+                        setFontStyle(Font.PLAIN);
+                    }
+                })
+                .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
+                .config(new WatermarkConfig() {
+                    {
+                        setOverspreadType(OverspreadTypeEnum.HIGH);
+                        setCenterLocationType(CenterLocationTypeEnum.VERTICAL_CENTER);
+                        setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
+                        setAlpha(0.4f);
+                    }
+                })
+                .customDraw(new CustomDraw() {
+                    @Override
+                    public <F, G> void draw(F f, G g, int imageWidth, int imageHeight, GraphicsProvider graphicsProvider) {
+                        graphicsProvider.drawString(0, 0, "自定义绘制");
+                    }
+                })
+                .executor();
+        // 输出到桌面
+        FileOutputStream fileOutputStream = new FileOutputStream(getOutPutFileName("jpeg"));
+        fileOutputStream.write(executor);
         fileOutputStream.close();
+    }
+
+    @SneakyThrows
+    @Test
+    public void testWatermarkImageCenter() {
+        File file = getFile("100-50-blue.png");
+        // 读取file字节
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] watermarkImage = new byte[fileInputStream.available()];
+        fileInputStream.read(watermarkImage);
+        fileInputStream.close();
+
+        byte[] executor = EasyWatermark.create()
+                .file(getFile("500-500.png"))
+                .image(watermarkImage)
+                .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
+                .config(new WatermarkConfig() {
+                    {
+                        setCenterLocationType(CenterLocationTypeEnum.RIGHT_CENTER);
+                    }
+                })
+                .executor();
+
+        FileOutputStream fileOutputStream = new FileOutputStream(getOutPutFileName("jpeg"));
+        fileOutputStream.write(executor);
+        fileOutputStream.close();
+    }
+
+    @SneakyThrows
+    @Test
+    public void testWatermarkImageDiagonal() {
+        File file = getFile("100-50-blue.png");
+        // 读取file字节
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] watermarkImage = new byte[fileInputStream.available()];
+        fileInputStream.read(watermarkImage);
+        fileInputStream.close();
+
+        byte[] executor = EasyWatermark.create()
+                .file(getFile("500-500.png"))
+                .image(watermarkImage)
+                .easyWatermarkType(EasyWatermarkTypeEnum.DIAGONAL)
+                .config(new WatermarkConfig() {
+                    {
+                        setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
+                    }
+                })
+                .executor();
+
+        FileOutputStream fileOutputStream = new FileOutputStream(getOutPutFileName("jpeg"));
+        fileOutputStream.write(executor);
+        fileOutputStream.close();
+    }
+
+    @SneakyThrows
+    @Test
+    public void testWatermarkImageOverspread() {
+        byte[] imageByte = getByte("50-50-blue.png");
+
+        byte[] executor = EasyWatermark.create()
+                .file(getFile("500-500.png"))
+                .image(imageByte)
+                .easyWatermarkType(EasyWatermarkTypeEnum.OVERSPREAD)
+                .config(new WatermarkConfig() {
+                    {
+                        setOverspreadType(OverspreadTypeEnum.HIGH);
+                        setAlpha(0.4f);
+                    }
+                })
+                .executor();
+
+        FileOutputStream fileOutputStream = new FileOutputStream(getOutPutFileName("jpeg"));
+        fileOutputStream.write(executor);
+        fileOutputStream.close();
+    }
+
+    private byte[] getByte(String fileName) throws IOException {
+        try (FileInputStream fileInputStream = new FileInputStream(getFile(fileName))) {
+            byte[] watermarkImage = new byte[fileInputStream.available()];
+            fileInputStream.read(watermarkImage);
+            return watermarkImage;
+        } catch (Exception e) {
+            log.error("getByte error", e);
+            throw e;
+        }
+    }
+
+    private File getFile(String fileName) {
+        return new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource(fileName)).getFile());
+    }
+
+    private String getOutPutFileName(String suffix) {
+        Exception exception = new Exception();
+        StackTraceElement[] stackTrace = exception.getStackTrace();
+        File file = new File(OUT_PUT_DIR);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return OUT_PUT_DIR + stackTrace[1].getMethodName() + "." + suffix;
     }
 }
