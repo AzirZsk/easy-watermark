@@ -21,7 +21,7 @@ public enum OverspreadTypeEnum {
     /**
      *
      */
-    HIGH(0.99f);
+    HIGH(0.90f);
 
     OverspreadTypeEnum(float coverage) {
         this.coverage = coverage;

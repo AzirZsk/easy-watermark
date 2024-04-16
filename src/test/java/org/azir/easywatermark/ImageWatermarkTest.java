@@ -17,6 +17,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -113,6 +114,39 @@ public class ImageWatermarkTest {
         FileOutputStream fileOutputStream = new FileOutputStream(getOutPutFileName("jpeg"));
         fileOutputStream.write(executor);
         fileOutputStream.close();
+    }
+
+    @SneakyThrows
+    @Test
+    public void testWatermarkImageOverspread() {
+        byte[] imageByte = getByte("50-50-blue.png");
+
+        byte[] executor = EasyWatermark.create()
+                .file(getFile("500-500.png"))
+                .image(imageByte)
+                .easyWatermarkType(EasyWatermarkTypeEnum.OVERSPREAD)
+                .config(new WatermarkConfig() {
+                    {
+                        setOverspreadType(OverspreadTypeEnum.HIGH);
+                        setAlpha(0.4f);
+                    }
+                })
+                .executor();
+
+        FileOutputStream fileOutputStream = new FileOutputStream(getOutPutFileName("jpeg"));
+        fileOutputStream.write(executor);
+        fileOutputStream.close();
+    }
+
+    private byte[] getByte(String fileName) throws IOException {
+        try (FileInputStream fileInputStream = new FileInputStream(getFile(fileName))) {
+            byte[] watermarkImage = new byte[fileInputStream.available()];
+            fileInputStream.read(watermarkImage);
+            return watermarkImage;
+        } catch (Exception e) {
+            log.error("getByte error", e);
+            throw e;
+        }
     }
 
     private File getFile(String fileName) {
