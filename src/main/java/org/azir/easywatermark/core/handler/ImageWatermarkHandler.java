@@ -352,24 +352,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
-    public WatermarkBox getStringBox(String... text) {
-        if (text.length == 0) {
-            throw new NullPointerException("Text is null.");
-        }
-        if (text.length == 1) {
-            return new WatermarkBox(getStringWidth(text[0]), getStringHeight());
-        } else {
-            int width = 0;
-            int height = 0;
-            for (String s : text) {
-                width = Math.max(width, getStringWidth(s));
-                height += getStringHeight();
-            }
-            return new WatermarkBox(width, height);
-        }
-    }
-
-    @Override
     public void drawString(float x, float y, String text) {
         if (log.isDebugEnabled()) {
             log.debug("Draw text. x:{},y:{},text:{}", x, y, text);

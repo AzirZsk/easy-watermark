@@ -4,7 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.encoding.StandardEncoding;
 import org.apache.pdfbox.pdmodel.graphics.blend.BlendMode;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.azir.easywatermark.core.AbstractWatermarkHandler;
 import org.azir.easywatermark.core.CustomDraw;
@@ -12,10 +16,14 @@ import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.entity.WatermarkBox;
 import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
+import org.azir.easywatermark.enums.FontTypeEnum;
 import org.azir.easywatermark.exception.LoadFileException;
 import org.azir.easywatermark.exception.PdfWatermarkException;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,12 +68,32 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 throw new PdfWatermarkException("Init graphics error.", e);
             }
         }
-
     }
 
     @Override
     protected void initFont() {
-        // todo init font
+        File fontFile = fontConfig.getFontFile();
+        FontTypeEnum fontType = FontTypeEnum.getFontType(fontFile);
+        switch (fontType) {
+            case TRUE_TYPE:
+                try {
+                    font = PDTrueTypeFont.load(pdDocument, fontFile, StandardEncoding.INSTANCE);
+                } catch (IOException e) {
+                    log.error("Load font error.", e);
+                    throw new LoadFileException("Load font error.", e);
+                }
+                break;
+            case TYPE1:
+                try {
+                    font = new PDType1Font(pdDocument, Files.newInputStream(fontFile.toPath()));
+                } catch (IOException e) {
+                    log.error("Load font error.", e);
+                    throw new LoadFileException("Load font error.", e);
+                }
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + fontType);
+        }
     }
 
     @Override
@@ -123,31 +151,88 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     @Override
     public int getStringWidth(String text) {
-        return 0;
+        try {
+            return (int) font.getStringWidth(text);
+        } catch (IOException e) {
+            log.error("Get string width error.", e);
+            throw new PdfWatermarkException("Get string width error.", e);
+        }
     }
 
     @Override
     public int getStringHeight() {
-        return 0;
-    }
-
-    @Override
-    public WatermarkBox getStringBox(String... text) {
-        return null;
+        try {
+            return (int) font.getBoundingBox().getHeight();
+        } catch (IOException e) {
+            log.error("Get string height error.", e);
+            throw new PdfWatermarkException("Get string height error.", e);
+        }
     }
 
     @Override
     public void drawString(float x, float y, String text) {
-
+        for (int i = 0; i < graphicsList.size(); i++) {
+            if (log.isDebugEnabled()) {
+                log.debug("Draw string in page {}, x:{}, y:{}, text:{}", i, x, y, text);
+            }
+            PDPageContentStream pdPageContentStream = graphicsList.get(i);
+            try {
+                pdPageContentStream.beginText();
+                pdPageContentStream.newLineAtOffset(x, y);
+                pdPageContentStream.showText(text);
+                pdPageContentStream.endText();
+            } catch (IOException e) {
+                log.error("Draw string error.", e);
+                throw new PdfWatermarkException("Draw string error.", e);
+            }
+        }
     }
 
     @Override
     public void drawMultiLineString(float x, float y, List<String> text) {
-
+        for (int i = 0; i < graphicsList.size(); i++) {
+            if (log.isDebugEnabled()) {
+                log.debug("Draw multi-line string in page {}, x:{}, y:{}, text:{}", i, x, y, text);
+            }
+            PDPageContentStream pdPageContentStream = graphicsList.get(i);
+            try {
+                pdPageContentStream.beginText();
+                pdPageContentStream.newLineAtOffset(x, y);
+                for (String s : text) {
+                    pdPageContentStream.showText(s);
+                    pdPageContentStream.newLine();
+                }
+                pdPageContentStream.endText();
+            } catch (IOException e) {
+                log.error("Draw multi-line string error.", e);
+                throw new PdfWatermarkException("Draw multi-line string error.", e);
+            }
+        }
     }
 
     @Override
     public void drawImage(float x, float y, byte[] data) {
+        PDImageXObject image = getPdImageXObject(data);
+        for (int i = 0; i < graphicsList.size(); i++) {
+            if (log.isDebugEnabled()) {
+                log.debug("Draw image in page {}, x:{}, y:{}", i, x, y);
+            }
+            PDPageContentStream pdPageContentStream = graphicsList.get(i);
+            try {
+                pdPageContentStream.drawImage(image, x, y);
+            } catch (IOException e) {
+                log.error("Draw image error.", e);
+                throw new PdfWatermarkException("Draw image error.", e);
+            }
+        }
+    }
 
+    private PDImageXObject getPdImageXObject(byte[] data) {
+        try {
+            return PDImageXObject.createFromByteArray(pdDocument, data, "image");
+        } catch (IOException e) {
+            log.error("Create image error.", e);
+            throw new PdfWatermarkException("Create image error.", e);
+        }
     }
 }
