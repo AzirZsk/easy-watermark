@@ -17,17 +17,13 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Objects;
 
 /**
  * @author Azir
  * @date 2022/11/13
  */
 @Slf4j
-public class ImageWatermarkTest {
-
-    private static final String OUT_PUT_DIR = System.getProperty("user.home") + "/Desktop/easywatermark/";
+public class ImageWatermarkTest extends AbstractTest {
 
     @SneakyThrows
     @Test
@@ -136,30 +132,5 @@ public class ImageWatermarkTest {
         FileOutputStream fileOutputStream = new FileOutputStream(getOutPutFileName("jpeg"));
         fileOutputStream.write(executor);
         fileOutputStream.close();
-    }
-
-    private byte[] getByte(String fileName) throws IOException {
-        try (FileInputStream fileInputStream = new FileInputStream(getFile(fileName))) {
-            byte[] watermarkImage = new byte[fileInputStream.available()];
-            fileInputStream.read(watermarkImage);
-            return watermarkImage;
-        } catch (Exception e) {
-            log.error("getByte error", e);
-            throw e;
-        }
-    }
-
-    private File getFile(String fileName) {
-        return new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource(fileName)).getFile());
-    }
-
-    private String getOutPutFileName(String suffix) {
-        Exception exception = new Exception();
-        StackTraceElement[] stackTrace = exception.getStackTrace();
-        File file = new File(OUT_PUT_DIR);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        return OUT_PUT_DIR + stackTrace[1].getMethodName() + "." + suffix;
     }
 }

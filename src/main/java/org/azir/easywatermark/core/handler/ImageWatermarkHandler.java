@@ -309,16 +309,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
     }
 
-    /**
-     * Calculate center watermark point.
-     *
-     * @param watermarkText watermark text
-     * @return center watermark point
-     */
-    private Point calcCenterWatermarkPoint(String watermarkText) {
-        return calcCenterWatermarkPoint(getStringWidth(watermarkText), getStringHeight());
-    }
-
     private Point calcCenterWatermarkPoint(BufferedImage watermarkImage) {
         return calcCenterWatermarkPoint(watermarkImage.getWidth(), watermarkImage.getHeight());
     }

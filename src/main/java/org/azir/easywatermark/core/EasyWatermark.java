@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.core.handler.ImageWatermarkHandler;
+import org.azir.easywatermark.core.handler.PdfWatermarkHandler;
 import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.azir.easywatermark.enums.FileTypeEnums;
 import org.azir.easywatermark.exception.FileTypeUnSupportException;
@@ -176,6 +177,8 @@ public class EasyWatermark {
         AbstractWatermarkHandler<?, ?> handler;
         switch (FileTypeEnums.parseFileType(bytes)) {
             case PDF:
+                handler = new PdfWatermarkHandler(bytes, fontConfig, watermarkConfig);
+                break;
             case IMAGE:
                 handler = new ImageWatermarkHandler(bytes, fontConfig, watermarkConfig);
                 break;

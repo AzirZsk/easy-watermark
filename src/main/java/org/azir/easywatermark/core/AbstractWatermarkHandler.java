@@ -141,6 +141,16 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
         return new Point(x, y);
     }
 
+    /**
+     * Calculate center watermark point.
+     *
+     * @param watermarkText watermark text
+     * @return center watermark point
+     */
+    protected Point calcCenterWatermarkPoint(String watermarkText) {
+        return calcCenterWatermarkPoint(getStringWidth(watermarkText), getStringHeight());
+    }
+
     @Override
     public WatermarkBox getStringBox(String... text) {
         if (text.length == 0) {

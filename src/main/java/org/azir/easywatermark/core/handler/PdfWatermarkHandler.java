@@ -1,12 +1,12 @@
 package org.azir.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.fontbox.util.autodetect.FontFileFinder;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.encoding.StandardEncoding;
 import org.apache.pdfbox.pdmodel.graphics.blend.BlendMode;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
@@ -14,14 +14,16 @@ import org.azir.easywatermark.core.AbstractWatermarkHandler;
 import org.azir.easywatermark.core.CustomDraw;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
-import org.azir.easywatermark.entity.WatermarkBox;
+import org.azir.easywatermark.entity.Point;
 import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.azir.easywatermark.enums.FontTypeEnum;
+import org.azir.easywatermark.enums.WatermarkTypeEnum;
+import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
 import org.azir.easywatermark.exception.LoadFileException;
 import org.azir.easywatermark.exception.PdfWatermarkException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -42,7 +44,6 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     public PdfWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         super(data, fontConfig, watermarkConfig);
-
     }
 
     @Override
@@ -73,11 +74,17 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     @Override
     protected void initFont() {
         File fontFile = fontConfig.getFontFile();
+        if (fontFile == null) {
+            FontFileFinder fontFileFinder = new FontFileFinder();
+
+
+            return;
+        }
         FontTypeEnum fontType = FontTypeEnum.getFontType(fontFile);
         switch (fontType) {
             case TRUE_TYPE:
                 try {
-                    font = PDTrueTypeFont.load(pdDocument, fontFile, StandardEncoding.INSTANCE);
+                    font = PDType0Font.load(pdDocument, fontFile);
                 } catch (IOException e) {
                     log.error("Load font error.", e);
                     throw new LoadFileException("Load font error.", e);
@@ -108,12 +115,24 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     @Override
     public void customDraw(CustomDraw customDraw) {
-        PDPageContentStream pdPageContentStream = graphicsList.get(0);
     }
 
     @Override
     public void drawCenterWatermark() {
-
+        WatermarkTypeEnum watermarkType = getWatermarkType();
+        Point point;
+        switch (watermarkType) {
+            case SINGLE_TEXT:
+                point = calcCenterWatermarkPoint(watermarkText);
+                drawString(point.getX(), point.getY(), watermarkText);
+                break;
+            case MULTI_TEXT:
+                break;
+            case IMAGE:
+                break;
+            default:
+                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+        }
     }
 
     @Override
@@ -128,13 +147,42 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     @Override
     public byte[] execute(EasyWatermarkTypeEnum watermarkType) {
-        return new byte[0];
+        if (log.isDebugEnabled()) {
+            log.debug("Add watermark. Watermark type:{}", watermarkType);
+        }
+        switch (watermarkType) {
+            case CUSTOM:
+                customDraw(customDraw);
+                break;
+            case CENTER:
+                drawCenterWatermark();
+                break;
+            case DIAGONAL:
+                drawDiagonalWatermark();
+                break;
+            case OVERSPREAD:
+                drawOverspreadWatermark();
+                break;
+            default:
+                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+        }
+        try {
+            for (PDPageContentStream pdPageContentStream : graphicsList) {
+                pdPageContentStream.close();
+            }
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            pdDocument.save(byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            log.error("Save file error.", e);
+            throw new PdfWatermarkException("Save file error.", e);
+        }
     }
 
     @Override
     public void loadFile(byte[] data) {
-        try (PDDocument pdDocument = PDDocument.load(data)) {
-            this.pdDocument = pdDocument;
+        try {
+            this.pdDocument = PDDocument.load(data);
         } catch (IOException e) {
             log.error("Load file error.", e);
             throw new LoadFileException("Load file error.", e);
@@ -144,9 +192,6 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     @Override
     public void close() throws IOException {
         pdDocument.close();
-        for (PDPageContentStream pdPageContentStream : graphicsList) {
-            pdPageContentStream.close();
-        }
     }
 
     @Override
