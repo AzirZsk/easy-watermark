@@ -18,9 +18,10 @@ public class PdfWatermarkTest extends AbstractTest {
     public void testCenterPdfWatermark() {
         byte[] executor = EasyWatermark.create()
                 .file(getFile("test-pdf.pdf"))
-                .text("今天天气真好")
+                .text("今天天气")
                 .config(new FontConfig() {{
                     setFontFile(getFile("STZHONGS.TTF"));
+                    setFontSize(50);
                 }})
                 .executor();
         // 输出到桌面

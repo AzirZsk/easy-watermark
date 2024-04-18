@@ -68,7 +68,7 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
      * @param page page
      * @return width
      */
-    protected abstract int getFileWidth(int page);
+    protected abstract float getFileWidth(int page);
 
     /**
      * get current height
@@ -76,7 +76,7 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
      * @param page page
      * @return height
      */
-    protected abstract int getFileHeight(int page);
+    protected abstract float getFileHeight(int page);
 
     public void setCustomDraw(CustomDraw customDraw) {
         this.customDraw = customDraw;
@@ -109,31 +109,32 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
      *
      * @param watermarkWidth  watermark width
      * @param watermarkHeight watermark height
+     * @param page            page
      * @return point
      */
-    protected Point calcCenterWatermarkPoint(int watermarkWidth, int watermarkHeight) {
+    protected Point calcCenterWatermarkPoint(float watermarkWidth, float watermarkHeight, int page) {
         CenterLocationTypeEnum centerLocationType = watermarkConfig.getCenterLocationType();
-        int x, y;
+        float x, y;
         switch (centerLocationType) {
             case VERTICAL_CENTER:
-                x = (getFileWidth(0) - watermarkWidth) / 2;
-                y = (getFileHeight(0) - watermarkHeight) / 2;
+                x = (getFileWidth(page) - watermarkWidth) / 2;
+                y = (getFileHeight(page) - watermarkHeight) / 2;
                 break;
             case TOP_CENTER:
-                x = (getFileWidth(0) - watermarkWidth) / 2;
+                x = (getFileWidth(page) - watermarkWidth) / 2;
                 y = 0;
                 break;
             case BOTTOM_CENTER:
-                x = (getFileWidth(0) - watermarkWidth) / 2;
-                y = getFileHeight(0) - watermarkHeight;
+                x = (getFileWidth(page) - watermarkWidth) / 2;
+                y = getFileHeight(page) - watermarkHeight;
                 break;
             case LEFT_CENTER:
                 x = 0;
-                y = (getFileHeight(0) - getStringHeight()) / 2;
+                y = (getFileHeight(page) - getStringHeight()) / 2;
                 break;
             case RIGHT_CENTER:
-                x = getFileWidth(0) - watermarkWidth;
-                y = (getFileHeight(0) - watermarkHeight) / 2;
+                x = getFileWidth(page) - watermarkWidth;
+                y = (getFileHeight(page) - watermarkHeight) / 2;
                 break;
             default:
                 throw new EasyWatermarkException("Unsupported center watermark type.");
@@ -145,10 +146,11 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
      * Calculate center watermark point.
      *
      * @param watermarkText watermark text
+     * @param page          page
      * @return center watermark point
      */
-    protected Point calcCenterWatermarkPoint(String watermarkText) {
-        return calcCenterWatermarkPoint(getStringWidth(watermarkText), getStringHeight());
+    protected Point calcCenterWatermarkPoint(String watermarkText, int page) {
+        return calcCenterWatermarkPoint(getStringWidth(watermarkText), getStringHeight(), page);
     }
 
     @Override
@@ -159,8 +161,8 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
         if (text.length == 1) {
             return new WatermarkBox(getStringWidth(text[0]), getStringHeight());
         } else {
-            int width = 0;
-            int height = 0;
+            float width = 0;
+            float height = 0;
             for (String s : text) {
                 width = Math.max(width, getStringWidth(s));
                 height += getStringHeight();

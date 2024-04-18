@@ -49,7 +49,7 @@ public class ImageWatermarkTest extends AbstractTest {
                 })
                 .customDraw(new CustomDraw() {
                     @Override
-                    public <F, G> void draw(F f, G g, int imageWidth, int imageHeight, GraphicsProvider graphicsProvider) {
+                    public <F, G> void draw(F f, G g, float imageWidth, float imageHeight, GraphicsProvider graphicsProvider) {
                         graphicsProvider.drawString(0, 0, "自定义绘制");
                     }
                 })

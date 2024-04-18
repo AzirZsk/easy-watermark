@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.fontbox.util.autodetect.FontFileFinder;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
@@ -39,8 +40,6 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     private PDDocument pdDocument;
 
     private List<PDPageContentStream> graphicsList;
-
-    private PDFont font;
 
     public PdfWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         super(data, fontConfig, watermarkConfig);
@@ -104,13 +103,13 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     }
 
     @Override
-    protected int getFileWidth(int page) {
-        return (int) pdDocument.getPage(page).getMediaBox().getWidth();
+    protected float getFileWidth(int page) {
+        return pdDocument.getPage(page).getMediaBox().getWidth();
     }
 
     @Override
-    protected int getFileHeight(int page) {
-        return (int) pdDocument.getPage(page).getMediaBox().getHeight();
+    protected float getFileHeight(int page) {
+        return pdDocument.getPage(page).getMediaBox().getHeight();
     }
 
     @Override
@@ -123,8 +122,10 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
         Point point;
         switch (watermarkType) {
             case SINGLE_TEXT:
-                point = calcCenterWatermarkPoint(watermarkText);
-                drawString(point.getX(), point.getY(), watermarkText);
+                for (int i = 0; i < graphicsList.size(); i++) {
+                    point = calcCenterWatermarkPoint(watermarkText, i);
+                    drawString(point.getX(), point.getY(), watermarkText);
+                }
                 break;
             case MULTI_TEXT:
                 break;
@@ -172,7 +173,9 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
             }
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             pdDocument.save(byteArrayOutputStream);
-            return byteArrayOutputStream.toByteArray();
+            byte[] res = byteArrayOutputStream.toByteArray();
+            log.info("Add watermark success.");
+            return res;
         } catch (IOException e) {
             log.error("Save file error.", e);
             throw new PdfWatermarkException("Save file error.", e);
@@ -195,9 +198,9 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     }
 
     @Override
-    public int getStringWidth(String text) {
+    public float getStringWidth(String text) {
         try {
-            return (int) font.getStringWidth(text);
+            return font.getStringWidth(text) / 1000 * fontConfig.getFontSize();
         } catch (IOException e) {
             log.error("Get string width error.", e);
             throw new PdfWatermarkException("Get string width error.", e);
@@ -205,13 +208,8 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     }
 
     @Override
-    public int getStringHeight() {
-        try {
-            return (int) font.getBoundingBox().getHeight();
-        } catch (IOException e) {
-            log.error("Get string height error.", e);
-            throw new PdfWatermarkException("Get string height error.", e);
-        }
+    public float getStringHeight() {
+        return font.getFontDescriptor().getCapHeight() / 1000 * fontConfig.getFontSize();
     }
 
     @Override

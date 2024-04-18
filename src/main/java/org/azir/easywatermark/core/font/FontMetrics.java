@@ -14,14 +14,14 @@ public interface FontMetrics {
      * @param text watermark text
      * @return text width
      */
-    int getStringWidth(String text);
+    float getStringWidth(String text);
 
     /**
      * Get {@code text} height in the font.
      *
      * @return text height
      */
-    int getStringHeight();
+    float getStringHeight();
 
     WatermarkBox getStringBox(String... text);
 }
