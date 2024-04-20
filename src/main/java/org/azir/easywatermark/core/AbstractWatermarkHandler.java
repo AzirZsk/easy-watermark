@@ -8,8 +8,10 @@ import org.azir.easywatermark.core.graphics.GraphicsProvider;
 import org.azir.easywatermark.entity.Point;
 import org.azir.easywatermark.entity.WatermarkBox;
 import org.azir.easywatermark.enums.CenterLocationTypeEnum;
+import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.azir.easywatermark.exception.EasyWatermarkException;
+import org.azir.easywatermark.exception.WatermarkHandlerException;
 
 import java.util.List;
 
@@ -39,17 +41,9 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
     protected CustomDraw customDraw;
 
     public AbstractWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
-        try {
-            this.fontConfig = fontConfig;
-            this.watermarkConfig = watermarkConfig;
-            loadFile(data);
-            initFont();
-            initGraphics();
-        } catch (Exception e) {
-            log.warn("{} init error", this.getClass().getSimpleName(), e);
-            throw new EasyWatermarkException(this.getClass().getSimpleName() + " init error");
-        }
-        log.info("{} init success,watermark is {}", this.getClass().getSimpleName(), getWatermarkType());
+        loadFile(data);
+        this.fontConfig = fontConfig;
+        this.watermarkConfig = watermarkConfig;
     }
 
     /**
@@ -61,6 +55,11 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
      * init font
      */
     protected abstract void initFont();
+
+    /**
+     * init environment.
+     */
+    protected abstract void initEnvironment();
 
     /**
      * get current width
@@ -78,6 +77,22 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
      */
     protected abstract float getFileHeight(int page);
 
+    /**
+     * Get watermark image width.
+     *
+     * @return watermark image width
+     */
+    protected abstract float getWatermarkImageWidth();
+
+    /**
+     * Get watermark image height.
+     *
+     * @return watermark image height
+     */
+    protected abstract float getWatermarkImageHeight();
+
+    protected abstract byte[] execute0(EasyWatermarkTypeEnum watermarkType);
+
     public void setCustomDraw(CustomDraw customDraw) {
         this.customDraw = customDraw;
     }
@@ -92,6 +107,24 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
 
     public void watermark(List<String> watermarkTextList) {
         this.watermarkTextList = watermarkTextList;
+    }
+
+    @Override
+    public byte[] execute(EasyWatermarkTypeEnum watermarkType) {
+        init();
+        return execute0(watermarkType);
+    }
+
+    private void init() {
+        try {
+            initFont();
+            initGraphics();
+            initEnvironment();
+            log.info("{} init success,watermark is {}", this.getClass().getSimpleName(), getWatermarkType());
+        } catch (Exception e) {
+            log.error("Init error.", e);
+            throw new EasyWatermarkException("Init error.", e);
+        }
     }
 
     protected WatermarkTypeEnum getWatermarkType() {
@@ -153,6 +186,7 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
         return calcCenterWatermarkPoint(getStringWidth(watermarkText), getStringHeight(), page);
     }
 
+
     @Override
     public WatermarkBox getStringBox(String... text) {
         if (text.length == 0) {
@@ -169,5 +203,33 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
             }
             return new WatermarkBox(width, height);
         }
+    }
+
+    /**
+     * Get watermark box.
+     *
+     * @param watermarkType watermark type
+     * @return watermark box
+     */
+    protected WatermarkBox getWatermarkBox(WatermarkTypeEnum watermarkType, int page) {
+        WatermarkBox watermarkBox;
+        switch (watermarkType) {
+            case SINGLE_TEXT:
+                watermarkBox = getStringBox(watermarkText);
+                break;
+            case MULTI_TEXT:
+                watermarkBox = getStringBox(watermarkTextList.toArray(new String[0]));
+                break;
+            case IMAGE:
+                watermarkBox = new WatermarkBox(getWatermarkImageWidth(), getWatermarkImageHeight());
+                break;
+            default:
+                throw new WatermarkHandlerException("Unsupported watermark type.");
+        }
+        // check watermark box size is greater than image size
+        if (watermarkBox.getWidth() > getFileWidth(page) || watermarkBox.getHeight() > getFileHeight(page)) {
+            throw new WatermarkHandlerException("Watermark box size is greater than image size.");
+        }
+        return watermarkBox;
     }
 }

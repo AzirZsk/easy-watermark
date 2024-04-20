@@ -59,11 +59,15 @@ public class EasyWatermark {
 
     public EasyWatermark text(String text) {
         this.text = text;
+        this.textList = null;
+        this.imageByte = null;
         return this;
     }
 
     public EasyWatermark text(List<String> textList) {
         this.textList = textList;
+        this.text = null;
+        this.imageByte = null;
         return this;
     }
 
@@ -71,6 +75,8 @@ public class EasyWatermark {
         List<String> list = new ArrayList<>();
         Collections.addAll(list, text);
         this.textList = list;
+        this.text = null;
+        this.imageByte = null;
         return this;
     }
 
@@ -79,6 +85,8 @@ public class EasyWatermark {
             throw new LoadFileException("Image file is not support.");
         }
         this.imageByte = imageFile;
+        this.textList = null;
+        this.text = null;
         return this;
     }
 

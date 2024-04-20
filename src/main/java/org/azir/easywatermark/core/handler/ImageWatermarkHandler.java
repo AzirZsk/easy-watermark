@@ -32,21 +32,16 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     private BufferedImage image;
 
-    private final FontMetrics fontMetrics;
+    private FontMetrics fontMetrics;
 
-    private final double ascent;
+    private double ascent;
 
     private int fontHeight;
 
-    private BufferedImage watermarkImage;
+    private BufferedImage watermarkBufferedImage;
 
     public ImageWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         super(data, fontConfig, watermarkConfig);
-        this.fontMetrics = graphics.getFontMetrics(font);
-        this.ascent = fontMetrics.getAscent();
-        if (log.isDebugEnabled()) {
-            log.debug("Image height:{}, width:{}", getFileHeight(0), getFileWidth(0));
-        }
     }
 
     @Override
@@ -79,6 +74,24 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
+    protected void initEnvironment() {
+        this.fontMetrics = graphics.getFontMetrics(font);
+        this.ascent = fontMetrics.getAscent();
+        this.fontHeight = fontMetrics.getHeight();
+        if (log.isDebugEnabled()) {
+            log.debug("Image height:{}, width:{}", getFileHeight(0), getFileWidth(0));
+        }
+        if (getWatermarkType() == WatermarkTypeEnum.IMAGE) {
+            try {
+                this.watermarkBufferedImage = ImageIO.read(new ByteArrayInputStream(super.watermarkImage));
+            } catch (IOException e) {
+                log.warn("Load image error.", e);
+                throw new LoadFileException("Load image error.", e);
+            }
+        }
+    }
+
+    @Override
     protected float getFileWidth(int page) {
         return image.getWidth();
     }
@@ -86,6 +99,16 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     @Override
     protected float getFileHeight(int page) {
         return image.getHeight();
+    }
+
+    @Override
+    protected float getWatermarkImageWidth() {
+        return watermarkBufferedImage.getWidth();
+    }
+
+    @Override
+    protected float getWatermarkImageHeight() {
+        return watermarkBufferedImage.getHeight();
     }
 
     @Override
@@ -98,7 +121,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
-    public byte[] execute(EasyWatermarkTypeEnum watermarkType) {
+    public byte[] execute0(EasyWatermarkTypeEnum watermarkType) {
         if (log.isDebugEnabled()) {
             log.debug("Add watermark. Watermark type:{}", watermarkType);
         }
@@ -154,7 +177,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 drawString(x, y, watermarkText);
                 break;
             case MULTI_TEXT:
-                WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
+                WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0);
                 y = (getFileHeight(0) - watermarkBox.getHeight()) / 2;
                 for (int i = 0; i < watermarkTextList.size(); i++) {
                     x = (getFileWidth(0) - getStringWidth(watermarkTextList.get(i))) / 2;
@@ -162,9 +185,8 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 }
                 break;
             case IMAGE:
-                BufferedImage watermarkImage = getWatermarkImage();
-                x = (getFileWidth(0) - watermarkImage.getWidth()) / 2;
-                y = (getFileHeight(0) - watermarkImage.getHeight()) / 2;
+                x = (getFileWidth(0) - getWatermarkImageWidth()) / 2;
+                y = (getFileHeight(0) - getWatermarkImageHeight()) / 2;
                 drawImage(x, y, super.watermarkImage);
                 break;
             default:
@@ -179,7 +201,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             log.debug("Overspread type:{}", overspreadType);
         }
         WatermarkTypeEnum watermarkType = getWatermarkType();
-        WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
+        WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0);
         // Calculate the number of watermarks that can be placed on the image.
         int watermarkCount = (int) (overspreadType.getCoverage() * getFileWidth(0) * getFileHeight(0)
                 / (watermarkBox.getWidth() * watermarkBox.getHeight()));
@@ -230,33 +252,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
     }
 
-    /**
-     * Get watermark box.
-     *
-     * @param watermarkType watermark type
-     * @return watermark box
-     */
-    private WatermarkBox getWatermarkBox(WatermarkTypeEnum watermarkType) {
-        WatermarkBox watermarkBox;
-        switch (watermarkType) {
-            case SINGLE_TEXT:
-                watermarkBox = getStringBox(watermarkText);
-                break;
-            case MULTI_TEXT:
-                watermarkBox = getStringBox(watermarkTextList.toArray(new String[0]));
-                break;
-            case IMAGE:
-                watermarkBox = new WatermarkBox(getWatermarkImage().getWidth(), getWatermarkImage().getHeight());
-                break;
-            default:
-                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
-        }
-        // check watermark box size is greater than image size
-        if (watermarkBox.getWidth() > getFileWidth(0) || watermarkBox.getHeight() > getFileHeight(0)) {
-            throw new ImageWatermarkHandlerException("Watermark box size is greater than image size.");
-        }
-        return watermarkBox;
-    }
 
     @Override
     public void drawCenterWatermark() {
@@ -268,7 +263,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 drawString(point.getX(), point.getY(), watermarkText);
                 break;
             case MULTI_TEXT:
-                WatermarkBox watermarkBox = getWatermarkBox(watermarkType);
+                WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0);
                 int watermarkListHeight = (int) watermarkBox.getHeight();
                 float startY = (getFileHeight(0) - watermarkListHeight) / 2;
                 if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.TOP_CENTER) {
@@ -283,29 +278,11 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 }
                 break;
             case IMAGE:
-                point = calcCenterWatermarkPoint(getWatermarkImage());
+                point = calcCenterWatermarkPoint(watermarkBufferedImage);
                 drawImage(point.getX(), point.getY(), super.watermarkImage);
                 break;
             default:
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
-        }
-    }
-
-    /**
-     * Get watermark image.
-     *
-     * @return watermark image
-     */
-    private BufferedImage getWatermarkImage() {
-        if (watermarkImage != null) {
-            return watermarkImage;
-        }
-        try {
-            this.watermarkImage = ImageIO.read(new ByteArrayInputStream(super.watermarkImage));
-            return watermarkImage;
-        } catch (IOException e) {
-            log.warn("Load image error.", e);
-            throw new LoadFileException("Load image error.", e);
         }
     }
 
@@ -335,9 +312,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     @Override
     public float getStringHeight() {
-        if (fontHeight == 0) {
-            fontHeight = fontMetrics.getHeight();
-        }
         return fontHeight;
     }
 

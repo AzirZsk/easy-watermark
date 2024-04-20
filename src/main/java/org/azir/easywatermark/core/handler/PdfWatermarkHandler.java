@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.fontbox.util.autodetect.FontFileFinder;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
@@ -16,6 +15,8 @@ import org.azir.easywatermark.core.CustomDraw;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.entity.Point;
+import org.azir.easywatermark.entity.WatermarkBox;
+import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.azir.easywatermark.enums.FontTypeEnum;
 import org.azir.easywatermark.enums.WatermarkTypeEnum;
@@ -31,15 +32,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Pdf watermark handler.
+ * The origin is in the lower left corner
+ *
  * @author zhangshukun
  * @date 2024/4/16
  */
 @Slf4j
 public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<PDPageContentStream>> {
 
-    private PDDocument pdDocument;
+    private float descent;
 
-    private List<PDPageContentStream> graphicsList;
+    private PDDocument pdDocument;
 
     public PdfWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         super(data, fontConfig, watermarkConfig);
@@ -48,7 +52,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     @Override
     protected void initGraphics() {
         int numberOfPages = pdDocument.getNumberOfPages();
-        graphicsList = new ArrayList<>(numberOfPages);
+        graphics = new ArrayList<>(numberOfPages);
         for (int i = 0; i < numberOfPages; i++) {
             try {
                 PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
@@ -62,7 +66,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 contentStream.setNonStrokingColor(watermarkConfig.getColor());
                 contentStream.setFont(font, (float) fontConfig.getFontSize());
 
-                graphicsList.add(contentStream);
+                graphics.add(contentStream);
             } catch (IOException e) {
                 log.error("Init graphics error.", e);
                 throw new PdfWatermarkException("Init graphics error.", e);
@@ -75,8 +79,6 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
         File fontFile = fontConfig.getFontFile();
         if (fontFile == null) {
             FontFileFinder fontFileFinder = new FontFileFinder();
-
-
             return;
         }
         FontTypeEnum fontType = FontTypeEnum.getFontType(fontFile);
@@ -103,6 +105,11 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     }
 
     @Override
+    protected void initEnvironment() {
+        this.descent = font.getFontDescriptor().getDescent() / 1000 * fontConfig.getFontSize();
+    }
+
+    @Override
     protected float getFileWidth(int page) {
         return pdDocument.getPage(page).getMediaBox().getWidth();
     }
@@ -110,6 +117,16 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     @Override
     protected float getFileHeight(int page) {
         return pdDocument.getPage(page).getMediaBox().getHeight();
+    }
+
+    @Override
+    protected float getWatermarkImageWidth() {
+        return 0;
+    }
+
+    @Override
+    protected float getWatermarkImageHeight() {
+        return 0;
     }
 
     @Override
@@ -122,12 +139,29 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
         Point point;
         switch (watermarkType) {
             case SINGLE_TEXT:
-                for (int i = 0; i < graphicsList.size(); i++) {
+                for (int i = 0; i < graphics.size(); i++) {
                     point = calcCenterWatermarkPoint(watermarkText, i);
+                    point.setY(getFileHeight(i) - getStringHeight() - point.getY());
                     drawString(point.getX(), point.getY(), watermarkText);
                 }
                 break;
             case MULTI_TEXT:
+                for (int i = 0; i < graphics.size(); i++) {
+                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i);
+                    int watermarkListHeight = (int) watermarkBox.getHeight();
+                    float startY = (getFileHeight(i) - watermarkListHeight) / 2;
+                    if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.TOP_CENTER) {
+                        startY = 0;
+                    } else if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.BOTTOM_CENTER) {
+                        startY = getFileHeight(i) - watermarkListHeight;
+                    }
+                    startY = getFileHeight(i) - getStringHeight() - startY;
+                    for (int j = 0; j < watermarkTextList.size(); j++) {
+                        String curWatermarkText = watermarkTextList.get(j);
+                        point = calcCenterWatermarkPoint(curWatermarkText, i);
+                        drawString(point.getX(), startY - (j * getStringHeight()), curWatermarkText);
+                    }
+                }
                 break;
             case IMAGE:
                 break;
@@ -147,7 +181,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     }
 
     @Override
-    public byte[] execute(EasyWatermarkTypeEnum watermarkType) {
+    public byte[] execute0(EasyWatermarkTypeEnum watermarkType) {
         if (log.isDebugEnabled()) {
             log.debug("Add watermark. Watermark type:{}", watermarkType);
         }
@@ -168,7 +202,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
         }
         try {
-            for (PDPageContentStream pdPageContentStream : graphicsList) {
+            for (PDPageContentStream pdPageContentStream : graphics) {
                 pdPageContentStream.close();
             }
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -209,19 +243,19 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     @Override
     public float getStringHeight() {
-        return font.getFontDescriptor().getCapHeight() / 1000 * fontConfig.getFontSize();
+        return font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontConfig.getFontSize();
     }
 
     @Override
     public void drawString(float x, float y, String text) {
-        for (int i = 0; i < graphicsList.size(); i++) {
+        for (int i = 0; i < graphics.size(); i++) {
             if (log.isDebugEnabled()) {
                 log.debug("Draw string in page {}, x:{}, y:{}, text:{}", i, x, y, text);
             }
-            PDPageContentStream pdPageContentStream = graphicsList.get(i);
+            PDPageContentStream pdPageContentStream = graphics.get(i);
             try {
                 pdPageContentStream.beginText();
-                pdPageContentStream.newLineAtOffset(x, y);
+                pdPageContentStream.newLineAtOffset(x, y - descent);
                 pdPageContentStream.showText(text);
                 pdPageContentStream.endText();
             } catch (IOException e) {
@@ -233,14 +267,14 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     @Override
     public void drawMultiLineString(float x, float y, List<String> text) {
-        for (int i = 0; i < graphicsList.size(); i++) {
+        for (int i = 0; i < graphics.size(); i++) {
             if (log.isDebugEnabled()) {
                 log.debug("Draw multi-line string in page {}, x:{}, y:{}, text:{}", i, x, y, text);
             }
-            PDPageContentStream pdPageContentStream = graphicsList.get(i);
+            PDPageContentStream pdPageContentStream = graphics.get(i);
             try {
                 pdPageContentStream.beginText();
-                pdPageContentStream.newLineAtOffset(x, y);
+                pdPageContentStream.newLineAtOffset(x, y - descent);
                 for (String s : text) {
                     pdPageContentStream.showText(s);
                     pdPageContentStream.newLine();
@@ -256,11 +290,11 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     @Override
     public void drawImage(float x, float y, byte[] data) {
         PDImageXObject image = getPdImageXObject(data);
-        for (int i = 0; i < graphicsList.size(); i++) {
+        for (int i = 0; i < graphics.size(); i++) {
             if (log.isDebugEnabled()) {
                 log.debug("Draw image in page {}, x:{}, y:{}", i, x, y);
             }
-            PDPageContentStream pdPageContentStream = graphicsList.get(i);
+            PDPageContentStream pdPageContentStream = graphics.get(i);
             try {
                 pdPageContentStream.drawImage(image, x, y);
             } catch (IOException e) {
