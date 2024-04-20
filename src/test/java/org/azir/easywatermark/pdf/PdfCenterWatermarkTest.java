@@ -123,4 +123,49 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         // 输出到桌面
         saveOutPutFile(executor, "pdf", "pdf");
     }
+
+    @Test
+    public void testVerticalCenterImageWatermark() {
+        WATERMARK_CONFIG.setCenterLocationType(CenterLocationTypeEnum.VERTICAL_CENTER);
+        byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
+                .executor();
+        // 输出到桌面
+        saveOutPutFile(executor, "pdf", "pdf");
+    }
+
+    @Test
+    public void testTopCenterImageWatermark() {
+        WATERMARK_CONFIG.setCenterLocationType(CenterLocationTypeEnum.TOP_CENTER);
+        byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
+                .executor();
+        // 输出到桌面
+        saveOutPutFile(executor, "pdf", "pdf");
+    }
+
+    @Test
+    public void testBottomCenterImageWatermark() {
+        WATERMARK_CONFIG.setCenterLocationType(CenterLocationTypeEnum.BOTTOM_CENTER);
+        byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
+                .executor();
+        // 输出到桌面
+        saveOutPutFile(executor, "pdf", "pdf");
+    }
+
+    @Test
+    public void testLeftCenterImageWatermark() {
+        WATERMARK_CONFIG.setCenterLocationType(CenterLocationTypeEnum.LEFT_CENTER);
+        byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
+                .executor();
+        // 输出到桌面
+        saveOutPutFile(executor, "pdf", "pdf");
+    }
+
+    @Test
+    public void testRightCenterImageWatermark() {
+        WATERMARK_CONFIG.setCenterLocationType(CenterLocationTypeEnum.RIGHT_CENTER);
+        byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
+                .executor();
+        // 输出到桌面
+        saveOutPutFile(executor, "pdf", "pdf");
+    }
 }

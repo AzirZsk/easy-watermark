@@ -1,7 +1,6 @@
 package org.azir.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.fontbox.util.autodetect.FontFileFinder;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -45,6 +44,8 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     private PDDocument pdDocument;
 
+    private PDImageXObject pdWatermarkImage;
+
     public PdfWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         super(data, fontConfig, watermarkConfig);
     }
@@ -78,14 +79,14 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     protected void initFont() {
         File fontFile = fontConfig.getFontFile();
         if (fontFile == null) {
-            FontFileFinder fontFileFinder = new FontFileFinder();
+            this.font = PDType1Font.HELVETICA;
             return;
         }
         FontTypeEnum fontType = FontTypeEnum.getFontType(fontFile);
         switch (fontType) {
             case TRUE_TYPE:
                 try {
-                    font = PDType0Font.load(pdDocument, fontFile);
+                    this.font = PDType0Font.load(pdDocument, fontFile);
                 } catch (IOException e) {
                     log.error("Load font error.", e);
                     throw new LoadFileException("Load font error.", e);
@@ -93,7 +94,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 break;
             case TYPE1:
                 try {
-                    font = new PDType1Font(pdDocument, Files.newInputStream(fontFile.toPath()));
+                    this.font = new PDType1Font(pdDocument, Files.newInputStream(fontFile.toPath()));
                 } catch (IOException e) {
                     log.error("Load font error.", e);
                     throw new LoadFileException("Load font error.", e);
@@ -107,6 +108,9 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     @Override
     protected void initEnvironment() {
         this.descent = font.getFontDescriptor().getDescent() / 1000 * fontConfig.getFontSize();
+        if (getWatermarkType() == WatermarkTypeEnum.IMAGE) {
+            this.pdWatermarkImage = getPdImageXObject(watermarkImage);
+        }
     }
 
     @Override
@@ -121,12 +125,12 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     @Override
     protected float getWatermarkImageWidth() {
-        return 0;
+        return pdWatermarkImage.getWidth();
     }
 
     @Override
     protected float getWatermarkImageHeight() {
-        return 0;
+        return pdWatermarkImage.getHeight();
     }
 
     @Override
@@ -164,6 +168,10 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 }
                 break;
             case IMAGE:
+                for (int i = 0; i < graphics.size(); i++) {
+                    point = calcCenterWatermarkPoint(getWatermarkImageWidth(), getWatermarkImageHeight(), i);
+                    drawImage(point.getX(), getFileHeight(i) - getWatermarkImageHeight() - point.getY(), watermarkImage);
+                }
                 break;
             default:
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
