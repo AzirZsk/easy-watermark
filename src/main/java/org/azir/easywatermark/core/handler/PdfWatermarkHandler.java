@@ -2,6 +2,7 @@ package org.azir.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
@@ -9,19 +10,18 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.blend.BlendMode;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
+import org.apache.pdfbox.util.Matrix;
 import org.azir.easywatermark.core.AbstractWatermarkHandler;
 import org.azir.easywatermark.core.CustomDraw;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.entity.Point;
 import org.azir.easywatermark.entity.WatermarkBox;
-import org.azir.easywatermark.enums.CenterLocationTypeEnum;
-import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
-import org.azir.easywatermark.enums.FontTypeEnum;
-import org.azir.easywatermark.enums.WatermarkTypeEnum;
+import org.azir.easywatermark.enums.*;
 import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
 import org.azir.easywatermark.exception.LoadFileException;
 import org.azir.easywatermark.exception.PdfWatermarkException;
+import org.azir.easywatermark.utils.EasyWatermarkUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,11 +40,13 @@ import java.util.List;
 @Slf4j
 public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<PDPageContentStream>> {
 
-    private float descent;
-
     private PDDocument pdDocument;
 
     private PDImageXObject pdWatermarkImage;
+
+    private float descent;
+
+    private float ascent;
 
     public PdfWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         super(data, fontConfig, watermarkConfig);
@@ -108,6 +110,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     @Override
     protected void initEnvironment() {
         this.descent = font.getFontDescriptor().getDescent() / 1000 * fontConfig.getFontSize();
+        this.ascent = font.getFontDescriptor().getAscent() / 1000 * fontConfig.getFontSize();
         if (getWatermarkType() == WatermarkTypeEnum.IMAGE) {
             this.pdWatermarkImage = getPdImageXObject(watermarkImage);
         }
@@ -180,12 +183,72 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     @Override
     public void drawOverspreadWatermark() {
-
     }
 
     @Override
     public void drawDiagonalWatermark() {
+        for (int i = 0; i < graphics.size(); i++) {
+            double radians = EasyWatermarkUtils.calcRadians(getFileWidth(i), getFileHeight(i));
+            float x, y;
+            float hypotenuse = getStringWidth(watermarkText) / 2;
+            y = (float) (hypotenuse * Math.sin(Math.abs(radians)));
+            x = (float) Math.sqrt(Math.pow(hypotenuse, 2) - Math.pow(y, 2));
+            Matrix rotateInstance;
+            DiagonalDirectionTypeEnum diagonalDirectionType = watermarkConfig.getDiagonalDirectionType();
+            switch (diagonalDirectionType) {
+                case TOP_TO_BOTTOM:
+                    radians = -radians;
+                    float X, Y;
+                    X = (float) (Math.abs(descent) * Math.sin(Math.abs(radians)));
+                    Y = (float) (Math.abs(descent) * Math.cos(Math.abs(radians)));
+                    rotateInstance = Matrix.getRotateInstance(radians, getFileWidth(i) / 2 - X, getFileHeight(i) / 2 - Y);
+                    break;
+                case BOTTOM_TO_TOP:
+                    rotateInstance = Matrix.getRotateInstance(radians, getFileWidth(i) / 2, getFileHeight(i) / 2);
+                    break;
+                default:
+                    throw new ImageWatermarkHandlerException("Unsupported diagonal watermark type.");
+            }
+            PDPageContentStream pdPageContentStream = graphics.get(i);
+            try {
+                WatermarkTypeEnum watermarkType = getWatermarkType();
+                switch (watermarkType) {
+                    case SINGLE_TEXT:
+                        pdPageContentStream.transform(rotateInstance);
+                        pdPageContentStream.beginText();
+                        pdPageContentStream.showText(watermarkText);
+                        pdPageContentStream.endText();
+                        break;
+                    case MULTI_TEXT:
+                        WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i);
+                        y = (getFileHeight(i) - watermarkBox.getHeight()) / 2;
+                        for (int j = 0; j < watermarkTextList.size(); j++) {
+                            String curWatermarkText = watermarkTextList.get(j);
+                            x = (getFileWidth(i) - getStringWidth(curWatermarkText)) / 2;
+                            drawString(x, y + j * getStringHeight(), curWatermarkText);
+                        }
+                        break;
+                    case IMAGE:
+                        x = (getFileWidth(i) - getWatermarkImageWidth()) / 2;
+                        y = (getFileHeight(i) - getWatermarkImageHeight()) / 2;
+                        drawImage(x, y, watermarkImage);
+                        break;
+                    default:
+                        throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+                }
+            } catch (IOException e) {
+                log.error("Draw diagonal watermark error.", e);
+                throw new PdfWatermarkException("Draw diagonal watermark error.", e);
+            }
 
+        }
+    }
+
+    private Point aa(double radians, float hypotenuse) {
+        float x, y;
+        y = (float) (hypotenuse * Math.sin(Math.abs(radians)));
+        x = (float) Math.sqrt(Math.pow(hypotenuse, 2) - Math.pow(y, 2));
+        return new Point(x, y);
     }
 
     @Override
