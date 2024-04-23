@@ -1,5 +1,13 @@
 package org.azir.easywatermark.pdf;
 
+import lombok.SneakyThrows;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.util.Matrix;
 import org.azir.easywatermark.AbstractTest;
 import org.azir.easywatermark.core.EasyWatermark;
 import org.azir.easywatermark.core.config.FontConfig;
@@ -7,6 +15,9 @@ import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.junit.Test;
+
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
 
 /**
  * @author zhangshukun
@@ -43,6 +54,8 @@ public class PdfDiagonalWatermarkTest extends AbstractTest {
         WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.TOP_TO_BOTTOM);
         byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq")
                 .executor();
+
+
         saveOutPutFile(executor, DIR, TYPE);
     }
 
@@ -50,6 +63,14 @@ public class PdfDiagonalWatermarkTest extends AbstractTest {
     public void testBottomToTopDiagonalSingleWatermark() {
         WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
         byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq")
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testTopToBottomDiagonalMultiWatermark() {
+        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.TOP_TO_BOTTOM);
+        byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq", "明天天气真不错AaBbCcGgQqCcVvZzXxIiUuYy")
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
     }

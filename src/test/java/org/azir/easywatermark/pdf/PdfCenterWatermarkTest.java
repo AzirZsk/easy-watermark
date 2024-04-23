@@ -22,7 +22,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
 
     static {
         FONT_CONFIG = new FontConfig();
-        FONT_CONFIG.setFontFile(getFile("STZHONGS.TTF"));
+//        FONT_CONFIG.setFontFile(getFile("STZHONGS.TTF"));
 
         WATERMARK_CONFIG = new WatermarkConfig();
         WATERMARK_CONFIG.setAlpha(0.5f);
@@ -37,7 +37,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
     @Test
     public void testVerticalCenterSingleWatermark() {
         WATERMARK_CONFIG.setCenterLocationType(CenterLocationTypeEnum.VERTICAL_CENTER);
-        byte[] executor = EASY_WATERMARK.text("今天天气真不错")
+        byte[] executor = EASY_WATERMARK.text("AaCcGgQqJjMmPp")
                 .executor();
         // 输出到桌面
         saveOutPutFile(executor, "pdf", "pdf");
