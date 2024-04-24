@@ -122,29 +122,9 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     @Override
     public byte[] execute0(EasyWatermarkTypeEnum watermarkType) {
-        if (log.isDebugEnabled()) {
-            log.debug("Add watermark. Watermark type:{}", watermarkType);
-        }
-        switch (watermarkType) {
-            case CUSTOM:
-                customDraw(customDraw);
-                break;
-            case CENTER:
-                drawCenterWatermark();
-                break;
-            case DIAGONAL:
-                drawDiagonalWatermark();
-                break;
-            case OVERSPREAD:
-                drawOverspreadWatermark();
-                break;
-            default:
-                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
-        }
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             boolean writeResult = ImageIO.write(image, "jpeg", outputStream);
             if (writeResult) {
-                log.info("Add watermark success.");
                 return outputStream.toByteArray();
             } else {
                 throw new ImageWatermarkHandlerException("Write image error.");

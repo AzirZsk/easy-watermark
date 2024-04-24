@@ -11,6 +11,7 @@ import org.azir.easywatermark.enums.CenterLocationTypeEnum;
 import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.azir.easywatermark.enums.WatermarkTypeEnum;
 import org.azir.easywatermark.exception.EasyWatermarkException;
+import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
 import org.azir.easywatermark.exception.WatermarkHandlerException;
 
 import java.util.List;
@@ -112,7 +113,28 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
     @Override
     public byte[] execute(EasyWatermarkTypeEnum watermarkType) {
         init();
-        return execute0(watermarkType);
+        if (log.isDebugEnabled()) {
+            log.debug("Add watermark. Watermark type:{}", watermarkType);
+        }
+        switch (watermarkType) {
+            case CUSTOM:
+                customDraw(customDraw);
+                break;
+            case CENTER:
+                drawCenterWatermark();
+                break;
+            case DIAGONAL:
+                drawDiagonalWatermark();
+                break;
+            case OVERSPREAD:
+                drawOverspreadWatermark();
+                break;
+            default:
+                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+        }
+        byte[] res = execute0(watermarkType);
+        log.info("Add watermark success.");
+        return res;
     }
 
     private void init() {

@@ -240,34 +240,13 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     @Override
     public byte[] execute0(EasyWatermarkTypeEnum watermarkType) {
-        if (log.isDebugEnabled()) {
-            log.debug("Add watermark. Watermark type:{}", watermarkType);
-        }
-        switch (watermarkType) {
-            case CUSTOM:
-                customDraw(customDraw);
-                break;
-            case CENTER:
-                drawCenterWatermark();
-                break;
-            case DIAGONAL:
-                drawDiagonalWatermark();
-                break;
-            case OVERSPREAD:
-                drawOverspreadWatermark();
-                break;
-            default:
-                throw new ImageWatermarkHandlerException("Unsupported watermark type.");
-        }
         try {
             for (PDPageContentStream pdPageContentStream : graphics) {
                 pdPageContentStream.close();
             }
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             pdDocument.save(byteArrayOutputStream);
-            byte[] res = byteArrayOutputStream.toByteArray();
-            log.info("Add watermark success.");
-            return res;
+            return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
             log.error("Save file error.", e);
             throw new PdfWatermarkException("Save file error.", e);
