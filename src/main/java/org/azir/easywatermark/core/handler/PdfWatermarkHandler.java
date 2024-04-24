@@ -231,13 +231,6 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
         }
     }
 
-    private Point aa(double radians, float hypotenuse) {
-        float x, y;
-        y = (float) (hypotenuse * Math.sin(Math.abs(radians)));
-        x = (float) Math.sqrt(Math.pow(hypotenuse, 2) - Math.pow(y, 2));
-        return new Point(x, y);
-    }
-
     @Override
     public byte[] execute0(EasyWatermarkTypeEnum watermarkType) {
         try {
