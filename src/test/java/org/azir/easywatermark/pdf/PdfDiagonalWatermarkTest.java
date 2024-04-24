@@ -82,4 +82,20 @@ public class PdfDiagonalWatermarkTest extends AbstractTest {
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
     }
+
+    @Test
+    public void testTopToBottomDiagonalImageWatermark() {
+        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.TOP_TO_BOTTOM);
+        byte[] executor = EASY_WATERMARK.image(getByte("50-50-blue.png"))
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testBottomToTopDiagonalImageWatermark() {
+        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
+        byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
 }

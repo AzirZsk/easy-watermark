@@ -219,6 +219,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                         }
                         break;
                     case IMAGE:
+                        drawImage(-getWatermarkImageWidth() / 2, -getWatermarkImageHeight() / 2, watermarkImage);
                         break;
                     default:
                         throw new ImageWatermarkHandlerException("Unsupported watermark type.");
