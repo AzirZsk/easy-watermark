@@ -75,7 +75,7 @@ public class ImageDiagonalWatermarkTest extends AbstractTest {
 
     @Test
     public void testDiagonalTopToBottomImageWatermark() {
-        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
+        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.TOP_TO_BOTTOM);
         byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
                 .executor();
         // 输出到桌面
