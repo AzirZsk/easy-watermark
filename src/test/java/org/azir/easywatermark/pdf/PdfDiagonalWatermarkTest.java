@@ -70,7 +70,15 @@ public class PdfDiagonalWatermarkTest extends AbstractTest {
     @Test
     public void testTopToBottomDiagonalMultiWatermark() {
         WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.TOP_TO_BOTTOM);
-        byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq", "明天天气真不错AaBbCcGgQqCcVvZzXxIiUuYy")
+        byte[] executor = EASY_WATERMARK.text("AaBbCcGgQq今天天气真不错AaBbCcGgQq", "ZzXxIiUuYy明天天气真不错AaBbCcGgQqCcVv", "ZzXxIiUuYy明天天气真不错AaBbCcGgQqCcVv")
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testBottomToTopDiagonalMultiWatermark() {
+        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
+        byte[] executor = EASY_WATERMARK.text("AaBbCcGgQq今天天气真不错AaBbCcGgQq", "ZzXxIiUuYy明天天气真不错AaBbCcGgQqCcVv", "ZzXxIiUuYy明天天气真不错AaBbCcGgQqCcVv")
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
     }

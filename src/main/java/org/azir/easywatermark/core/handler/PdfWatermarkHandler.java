@@ -215,7 +215,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                         WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i);
                         for (int j = 0; j < watermarkTextList.size(); j++) {
                             String curWatermarkText = watermarkTextList.get(j);
-                            drawString(-getStringWidth(curWatermarkText) / 2, getStringHeight() / 2 + descent * 2, curWatermarkText);
+                            drawString(-getStringWidth(curWatermarkText) / 2, watermarkBox.getHeight() / 2 - getStringHeight() - j * getStringHeight(), curWatermarkText);
                         }
                         break;
                     case IMAGE:
