@@ -22,7 +22,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
 
     static {
         FONT_CONFIG = new FontConfig();
-//        FONT_CONFIG.setFontFile(getFile("STZHONGS.TTF"));
+        FONT_CONFIG.setFontFile(getFile("STZHONGS.TTF"));
 
         WATERMARK_CONFIG = new WatermarkConfig();
         WATERMARK_CONFIG.setAlpha(0.5f);
