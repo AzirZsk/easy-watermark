@@ -58,25 +58,22 @@ public class EasyWatermark {
     }
 
     public EasyWatermark text(String text) {
+        cleanWatermark();
         this.text = text;
-        this.textList = null;
-        this.imageByte = null;
         return this;
     }
 
     public EasyWatermark text(List<String> textList) {
+        cleanWatermark();
         this.textList = textList;
-        this.text = null;
-        this.imageByte = null;
         return this;
     }
 
     public EasyWatermark text(String... text) {
         List<String> list = new ArrayList<>();
         Collections.addAll(list, text);
+        cleanWatermark();
         this.textList = list;
-        this.text = null;
-        this.imageByte = null;
         return this;
     }
 
@@ -84,9 +81,8 @@ public class EasyWatermark {
         if (!FileTypeEnums.isImage(imageFile)) {
             throw new LoadFileException("Image file is not support.");
         }
+        cleanWatermark();
         this.imageByte = imageFile;
-        this.textList = null;
-        this.text = null;
         return this;
     }
 
@@ -195,5 +191,14 @@ public class EasyWatermark {
                 throw new FileTypeUnSupportException("File type not support.");
         }
         return handler;
+    }
+
+    /**
+     * Clean watermark.
+     */
+    private void cleanWatermark() {
+        this.text = null;
+        this.textList = null;
+        this.imageByte = null;
     }
 }
