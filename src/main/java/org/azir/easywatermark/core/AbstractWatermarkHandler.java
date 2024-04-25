@@ -231,13 +231,18 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
      * Get watermark box.
      *
      * @param watermarkType watermark type
+     * @param page          page
+     * @param calcAngle     calculate angle
      * @return watermark box
      */
-    protected WatermarkBox getWatermarkBox(WatermarkTypeEnum watermarkType, int page) {
+    protected WatermarkBox getWatermarkBox(WatermarkTypeEnum watermarkType, int page, boolean calcAngle) {
         WatermarkBox watermarkBox;
         switch (watermarkType) {
             case SINGLE_TEXT:
                 watermarkBox = getStringBox(watermarkText);
+                if (calcAngle) {
+                    watermarkBox = calcAngleWatermarkBox(watermarkConfig.getAngle(), watermarkBox);
+                }
                 break;
             case MULTI_TEXT:
                 watermarkBox = getStringBox(watermarkTextList.toArray(new String[0]));
@@ -253,5 +258,17 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
             throw new WatermarkHandlerException("Watermark box size is greater than image size.");
         }
         return watermarkBox;
+    }
+
+    private WatermarkBox calcAngleWatermarkBox(float angle, WatermarkBox watermarkBox) {
+        if (angle == 0) {
+            return watermarkBox;
+        }
+        double radians = Math.toRadians(angle);
+        double sin = Math.abs(Math.sin(radians));
+        double cos = Math.abs(Math.cos(radians));
+        float width = (float) (watermarkBox.getWidth() * cos + watermarkBox.getHeight() * sin);
+        float height = (float) (watermarkBox.getWidth() * sin + watermarkBox.getHeight() * cos);
+        return new WatermarkBox(width, height);
     }
 }

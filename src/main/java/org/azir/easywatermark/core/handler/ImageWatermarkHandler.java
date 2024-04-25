@@ -157,7 +157,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 drawString(x, y, watermarkText);
                 break;
             case MULTI_TEXT:
-                WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0);
+                WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0, false);
                 y = (getFileHeight(0) - watermarkBox.getHeight()) / 2;
                 for (int i = 0; i < watermarkTextList.size(); i++) {
                     x = (getFileWidth(0) - getStringWidth(watermarkTextList.get(i))) / 2;
@@ -174,65 +174,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
     }
 
-//    @Override
-//    public void drawOverspreadWatermark() {
-//        OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
-//        if (log.isDebugEnabled()) {
-//            log.debug("Overspread type:{}", overspreadType);
-//        }
-//        WatermarkTypeEnum watermarkType = getWatermarkType();
-//        WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0);
-//        // Calculate the number of watermarks that can be placed on the image.
-//        int watermarkCount = (int) (overspreadType.getCoverage() * getFileWidth(0) * getFileHeight(0)
-//                / (watermarkBox.getWidth() * watermarkBox.getHeight()));
-//        if (watermarkCount % 2 != 0) {
-//            watermarkCount--;
-//        }
-//        if (log.isDebugEnabled()) {
-//            log.debug("Watermark count:{}", watermarkCount);
-//        }
-//
-//        // Calculate the number of columns and rows of watermarks
-//        float boxWidth = watermarkBox.getWidth();
-//        int columnsWatermarkCount = (int) (getFileWidth(0) / boxWidth);
-//        if (getFileWidth(0) % boxWidth == 0) {
-//            columnsWatermarkCount--;
-//        }
-//        int lineCount = (int) Math.ceil((float) watermarkCount / columnsWatermarkCount);
-//
-//        // Calculate the width and height of the blank space
-//        float blankWidth = (getFileWidth(0) - (int) (boxWidth * columnsWatermarkCount)) / (columnsWatermarkCount + 1);
-//        float blankHeight = Math.abs(getFileHeight(0) - (int) (watermarkBox.getHeight() * lineCount)) / (lineCount + 1);
-//        if (blankHeight == 0) {
-//            blankHeight = 1;
-//        }
-//
-//        // draw watermark
-//        float x = blankWidth;
-//        float y = blankHeight;
-//        for (int i = 0; i < watermarkCount; i++) {
-//            switch (watermarkType) {
-//                case SINGLE_TEXT:
-//                    drawString(x, y, watermarkText);
-//                    break;
-//                case MULTI_TEXT:
-//                    drawMultiLineString(x, y, watermarkTextList);
-//                    break;
-//                case IMAGE:
-//                    drawImage(x, y, super.watermarkImage);
-//                    break;
-//                default:
-//                    throw new ImageWatermarkHandlerException("Unsupported watermark type.");
-//            }
-//            x += boxWidth + blankWidth;
-//            if (x + boxWidth > getFileWidth(0)) {
-//                x = blankWidth;
-//                y += watermarkBox.getHeight() + blankHeight;
-//            }
-//        }
-//    }
-
-
     @Override
     public void drawCenterWatermark() {
         WatermarkTypeEnum watermarkType = getWatermarkType();
@@ -243,7 +184,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 drawString(point.getX(), point.getY(), watermarkText);
                 break;
             case MULTI_TEXT:
-                WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0);
+                WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0, false);
                 int watermarkListHeight = (int) watermarkBox.getHeight();
                 float startY = (getFileHeight(0) - watermarkListHeight) / 2;
                 if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.TOP_CENTER) {
@@ -268,7 +209,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     @Override
     public void drawOverspreadWatermark() {
-        WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), 0);
+        WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), 0, true);
         OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
         float coverage = overspreadType.getCoverage();
         float watermarkWidth = coverage * getFileWidth(0);
@@ -288,6 +229,10 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
         float x = widthWatermarkDistanceFromPageBorder;
         float y = heightWatermarkDistanceFromPageBorder;
+        if (watermarkConfig.getAngle() != 0) {
+            graphics.rotate(Math.toRadians(watermarkConfig.getAngle()), getFileWidth(0) / 2, getFileHeight(0) / 2);
+        }
+
         for (int i = 0; i < columns * rows; i++) {
             switch (getWatermarkType()) {
                 case SINGLE_TEXT:

@@ -2,7 +2,6 @@ package org.azir.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
@@ -154,7 +153,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 break;
             case MULTI_TEXT:
                 for (int i = 0; i < graphics.size(); i++) {
-                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i);
+                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i, false);
                     int watermarkListHeight = (int) watermarkBox.getHeight();
                     float startY = (getFileHeight(i) - watermarkListHeight) / 2;
                     if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.TOP_CENTER) {
@@ -212,7 +211,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                         drawString(-getStringWidth(watermarkText) / 2, -getStringHeight() / 2, watermarkText);
                         break;
                     case MULTI_TEXT:
-                        WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i);
+                        WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i, false);
                         for (int j = 0; j < watermarkTextList.size(); j++) {
                             String curWatermarkText = watermarkTextList.get(j);
                             drawString(-getStringWidth(curWatermarkText) / 2, watermarkBox.getHeight() / 2 - getStringHeight() - j * getStringHeight(), curWatermarkText);
