@@ -174,63 +174,63 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
     }
 
-    @Override
-    public void drawOverspreadWatermark() {
-        OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
-        if (log.isDebugEnabled()) {
-            log.debug("Overspread type:{}", overspreadType);
-        }
-        WatermarkTypeEnum watermarkType = getWatermarkType();
-        WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0);
-        // Calculate the number of watermarks that can be placed on the image.
-        int watermarkCount = (int) (overspreadType.getCoverage() * getFileWidth(0) * getFileHeight(0)
-                / (watermarkBox.getWidth() * watermarkBox.getHeight()));
-        if (watermarkCount % 2 != 0) {
-            watermarkCount--;
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("Watermark count:{}", watermarkCount);
-        }
-
-        // Calculate the number of columns and rows of watermarks
-        float boxWidth = watermarkBox.getWidth();
-        int columnsWatermarkCount = (int) (getFileWidth(0) / boxWidth);
-        if (getFileWidth(0) % boxWidth == 0) {
-            columnsWatermarkCount--;
-        }
-        int lineCount = (int) Math.ceil((float) watermarkCount / columnsWatermarkCount);
-
-        // Calculate the width and height of the blank space
-        float blankWidth = (getFileWidth(0) - (int) (boxWidth * columnsWatermarkCount)) / (columnsWatermarkCount + 1);
-        float blankHeight = Math.abs(getFileHeight(0) - (int) (watermarkBox.getHeight() * lineCount)) / (lineCount + 1);
-        if (blankHeight == 0) {
-            blankHeight = 1;
-        }
-
-        // draw watermark
-        float x = blankWidth;
-        float y = blankHeight;
-        for (int i = 0; i < watermarkCount; i++) {
-            switch (watermarkType) {
-                case SINGLE_TEXT:
-                    drawString(x, y, watermarkText);
-                    break;
-                case MULTI_TEXT:
-                    drawMultiLineString(x, y, watermarkTextList);
-                    break;
-                case IMAGE:
-                    drawImage(x, y, super.watermarkImage);
-                    break;
-                default:
-                    throw new ImageWatermarkHandlerException("Unsupported watermark type.");
-            }
-            x += boxWidth + blankWidth;
-            if (x + boxWidth > getFileWidth(0)) {
-                x = blankWidth;
-                y += watermarkBox.getHeight() + blankHeight;
-            }
-        }
-    }
+//    @Override
+//    public void drawOverspreadWatermark() {
+//        OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
+//        if (log.isDebugEnabled()) {
+//            log.debug("Overspread type:{}", overspreadType);
+//        }
+//        WatermarkTypeEnum watermarkType = getWatermarkType();
+//        WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0);
+//        // Calculate the number of watermarks that can be placed on the image.
+//        int watermarkCount = (int) (overspreadType.getCoverage() * getFileWidth(0) * getFileHeight(0)
+//                / (watermarkBox.getWidth() * watermarkBox.getHeight()));
+//        if (watermarkCount % 2 != 0) {
+//            watermarkCount--;
+//        }
+//        if (log.isDebugEnabled()) {
+//            log.debug("Watermark count:{}", watermarkCount);
+//        }
+//
+//        // Calculate the number of columns and rows of watermarks
+//        float boxWidth = watermarkBox.getWidth();
+//        int columnsWatermarkCount = (int) (getFileWidth(0) / boxWidth);
+//        if (getFileWidth(0) % boxWidth == 0) {
+//            columnsWatermarkCount--;
+//        }
+//        int lineCount = (int) Math.ceil((float) watermarkCount / columnsWatermarkCount);
+//
+//        // Calculate the width and height of the blank space
+//        float blankWidth = (getFileWidth(0) - (int) (boxWidth * columnsWatermarkCount)) / (columnsWatermarkCount + 1);
+//        float blankHeight = Math.abs(getFileHeight(0) - (int) (watermarkBox.getHeight() * lineCount)) / (lineCount + 1);
+//        if (blankHeight == 0) {
+//            blankHeight = 1;
+//        }
+//
+//        // draw watermark
+//        float x = blankWidth;
+//        float y = blankHeight;
+//        for (int i = 0; i < watermarkCount; i++) {
+//            switch (watermarkType) {
+//                case SINGLE_TEXT:
+//                    drawString(x, y, watermarkText);
+//                    break;
+//                case MULTI_TEXT:
+//                    drawMultiLineString(x, y, watermarkTextList);
+//                    break;
+//                case IMAGE:
+//                    drawImage(x, y, super.watermarkImage);
+//                    break;
+//                default:
+//                    throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+//            }
+//            x += boxWidth + blankWidth;
+//            if (x + boxWidth > getFileWidth(0)) {
+//                x = blankWidth;
+//                y += watermarkBox.getHeight() + blankHeight;
+//            }
+//        }
+//    }
 
 
     @Override
@@ -264,6 +264,70 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             default:
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
         }
+    }
+
+    @Override
+    public void drawOverspreadWatermark() {
+        WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), 0);
+        OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
+        float coverage = overspreadType.getCoverage();
+        float watermarkWidth = coverage * getFileWidth(0);
+        int columns = (int) (watermarkWidth / watermarkBox.getWidth());
+        float blankWidth = getFileWidth(0) - columns * watermarkBox.getWidth();
+        // calculate the distance between watermarks
+        float k = getFileWidth(0) * 0.01f;
+        float widthWatermarkDistance = calcDistanceBetweenWatermarks(blankWidth, k, columns);
+        float widthWatermarkDistanceFromPageBorder = widthWatermarkDistance - k;
+
+        float watermarkHeight = coverage * getFileHeight(0);
+        int rows = (int) (watermarkHeight / watermarkBox.getHeight());
+        float blankHeight = getFileHeight(0) - rows * watermarkBox.getHeight();
+        // calculate the distance between watermarks
+        float heightWatermarkDistance = calcDistanceBetweenWatermarks(blankHeight, k, rows);
+        float heightWatermarkDistanceFromPageBorder = heightWatermarkDistance - k;
+
+        float x = widthWatermarkDistanceFromPageBorder;
+        float y = heightWatermarkDistanceFromPageBorder;
+        for (int i = 0; i < columns * rows; i++) {
+            switch (getWatermarkType()) {
+                case SINGLE_TEXT:
+                    drawString(x, y, watermarkText);
+                    break;
+                case MULTI_TEXT:
+                    drawMultiLineString(x, y, watermarkTextList);
+                    break;
+                case IMAGE:
+                    drawImage(x, y, super.watermarkImage);
+                    break;
+                default:
+                    throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+            }
+            x += watermarkBox.getWidth() + widthWatermarkDistance;
+            if (x > getFileWidth(0)) {
+                x = widthWatermarkDistanceFromPageBorder;
+                y += watermarkBox.getHeight() + heightWatermarkDistance;
+            }
+        }
+
+    }
+
+    /**
+     * m: The width/height of the watermark from both sides
+     * n: The width/height between watermarks
+     * m = n - k. k ≈ page width * 1%
+     * 2m + (col - 1)n = blankWidth
+     * ⬇
+     * 2(n - k) + (col - 1)n = blankWidth
+     * ⬇
+     * n = (blankWidth + 2k) / (col + 1)
+     *
+     * @param blank blank weight/width
+     * @param k     The difference in m n.
+     * @param count columns/rows count.
+     * @return distance between watermarks.
+     */
+    private float calcDistanceBetweenWatermarks(float blank, float k, int count) {
+        return (blank + 2 * k) / (count + 1);
     }
 
     private Point calcCenterWatermarkPoint(BufferedImage watermarkImage) {
