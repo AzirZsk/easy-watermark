@@ -253,26 +253,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 y += watermarkBox.getHeight() + heightWatermarkDistance;
             }
         }
-
-    }
-
-    /**
-     * m: The width/height of the watermark from both sides
-     * n: The width/height between watermarks
-     * m = n - k. k ≈ page width * 1%
-     * 2m + (col - 1)n = blankWidth
-     * ⬇
-     * 2(n - k) + (col - 1)n = blankWidth
-     * ⬇
-     * n = (blankWidth + 2k) / (col + 1)
-     *
-     * @param blank blank weight/width
-     * @param k     The difference in m n.
-     * @param count columns/rows count.
-     * @return distance between watermarks.
-     */
-    private float calcDistanceBetweenWatermarks(float blank, float k, int count) {
-        return (blank + 2 * k) / (count + 1);
     }
 
     private Point calcCenterWatermarkPoint(BufferedImage watermarkImage) {
