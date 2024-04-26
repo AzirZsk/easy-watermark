@@ -252,17 +252,26 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 WatermarkTypeEnum watermarkType = getWatermarkType();
                 switch (watermarkType) {
                     case SINGLE_TEXT:
-                        drawString(-getStringWidth(watermarkText) / 2, -getStringHeight() / 2, watermarkText);
+                        pdPageContentStream.beginText();
+                        pdPageContentStream.newLineAtOffset(-getStringWidth(watermarkText) / 2, -getStringHeight() + ascent);
+                        pdPageContentStream.showText(watermarkText);
+                        pdPageContentStream.endText();
                         break;
                     case MULTI_TEXT:
                         WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i, false);
                         for (int j = 0; j < watermarkTextList.size(); j++) {
                             String curWatermarkText = watermarkTextList.get(j);
-                            drawString(-getStringWidth(curWatermarkText) / 2, watermarkBox.getHeight() / 2 - getStringHeight() - j * getStringHeight(), curWatermarkText);
+                            pdPageContentStream.beginText();
+                            float tx = -getStringWidth(curWatermarkText) / 2;
+                            float ty = (watermarkBox.getHeight() + ascent) / 2 - getStringHeight() - j * getStringHeight();
+                            pdPageContentStream.newLineAtOffset(tx, ty);
+                            pdPageContentStream.showText(curWatermarkText);
+                            pdPageContentStream.endText();
                         }
                         break;
                     case IMAGE:
-                        drawImage(-getWatermarkImageWidth() / 2, -getWatermarkImageHeight() / 2, watermarkImage);
+                        PDImageXObject image = getPdImageXObject(watermarkImage);
+                        pdPageContentStream.drawImage(image, -getWatermarkImageWidth() / 2, -getWatermarkImageHeight() / 2);
                         break;
                     default:
                         throw new ImageWatermarkHandlerException("Unsupported watermark type.");
