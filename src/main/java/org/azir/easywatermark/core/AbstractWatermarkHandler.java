@@ -185,7 +185,7 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
                 break;
             case LEFT_CENTER:
                 x = 0;
-                y = (getFileHeight(page) - getStringHeight()) / 2;
+                y = (getFileHeight(page) - watermarkHeight) / 2;
                 break;
             case RIGHT_CENTER:
                 x = getFileWidth(page) - watermarkWidth;

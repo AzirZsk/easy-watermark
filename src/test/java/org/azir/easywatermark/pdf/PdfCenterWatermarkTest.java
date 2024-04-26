@@ -46,7 +46,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
     @Test
     public void testTopCenterSingleWatermark() {
         WATERMARK_CONFIG.setCenterLocationType(CenterLocationTypeEnum.TOP_CENTER);
-        byte[] executor = EASY_WATERMARK.text("今天天气真不错")
+        byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbJjQqPp")
                 .executor();
         // 输出到桌面
         saveOutPutFile(executor, "pdf", "pdf");
