@@ -19,7 +19,8 @@ import org.azir.easywatermark.entity.WatermarkBox;
 import org.azir.easywatermark.enums.*;
 import org.azir.easywatermark.exception.ImageWatermarkHandlerException;
 import org.azir.easywatermark.exception.LoadFileException;
-import org.azir.easywatermark.exception.PdfWatermarkException;
+import org.azir.easywatermark.exception.PdfWatermarkHandlerException;
+import org.azir.easywatermark.exception.PdfWatermarkHandlerException;
 import org.azir.easywatermark.utils.EasyWatermarkUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -71,7 +72,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 graphics.add(contentStream);
             } catch (IOException e) {
                 log.error("Init graphics error.", e);
-                throw new PdfWatermarkException("Init graphics error.", e);
+                throw new PdfWatermarkHandlerException("Init graphics error.", e);
             }
         }
     }
@@ -215,7 +216,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                         drawImage(x, y, super.watermarkImage);
                         break;
                     default:
-                        throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+                        throw new PdfWatermarkHandlerException("Unsupported watermark type.");
                 }
                 x += watermarkBox.getWidth() + widthWatermarkDistance;
                 if (x > getFileWidth(0)) {
@@ -267,7 +268,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 }
             } catch (IOException e) {
                 log.error("Draw diagonal watermark error.", e);
-                throw new PdfWatermarkException("Draw diagonal watermark error.", e);
+                throw new PdfWatermarkHandlerException("Draw diagonal watermark error.", e);
             }
 
         }
@@ -284,7 +285,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
             log.error("Save file error.", e);
-            throw new PdfWatermarkException("Save file error.", e);
+            throw new PdfWatermarkHandlerException("Save file error.", e);
         }
     }
 
@@ -309,7 +310,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
             return font.getStringWidth(text) / 1000 * fontConfig.getFontSize();
         } catch (IOException e) {
             log.error("Get string width error.", e);
-            throw new PdfWatermarkException("Get string width error.", e);
+            throw new PdfWatermarkHandlerException("Get string width error.", e);
         }
     }
 
@@ -332,7 +333,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 pdPageContentStream.endText();
             } catch (IOException e) {
                 log.error("Draw string error.", e);
-                throw new PdfWatermarkException("Draw string error.", e);
+                throw new PdfWatermarkHandlerException("Draw string error.", e);
             }
         }
     }
@@ -354,7 +355,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 pdPageContentStream.endText();
             } catch (IOException e) {
                 log.error("Draw multi-line string error.", e);
-                throw new PdfWatermarkException("Draw multi-line string error.", e);
+                throw new PdfWatermarkHandlerException("Draw multi-line string error.", e);
             }
         }
     }
@@ -371,7 +372,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 pdPageContentStream.drawImage(image, x, y);
             } catch (IOException e) {
                 log.error("Draw image error.", e);
-                throw new PdfWatermarkException("Draw image error.", e);
+                throw new PdfWatermarkHandlerException("Draw image error.", e);
             }
         }
     }
@@ -381,7 +382,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
             return PDImageXObject.createFromByteArray(pdDocument, data, "image");
         } catch (IOException e) {
             log.error("Create image error.", e);
-            throw new PdfWatermarkException("Create image error.", e);
+            throw new PdfWatermarkHandlerException("Create image error.", e);
         }
     }
 }
