@@ -211,7 +211,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                         drawString(x, y, watermarkText);
                         break;
                     case MULTI_TEXT:
-                        drawMultiLineString(x, y + getStringHeight(), watermarkTextList);
+                        drawMultiLineString(x, y, watermarkTextList);
                         break;
                     case IMAGE:
                         drawImage(x, y, super.watermarkImage);
