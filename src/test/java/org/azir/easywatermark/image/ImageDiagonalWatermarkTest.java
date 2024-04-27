@@ -16,7 +16,7 @@ public class ImageDiagonalWatermarkTest extends AbstractTest {
 
     private static final String TYPE = "jpeg";
 
-    private static final String DIR = "image";
+    private static final String DIR = "image/diagonal";
 
     private static final EasyWatermark EASY_WATERMARK;
 

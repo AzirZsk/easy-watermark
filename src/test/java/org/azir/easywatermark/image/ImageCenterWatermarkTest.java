@@ -18,7 +18,7 @@ public class ImageCenterWatermarkTest extends AbstractTest {
 
     private static final String TYPE = "jpeg";
 
-    private static final String DIR = "image";
+    private static final String DIR = "image/center";
 
     private static final EasyWatermark EASY_WATERMARK;
 

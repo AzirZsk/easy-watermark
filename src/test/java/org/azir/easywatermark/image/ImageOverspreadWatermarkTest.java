@@ -16,7 +16,7 @@ public class ImageOverspreadWatermarkTest extends AbstractTest {
 
     private static final String TYPE = "jpeg";
 
-    private static final String DIR = "image";
+    private static final String DIR = "image/overspread";
 
     private static final EasyWatermark EASY_WATERMARK;
 
