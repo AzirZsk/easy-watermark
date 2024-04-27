@@ -219,6 +219,11 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         float k = getFileWidth(0) * 0.01f;
         float widthWatermarkDistance = calcDistanceBetweenWatermarks(blankWidth, k, columns);
         float widthWatermarkDistanceFromPageBorder = widthWatermarkDistance - k;
+        // if the distance between watermarks is less than 0, reduce the distance between watermarks
+        if (widthWatermarkDistanceFromPageBorder < 0) {
+            widthWatermarkDistance = calcDistanceBetweenWatermarks(blankWidth, k * 0.1f, columns);
+            widthWatermarkDistanceFromPageBorder = (float) (widthWatermarkDistance - k * 0.1);
+        }
 
         float watermarkHeight = coverage * getFileHeight(0);
         int rows = (int) (watermarkHeight / watermarkBox.getHeight());
@@ -226,11 +231,16 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         // calculate the distance between watermarks
         float heightWatermarkDistance = calcDistanceBetweenWatermarks(blankHeight, k, rows);
         float heightWatermarkDistanceFromPageBorder = heightWatermarkDistance - k;
+        // if the distance between watermarks is less than 0, reduce the distance between watermarks
+        if (heightWatermarkDistanceFromPageBorder < 0) {
+            heightWatermarkDistance = calcDistanceBetweenWatermarks(blankHeight, k * 0.1f, rows);
+            heightWatermarkDistanceFromPageBorder = (float) (heightWatermarkDistance - k * 0.1);
+        }
 
         float x = widthWatermarkDistanceFromPageBorder;
         float y = heightWatermarkDistanceFromPageBorder;
         if (watermarkConfig.getAngle() != 0) {
-            graphics.rotate(Math.toRadians(watermarkConfig.getAngle()), getFileWidth(0) / 2, getFileHeight(0) / 2);
+            graphics.rotate(Math.toRadians(watermarkConfig.getAngle()), 0, 0);
         }
 
         for (int i = 0; i < columns * rows; i++) {
