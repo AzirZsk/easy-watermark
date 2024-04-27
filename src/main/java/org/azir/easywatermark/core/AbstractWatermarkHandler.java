@@ -92,7 +92,13 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
      */
     protected abstract float getWatermarkImageHeight();
 
-    protected abstract byte[] execute0(EasyWatermarkTypeEnum watermarkType);
+    /**
+     * export handle data to byte array
+     *
+     * @param watermarkType watermark type
+     * @return byte array
+     */
+    protected abstract byte[] export(EasyWatermarkTypeEnum watermarkType);
 
     public void setCustomDraw(CustomDraw customDraw) {
         this.customDraw = customDraw;
@@ -132,7 +138,7 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
             default:
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
         }
-        byte[] res = execute0(watermarkType);
+        byte[] res = export(watermarkType);
         log.info("Add watermark success.");
         return res;
     }

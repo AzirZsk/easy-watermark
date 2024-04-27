@@ -121,7 +121,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
-    public byte[] execute0(EasyWatermarkTypeEnum watermarkType) {
+    public byte[] export(EasyWatermarkTypeEnum watermarkType) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             boolean writeResult = ImageIO.write(image, "jpeg", outputStream);
             if (writeResult) {

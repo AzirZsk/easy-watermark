@@ -285,7 +285,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     }
 
     @Override
-    public byte[] execute0(EasyWatermarkTypeEnum watermarkType) {
+    public byte[] export(EasyWatermarkTypeEnum watermarkType) {
         try {
             for (PDPageContentStream pdPageContentStream : graphics) {
                 pdPageContentStream.close();
