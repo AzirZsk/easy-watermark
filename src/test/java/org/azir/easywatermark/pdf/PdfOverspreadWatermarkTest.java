@@ -117,6 +117,7 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq")
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
+        WATERMARK_CONFIG.setAngle(0);
     }
 
     @Test
@@ -126,6 +127,7 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错Aa", "明天天气真不错AaBb", "后天天气真不错AaBbCc")
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
+        WATERMARK_CONFIG.setAngle(0);
     }
 
     @Test
@@ -135,6 +137,7 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
+        WATERMARK_CONFIG.setAngle(0);
     }
 
     @Test
@@ -144,6 +147,7 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq")
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
+        WATERMARK_CONFIG.setAngle(0);
     }
 
     @Test
@@ -153,6 +157,7 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错Aa", "明天天气真不错AaBb", "后天天气真不错AaBbCc")
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
+        WATERMARK_CONFIG.setAngle(0);
     }
 
     @Test
@@ -162,6 +167,7 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
+        WATERMARK_CONFIG.setAngle(0);
     }
 
     @Test
@@ -171,6 +177,7 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq")
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
+        WATERMARK_CONFIG.setAngle(0);
     }
 
     @Test
@@ -180,6 +187,7 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错Aa", "明天天气真不错AaBb", "后天天气真不错AaBbCc")
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
+        WATERMARK_CONFIG.setAngle(0);
     }
 
     @Test
@@ -189,5 +197,6 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
+        WATERMARK_CONFIG.setAngle(0);
     }
 }
