@@ -240,7 +240,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         float x = widthWatermarkDistanceFromPageBorder;
         float y = heightWatermarkDistanceFromPageBorder;
         if (watermarkConfig.getAngle() != 0) {
-            graphics.rotate(Math.toRadians(watermarkConfig.getAngle()), 0, 0);
+            graphics.rotate(Math.toRadians(watermarkConfig.getAngle()), getFileWidth(0) / 2, getFileHeight(0) / 2);
         }
 
         for (int i = 0; i < columns * rows; i++) {
