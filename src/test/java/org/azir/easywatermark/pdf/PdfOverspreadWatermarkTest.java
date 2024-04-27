@@ -16,7 +16,7 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
 
     private static final String TYPE = "pdf";
 
-    private static final String DIR = TYPE;
+    private static final String DIR = TYPE + "/overspread";
 
     private static final EasyWatermark EASY_WATERMARK;
 

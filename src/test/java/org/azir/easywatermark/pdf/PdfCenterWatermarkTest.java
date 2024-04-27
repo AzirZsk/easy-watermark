@@ -14,6 +14,10 @@ import org.junit.Test;
  */
 public class PdfCenterWatermarkTest extends AbstractTest {
 
+    private static final String TYPE = "pdf";
+
+    private static final String DIR = TYPE + "/center";
+
     private static final EasyWatermark EASY_WATERMARK;
 
     private static final FontConfig FONT_CONFIG;
@@ -40,7 +44,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("AaCcGgQqJjMmPp")
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -49,7 +53,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbJjQqPp")
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -58,7 +62,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错")
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -67,7 +71,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错")
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -76,7 +80,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错")
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -85,7 +89,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错", "明天天气也不错")
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -94,7 +98,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错", "明天天气也不错")
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -103,7 +107,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错", "明天天气也不错")
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -112,7 +116,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错", "明天天气也不错")
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -121,7 +125,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.text("今天天气真不错", "明天天气也不错")
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -130,7 +134,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -139,7 +143,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -148,7 +152,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -157,7 +161,7 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 
     @Test
@@ -166,6 +170,6 @@ public class PdfCenterWatermarkTest extends AbstractTest {
         byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
                 .executor();
         // 输出到桌面
-        saveOutPutFile(executor, "pdf", "pdf");
+        saveOutPutFile(executor, DIR, TYPE);
     }
 }
