@@ -209,7 +209,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     @Override
     public void drawOverspreadWatermark() {
-        WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), 0, true);
+        WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), 0, false);
         OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
         float coverage = overspreadType.getCoverage();
         float watermarkWidth = coverage * getFileWidth(0);

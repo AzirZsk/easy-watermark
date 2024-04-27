@@ -109,4 +109,85 @@ public class PdfOverspreadWatermarkTest extends AbstractTest {
                 .executor();
         saveOutPutFile(executor, DIR, TYPE);
     }
+
+    @Test
+    public void testAngleLowOverspreadSingleWatermark() {
+        WATERMARK_CONFIG.setOverspreadType(OverspreadTypeEnum.LOW);
+        WATERMARK_CONFIG.setAngle(30);
+        byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq")
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testAngleLowOverspreadMultiWatermark() {
+        WATERMARK_CONFIG.setOverspreadType(OverspreadTypeEnum.LOW);
+        WATERMARK_CONFIG.setAngle(30);
+        byte[] executor = EASY_WATERMARK.text("今天天气真不错Aa", "明天天气真不错AaBb", "后天天气真不错AaBbCc")
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testAngleLowOverspreadImageWatermark() {
+        WATERMARK_CONFIG.setOverspreadType(OverspreadTypeEnum.LOW);
+        WATERMARK_CONFIG.setAngle(30);
+        byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testAngleNormalOverspreadSingleWatermark() {
+        WATERMARK_CONFIG.setOverspreadType(OverspreadTypeEnum.NORMAL);
+        WATERMARK_CONFIG.setAngle(30);
+        byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq")
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testAngleNormalOverspreadMultiWatermark() {
+        WATERMARK_CONFIG.setOverspreadType(OverspreadTypeEnum.NORMAL);
+        WATERMARK_CONFIG.setAngle(30);
+        byte[] executor = EASY_WATERMARK.text("今天天气真不错Aa", "明天天气真不错AaBb", "后天天气真不错AaBbCc")
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testAngleNormalOverspreadImageWatermark() {
+        WATERMARK_CONFIG.setOverspreadType(OverspreadTypeEnum.NORMAL);
+        WATERMARK_CONFIG.setAngle(30);
+        byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testAngleHighOverspreadSingleWatermark() {
+        WATERMARK_CONFIG.setOverspreadType(OverspreadTypeEnum.HIGH);
+        WATERMARK_CONFIG.setAngle(30);
+        byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq")
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testAngleHighOverspreadMultiWatermark() {
+        WATERMARK_CONFIG.setOverspreadType(OverspreadTypeEnum.HIGH);
+        WATERMARK_CONFIG.setAngle(30);
+        byte[] executor = EASY_WATERMARK.text("今天天气真不错Aa", "明天天气真不错AaBb", "后天天气真不错AaBbCc")
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
+
+    @Test
+    public void testAngleHighOverspreadImageWatermark() {
+        WATERMARK_CONFIG.setOverspreadType(OverspreadTypeEnum.HIGH);
+        WATERMARK_CONFIG.setAngle(30);
+        byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
+                .executor();
+        saveOutPutFile(executor, DIR, TYPE);
+    }
 }

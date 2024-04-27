@@ -185,7 +185,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     @Override
     public void drawOverspreadWatermark() {
         for (int i = 0; i < graphics.size(); i++) {
-            WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), i, true);
+            WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), i, false);
             OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
             float coverage = overspreadType.getCoverage();
             float watermarkWidth = coverage * getFileWidth(i);
@@ -205,16 +205,41 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
             float x = widthWatermarkDistanceFromPageBorder;
             float y = getFileHeight(i) - heightWatermarkDistanceFromPageBorder - watermarkBox.getHeight();
+            PDPageContentStream pdPageContentStream = graphics.get(i);
+            float newOriginX = getFileWidth(i) / 2;
+            float newOriginY = getFileHeight(i) / 2;
+
+            if (watermarkConfig.getAngle() != 0) {
+                Matrix rotate = Matrix.getRotateInstance(Math.toRadians(watermarkConfig.getAngle()), newOriginX, newOriginY);
+                try {
+                    pdPageContentStream.transform(rotate);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             for (int j = 0; j < columns * rows; j++) {
                 switch (getWatermarkType()) {
                     case SINGLE_TEXT:
-                        drawString(x, y, watermarkText);
+                        if (watermarkConfig.getAngle() != 0) {
+                            directDrawString(x - newOriginX, y - newOriginY, watermarkText, pdPageContentStream);
+                        } else {
+                            drawString(x, y, watermarkText);
+                        }
                         break;
                     case MULTI_TEXT:
-                        drawMultiLineString(x, y, watermarkTextList);
+                        if (watermarkConfig.getAngle() != 0) {
+                            directDrawMultiString(x - newOriginX, y - newOriginY, watermarkTextList, pdPageContentStream);
+                        } else {
+                            drawMultiLineString(x, y, watermarkTextList);
+                        }
                         break;
                     case IMAGE:
-                        drawImage(x, y, super.watermarkImage);
+                        if (watermarkConfig.getAngle() != 0) {
+                            directDrawImage(x - newOriginX, y - newOriginY, super.watermarkImage, pdPageContentStream);
+                        } else {
+                            drawImage(x, y, super.watermarkImage);
+                        }
                         break;
                     default:
                         throw new PdfWatermarkHandlerException("Unsupported watermark type.");
@@ -228,13 +253,79 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
         }
     }
 
+    /**
+     * direct draw string.
+     *
+     * @param x         x
+     * @param y         y
+     * @param watermark watermark
+     */
+    private void directDrawString(float x, float y, String watermark, PDPageContentStream graphics) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw string x:{}, y:{}, text:{}", x, y, watermark);
+        }
+        try {
+            graphics.beginText();
+            graphics.newLineAtOffset(x, y);
+            graphics.showText(watermark);
+            graphics.endText();
+        } catch (IOException e) {
+            log.error("Draw string error.", e);
+            throw new PdfWatermarkHandlerException("Draw string error.", e);
+        }
+    }
+
+    /**
+     * direct draw multi-line string.
+     *
+     * @param x         x
+     * @param y         y
+     * @param watermark watermark
+     */
+    private void directDrawMultiString(float x, float y, List<String> watermark, PDPageContentStream graphics) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw multi-line string x:{}, y:{}, text:{}", x, y, watermark);
+        }
+        try {
+            graphics.beginText();
+            graphics.newLineAtOffset(x, y);
+            for (String s : watermark) {
+                graphics.showText(s);
+                graphics.newLineAtOffset(0, -getStringHeight());
+            }
+            graphics.endText();
+        } catch (IOException e) {
+            log.error("Draw multi-line string error.", e);
+            throw new PdfWatermarkHandlerException("Draw multi-line string error.", e);
+        }
+    }
+
+    /**
+     * direct draw image.
+     *
+     * @param x    x
+     * @param y    y
+     * @param data data
+     */
+    private void directDrawImage(float x, float y, byte[] data, PDPageContentStream graphics) {
+        PDImageXObject image = getPdImageXObject(data);
+        if (log.isDebugEnabled()) {
+            log.debug("Draw image x:{}, y:{}", x, y);
+        }
+        try {
+            graphics.drawImage(image, x, y);
+        } catch (IOException e) {
+            log.error("Draw image error.", e);
+            throw new PdfWatermarkHandlerException("Draw image error.", e);
+        }
+    }
+
     @Override
     public void drawDiagonalWatermark() {
         for (int i = 0; i < graphics.size(); i++) {
             float fileWidth = getFileWidth(i);
             float fileHeight = getFileHeight(i);
             double radians = EasyWatermarkUtils.calcRadians(fileWidth, fileHeight);
-            Matrix rotateInstance;
             DiagonalDirectionTypeEnum diagonalDirectionType = watermarkConfig.getDiagonalDirectionType();
             switch (diagonalDirectionType) {
                 case TOP_TO_BOTTOM:
@@ -247,7 +338,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
             }
             try {
                 PDPageContentStream pdPageContentStream = graphics.get(i);
-                rotateInstance = Matrix.getRotateInstance(radians, fileWidth / 2, fileHeight / 2);
+                Matrix rotateInstance = Matrix.getRotateInstance(radians, fileWidth / 2, fileHeight / 2);
                 pdPageContentStream.transform(rotateInstance);
                 WatermarkTypeEnum watermarkType = getWatermarkType();
                 switch (watermarkType) {

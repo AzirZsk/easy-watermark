@@ -265,9 +265,6 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
         switch (watermarkType) {
             case SINGLE_TEXT:
                 watermarkBox = getStringBox(watermarkText);
-                if (calcAngle) {
-                    watermarkBox = calcAngleWatermarkBox(watermarkConfig.getAngle(), watermarkBox);
-                }
                 break;
             case MULTI_TEXT:
                 watermarkBox = getStringBox(watermarkTextList.toArray(new String[0]));
@@ -277,6 +274,9 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
                 break;
             default:
                 throw new WatermarkHandlerException("Unsupported watermark type.");
+        }
+        if (calcAngle) {
+            watermarkBox = calcAngleWatermarkBox(watermarkConfig.getAngle(), watermarkBox);
         }
         // check watermark box size is greater than image size
         if (watermarkBox.getWidth() > getFileWidth(page) || watermarkBox.getHeight() > getFileHeight(page)) {
