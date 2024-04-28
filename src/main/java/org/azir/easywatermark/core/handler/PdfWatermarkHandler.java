@@ -317,6 +317,24 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     }
 
     /**
+     * rotate page
+     *
+     * @param graphics graphics
+     * @param radians  radians
+     * @param originX  new origin x
+     * @param originY  new origin y
+     */
+    private void rotatePageByRadians(PDPageContentStream graphics, float radians, float originX, float originY) {
+        Matrix rotateInstance = Matrix.getRotateInstance(radians, originX, originY);
+        try {
+            graphics.transform(rotateInstance);
+        } catch (IOException e) {
+            log.error("Rotate page error.", e);
+            throw new PdfWatermarkHandlerException("Rotate page error.", e);
+        }
+    }
+
+    /**
      * direct draw string.
      *
      * @param x         x
@@ -399,42 +417,28 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 default:
                     throw new ImageWatermarkHandlerException("Unsupported diagonal watermark type.");
             }
-            try {
-                PDPageContentStream pdPageContentStream = graphics.get(i);
-                Matrix rotateInstance = Matrix.getRotateInstance(radians, fileWidth / 2, fileHeight / 2);
-                pdPageContentStream.transform(rotateInstance);
-                WatermarkTypeEnum watermarkType = getWatermarkType();
-                switch (watermarkType) {
-                    case SINGLE_TEXT:
-                        pdPageContentStream.beginText();
-                        pdPageContentStream.newLineAtOffset(-getStringWidth(watermarkText) / 2, -getStringHeight() + ascent);
-                        pdPageContentStream.showText(watermarkText);
-                        pdPageContentStream.endText();
-                        break;
-                    case MULTI_TEXT:
-                        WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i, false);
-                        for (int j = 0; j < watermarkTextList.size(); j++) {
-                            String curWatermarkText = watermarkTextList.get(j);
-                            pdPageContentStream.beginText();
-                            float tx = -getStringWidth(curWatermarkText) / 2;
-                            float ty = (watermarkBox.getHeight() + ascent) / 2 - getStringHeight() - j * getStringHeight();
-                            pdPageContentStream.newLineAtOffset(tx, ty);
-                            pdPageContentStream.showText(curWatermarkText);
-                            pdPageContentStream.endText();
-                        }
-                        break;
-                    case IMAGE:
-                        PDImageXObject image = getPdImageXObject(watermarkImage);
-                        pdPageContentStream.drawImage(image, -getWatermarkImageWidth() / 2, -getWatermarkImageHeight() / 2);
-                        break;
-                    default:
-                        throw new ImageWatermarkHandlerException("Unsupported watermark type.");
-                }
-            } catch (IOException e) {
-                log.error("Draw diagonal watermark error.", e);
-                throw new PdfWatermarkHandlerException("Draw diagonal watermark error.", e);
+            PDPageContentStream pdPageContentStream = graphics.get(i);
+            rotatePageByRadians(pdPageContentStream, (float) radians, fileWidth / 2, fileHeight / 2);
+            WatermarkTypeEnum watermarkType = getWatermarkType();
+            switch (watermarkType) {
+                case SINGLE_TEXT:
+                    directDrawString(-getStringWidth(watermarkText) / 2, -getStringHeight() + ascent, watermarkText, pdPageContentStream);
+                    break;
+                case MULTI_TEXT:
+                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i, false);
+                    for (int j = 0; j < watermarkTextList.size(); j++) {
+                        String curWatermarkText = watermarkTextList.get(j);
+                        float tx = -getStringWidth(curWatermarkText) / 2;
+                        float ty = (watermarkBox.getHeight() + ascent) / 2 - getStringHeight() - j * getStringHeight();
+                        directDrawString(tx, ty, curWatermarkText, pdPageContentStream);
+                    }
+                    break;
+                case IMAGE:
+                    directDrawImage(-getWatermarkImageWidth() / 2, -getWatermarkImageHeight() / 2, watermarkImage, pdPageContentStream);
+                    break;
+                default:
+                    throw new ImageWatermarkHandlerException("Unsupported watermark type.");
             }
-
         }
     }
 
