@@ -184,6 +184,13 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
     @Override
     public void drawOverspreadWatermark() {
+        if (watermarkConfig.getAngle() != 0) {
+            if (log.isDebugEnabled()) {
+                log.debug("overspread angle:{}", watermarkConfig.getAngle());
+            }
+            drawOverspreadWatermarkForAngle(watermarkConfig.getAngle());
+            return;
+        }
         for (int i = 0; i < graphics.size(); i++) {
             WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), i, false);
             OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
@@ -205,51 +212,107 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
 
             float x = widthWatermarkDistanceFromPageBorder;
             float y = getFileHeight(i) - heightWatermarkDistanceFromPageBorder - watermarkBox.getHeight();
-            PDPageContentStream pdPageContentStream = graphics.get(i);
-            float newOriginX = getFileWidth(i) / 2;
-            float newOriginY = getFileHeight(i) / 2;
-
-            if (watermarkConfig.getAngle() != 0) {
-                Matrix rotate = Matrix.getRotateInstance(Math.toRadians(watermarkConfig.getAngle()), newOriginX, newOriginY);
-                try {
-                    pdPageContentStream.transform(rotate);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
             for (int j = 0; j < columns * rows; j++) {
                 switch (getWatermarkType()) {
                     case SINGLE_TEXT:
-                        if (watermarkConfig.getAngle() != 0) {
-                            directDrawString(x - newOriginX, y - newOriginY, watermarkText, pdPageContentStream);
-                        } else {
-                            drawString(x, y, watermarkText);
-                        }
+                        drawString(x, y, watermarkText);
                         break;
                     case MULTI_TEXT:
-                        if (watermarkConfig.getAngle() != 0) {
-                            directDrawMultiString(x - newOriginX, y - newOriginY, watermarkTextList, pdPageContentStream);
-                        } else {
-                            drawMultiLineString(x, y, watermarkTextList);
-                        }
+                        drawMultiLineString(x, y, watermarkTextList);
                         break;
                     case IMAGE:
-                        if (watermarkConfig.getAngle() != 0) {
-                            directDrawImage(x - newOriginX, y - newOriginY, super.watermarkImage, pdPageContentStream);
-                        } else {
-                            drawImage(x, y, super.watermarkImage);
-                        }
+                        drawImage(x, y, super.watermarkImage);
                         break;
                     default:
                         throw new PdfWatermarkHandlerException("Unsupported watermark type.");
                 }
                 x += watermarkBox.getWidth() + widthWatermarkDistance;
-                if (x > getFileWidth(0)) {
+                if (x > getFileWidth(i)) {
                     x = widthWatermarkDistanceFromPageBorder;
                     y -= watermarkBox.getHeight() + heightWatermarkDistance;
                 }
             }
+        }
+    }
+
+    /**
+     * draw overspread watermark for angle
+     *
+     * @param angle angle
+     */
+    private void drawOverspreadWatermarkForAngle(float angle) {
+        for (int i = 0; i < graphics.size(); i++) {
+            WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), i, false);
+            OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
+            float coverage = overspreadType.getCoverage();
+            float curPageWidth = getFileWidth(i);
+            float curPageHeight = getFileHeight(i);
+            // calculate the maximum width and height of the page after rotation
+            if (curPageWidth < curPageHeight) {
+                curPageWidth = curPageHeight;
+            } else if (curPageHeight < curPageWidth) {
+                curPageHeight = curPageWidth;
+            }
+
+            float watermarkWidth = coverage * curPageWidth;
+            int columns = (int) (watermarkWidth / watermarkBox.getWidth());
+            float blankWidth = curPageWidth - columns * watermarkBox.getWidth();
+            // calculate the distance between watermarks
+            float k = curPageWidth * 0.01f;
+            float widthWatermarkDistance = calcDistanceBetweenWatermarks(blankWidth, k, columns);
+            float widthWatermarkDistanceFromPageBorder = widthWatermarkDistance - k;
+
+            float watermarkHeight = coverage * curPageHeight;
+            int rows = (int) (watermarkHeight / watermarkBox.getHeight());
+            float blankHeight = curPageHeight - rows * watermarkBox.getHeight();
+            // calculate the distance between watermarks
+            float heightWatermarkDistance = calcDistanceBetweenWatermarks(blankHeight, k, rows);
+            float heightWatermarkDistanceFromPageBorder = heightWatermarkDistance - k;
+
+            PDPageContentStream pdPageContentStream = graphics.get(i);
+            float newOriginX = getFileWidth(i) / 2;
+            float newOriginY = getFileHeight(i) / 2;
+            // The PDF rotates counterclockwise, so it needs to be reversed
+            rotatePage(pdPageContentStream, -angle, newOriginX, newOriginY);
+            // Why x/y add or reduce half of the width or height?
+            // Because after rotating the page, there may be airstrikes in the four corners of the page
+            float x = widthWatermarkDistanceFromPageBorder - getFileWidth(i) / 2;
+            for (; x < getFileWidth(i) * 3 / 2; x += watermarkBox.getWidth() + widthWatermarkDistance) {
+                float y = getFileHeight(i) - heightWatermarkDistanceFromPageBorder - watermarkBox.getHeight() + getFileHeight(i) / 2;
+                for (; y > 0 - getFileHeight(i) / 2; y -= watermarkBox.getHeight() + heightWatermarkDistance) {
+                    switch (getWatermarkType()) {
+                        case SINGLE_TEXT:
+                            directDrawString(x - newOriginX, y - newOriginY, watermarkText, pdPageContentStream);
+                            break;
+                        case MULTI_TEXT:
+                            directDrawMultiString(x - newOriginX, y - newOriginY, watermarkTextList, pdPageContentStream);
+                            break;
+                        case IMAGE:
+                            directDrawImage(x - newOriginX, y - newOriginY, super.watermarkImage, pdPageContentStream);
+                            break;
+                        default:
+                            throw new PdfWatermarkHandlerException("Unsupported watermark type.");
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * rotate page
+     *
+     * @param graphics graphics
+     * @param angle    angle
+     * @param originX  new origin x
+     * @param originY  new origin y
+     */
+    private void rotatePage(PDPageContentStream graphics, float angle, float originX, float originY) {
+        Matrix rotateInstance = Matrix.getRotateInstance(Math.toRadians(angle), originX, originY);
+        try {
+            graphics.transform(rotateInstance);
+        } catch (IOException e) {
+            log.error("Rotate page error.", e);
+            throw new PdfWatermarkHandlerException("Rotate page error.", e);
         }
     }
 
