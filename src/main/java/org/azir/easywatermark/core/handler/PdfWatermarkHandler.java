@@ -156,7 +156,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 break;
             case MULTI_TEXT:
                 for (int i = 0; i < graphics.size(); i++) {
-                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i, false);
+                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i);
                     int watermarkListHeight = (int) watermarkBox.getHeight();
                     float startY = (getFileHeight(i) - watermarkListHeight) / 2;
                     if (watermarkConfig.getCenterLocationType() == CenterLocationTypeEnum.TOP_CENTER) {
@@ -192,7 +192,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
             return;
         }
         for (int i = 0; i < graphics.size(); i++) {
-            WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), i, false);
+            WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), i);
             OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
             float coverage = overspreadType.getCoverage();
             float watermarkWidth = coverage * getFileWidth(i);
@@ -242,7 +242,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
      */
     private void drawOverspreadWatermarkForAngle(float angle) {
         for (int i = 0; i < graphics.size(); i++) {
-            WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), i, false);
+            WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), i);
             OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
             float coverage = overspreadType.getCoverage();
             float curPageWidth = getFileWidth(i);
@@ -425,7 +425,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                     directDrawString(-getStringWidth(watermarkText) / 2, -getStringHeight() + ascent, watermarkText, pdPageContentStream);
                     break;
                 case MULTI_TEXT:
-                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i, false);
+                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i);
                     for (int j = 0; j < watermarkTextList.size(); j++) {
                         String curWatermarkText = watermarkTextList.get(j);
                         float tx = -getStringWidth(curWatermarkText) / 2;
