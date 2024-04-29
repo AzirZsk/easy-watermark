@@ -15,17 +15,11 @@ import java.awt.*;
 @Data
 public class WatermarkConfig {
 
-    private float locationX;
-
-    private float locationY;
-
     private Color color = Color.BLACK;
 
     private boolean ignoreRotation = true;
 
     private float alpha = 1;
-
-    private double fontSize = 60;
 
     private OverspreadTypeEnum overspreadType = OverspreadTypeEnum.NORMAL;
 
