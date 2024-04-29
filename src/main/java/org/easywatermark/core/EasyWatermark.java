@@ -8,13 +8,14 @@ import org.easywatermark.core.handler.ImageWatermarkHandler;
 import org.easywatermark.core.handler.PdfWatermarkHandler;
 import org.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.easywatermark.enums.FileTypeEnums;
+import org.easywatermark.exception.EasyWatermarkException;
 import org.easywatermark.exception.FileTypeUnSupportException;
 import org.easywatermark.exception.LoadFileException;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +42,8 @@ public class EasyWatermark {
 
     private File file;
 
+    private byte[] fileData;
+
     private EasyWatermarkTypeEnum watermarkType = EasyWatermarkTypeEnum.CENTER;
 
     private CustomDraw customDraw;
@@ -54,6 +57,11 @@ public class EasyWatermark {
 
     public EasyWatermark file(File file) {
         this.file = file;
+        return this;
+    }
+
+    public EasyWatermark file(byte[] fileData) {
+        this.fileData = fileData;
         return this;
     }
 
@@ -107,11 +115,17 @@ public class EasyWatermark {
     }
 
     public byte[] executor() {
-        if (file == null) {
-            throw new LoadFileException("File is null.");
-        }
         checkParam();
-        try (AbstractWatermarkHandler<?, ?> handler = load(file, fontConfig, watermarkConfig)) {
+        if (file != null) {
+            try (InputStream inputStream = Files.newInputStream(file.toPath())) {
+                fileData = new byte[inputStream.available()];
+                inputStream.read(fileData);
+            } catch (IOException e) {
+                log.error("Load file error.", e);
+                throw new RuntimeException(e);
+            }
+        }
+        try (AbstractWatermarkHandler<?, ?> handler = load(fileData, fontConfig, watermarkConfig)) {
             if (text != null) {
                 handler.watermark(text);
             } else if (textList != null) {
@@ -124,14 +138,17 @@ public class EasyWatermark {
             }
             return handler.execute(watermarkType);
         } catch (IOException e) {
-            log.error("Load file error.", e);
-            throw new RuntimeException(e);
+            log.error("Watermark error.", e);
+            throw new EasyWatermarkException(e);
         }
     }
 
     private void checkParam() {
-        if (this.file == null) {
+        if (this.file == null || this.fileData == null) {
             throw new LoadFileException("File is null.");
+        }
+        if (this.file != null && this.fileData != null) {
+            throw new LoadFileException("File and fileData must not be null.");
         }
         if (text == null && textList == null && imageByte == null) {
             throw new NullPointerException("Watermark text or image file is null.");
@@ -144,40 +161,10 @@ public class EasyWatermark {
     /**
      * Load file and auto recognition type.
      *
-     * @param file add watermark file.
-     * @return watermark handler
-     */
-    public static AbstractWatermarkHandler<?, ?> load(File file, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
-        try (FileInputStream inputStream = new FileInputStream(file)) {
-            return load(inputStream, fontConfig, watermarkConfig);
-        } catch (Exception e) {
-            throw new LoadFileException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Load file and auto recognition type.
-     *
-     * @param inputStream input stream should be read byte data.
-     * @return watermark handler
-     */
-    public static AbstractWatermarkHandler<?, ?> load(InputStream inputStream, FontConfig fontConfig, WatermarkConfig watermarkConfig) throws IOException {
-        int available = inputStream.available();
-        byte[] data = new byte[available];
-        int read = inputStream.read(data);
-        if (read != available) {
-            throw new LoadFileException("Part of this data is not read.");
-        }
-        return load(data, fontConfig, watermarkConfig);
-    }
-
-    /**
-     * Load file and auto recognition type.
-     *
      * @param bytes file byte data.
      * @return The file type corresponding to the watermark processor;
      */
-    public static AbstractWatermarkHandler<?, ?> load(byte[] bytes, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
+    private static AbstractWatermarkHandler<?, ?> load(byte[] bytes, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         AbstractWatermarkHandler<?, ?> handler;
         switch (FileTypeEnums.parseFileType(bytes)) {
             case PDF:
