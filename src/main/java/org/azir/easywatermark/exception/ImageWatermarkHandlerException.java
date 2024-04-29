@@ -4,7 +4,7 @@ package org.azir.easywatermark.exception;
  * @author zhangshukun
  * @since 2024/04/09
  */
-public class ImageWatermarkHandlerException extends EasyWatermarkException {
+public class ImageWatermarkHandlerException extends WatermarkHandlerException {
 
     public ImageWatermarkHandlerException(Throwable cause) {
         super(cause);

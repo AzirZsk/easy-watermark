@@ -20,5 +20,5 @@ public interface CustomDraw {
      * @param <F>              font
      * @param <G>              graphics
      */
-    <F, G> void draw(F f, G g, int imageWidth, int imageHeight, GraphicsProvider graphicsProvider);
+    <F, G> void draw(F f, G g, float imageWidth, float imageHeight, GraphicsProvider graphicsProvider);
 }

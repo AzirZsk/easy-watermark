@@ -35,6 +35,7 @@ public class WatermarkConfig {
 
     /**
      * An angle, in degrees
+     * The angle of clockwise rotation
      */
-    private double angle = 0;
+    private float angle = 0;
 }

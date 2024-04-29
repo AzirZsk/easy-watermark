@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.azir.easywatermark.core.config.FontConfig;
 import org.azir.easywatermark.core.config.WatermarkConfig;
 import org.azir.easywatermark.core.handler.ImageWatermarkHandler;
+import org.azir.easywatermark.core.handler.PdfWatermarkHandler;
 import org.azir.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.azir.easywatermark.enums.FileTypeEnums;
 import org.azir.easywatermark.exception.FileTypeUnSupportException;
@@ -57,11 +58,13 @@ public class EasyWatermark {
     }
 
     public EasyWatermark text(String text) {
+        cleanWatermark();
         this.text = text;
         return this;
     }
 
     public EasyWatermark text(List<String> textList) {
+        cleanWatermark();
         this.textList = textList;
         return this;
     }
@@ -69,6 +72,7 @@ public class EasyWatermark {
     public EasyWatermark text(String... text) {
         List<String> list = new ArrayList<>();
         Collections.addAll(list, text);
+        cleanWatermark();
         this.textList = list;
         return this;
     }
@@ -77,6 +81,7 @@ public class EasyWatermark {
         if (!FileTypeEnums.isImage(imageFile)) {
             throw new LoadFileException("Image file is not support.");
         }
+        cleanWatermark();
         this.imageByte = imageFile;
         return this;
     }
@@ -176,6 +181,8 @@ public class EasyWatermark {
         AbstractWatermarkHandler<?, ?> handler;
         switch (FileTypeEnums.parseFileType(bytes)) {
             case PDF:
+                handler = new PdfWatermarkHandler(bytes, fontConfig, watermarkConfig);
+                break;
             case IMAGE:
                 handler = new ImageWatermarkHandler(bytes, fontConfig, watermarkConfig);
                 break;
@@ -184,5 +191,14 @@ public class EasyWatermark {
                 throw new FileTypeUnSupportException("File type not support.");
         }
         return handler;
+    }
+
+    /**
+     * Clean watermark.
+     */
+    private void cleanWatermark() {
+        this.text = null;
+        this.textList = null;
+        this.imageByte = null;
     }
 }
