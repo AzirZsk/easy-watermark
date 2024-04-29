@@ -8,6 +8,13 @@
     <artifactId>easy-watermark</artifactId>
     <version>0.0.1</version>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>
+        Easy Watermark is a simple and easy-to-use watermarking framework that
+        adds watermarks to different types of files using the same method.
+    </description>
+    <url>https://github.com/AzirZsk/easy-watermark</url>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -15,7 +22,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -50,5 +56,25 @@
         </dependency>
 
     </dependencies>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Azir</name>
+            <email>2581866471@qq.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/AzirZsk/easy-watermark.git</connection>
+        <developerConnection>scm:git:ssh://github.com/AzirZsk/easy-watermark.git</developerConnection>
+        <url>http://github.com/AzirZsk/easy-watermark/tree/master</url>
+    </scm>
 
 </project>
