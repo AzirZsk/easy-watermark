@@ -151,7 +151,7 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
             case SINGLE_TEXT:
                 for (int i = 0; i < graphics.size(); i++) {
                     point = calcCenterWatermarkPoint(watermarkText, i);
-                    drawString(point.getX(), point.getY(), watermarkText);
+                    drawString(point.getX(), point.getY(), watermarkText, i);
                 }
                 break;
             case MULTI_TEXT:
@@ -167,14 +167,14 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                     for (int j = 0; j < watermarkTextList.size(); j++) {
                         String curWatermarkText = watermarkTextList.get(j);
                         point = calcCenterWatermarkPoint(curWatermarkText, i);
-                        drawString(point.getX(), startY + (j * getStringHeight()), curWatermarkText);
+                        drawString(point.getX(), startY + (j * getStringHeight()), curWatermarkText, i);
                     }
                 }
                 break;
             case IMAGE:
                 for (int i = 0; i < graphics.size(); i++) {
                     point = calcCenterWatermarkPoint(getWatermarkImageWidth(), getWatermarkImageHeight(), i);
-                    drawImage(point.getX(), point.getY(), watermarkImage);
+                    drawImage(point.getX(), point.getY(), watermarkImage, i);
                 }
                 break;
             default:
@@ -215,13 +215,13 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
             for (int j = 0; j < columns * rows; j++) {
                 switch (getWatermarkType()) {
                     case SINGLE_TEXT:
-                        drawString(x, y, watermarkText);
+                        drawString(x, y, watermarkText, i);
                         break;
                     case MULTI_TEXT:
-                        drawMultiLineString(x, y, watermarkTextList);
+                        drawMultiLineString(x, y, watermarkTextList, i);
                         break;
                     case IMAGE:
-                        drawImage(x, y, super.watermarkImage);
+                        drawImage(x, y, super.watermarkImage, i);
                         break;
                     default:
                         throw new PdfWatermarkHandlerException("Unsupported watermark type.");
@@ -307,13 +307,8 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
      * @param originY  new origin y
      */
     private void rotatePage(PDPageContentStream graphics, float angle, float originX, float originY) {
-        Matrix rotateInstance = Matrix.getRotateInstance(Math.toRadians(angle), originX, originY);
-        try {
-            graphics.transform(rotateInstance);
-        } catch (IOException e) {
-            log.error("Rotate page error.", e);
-            throw new PdfWatermarkHandlerException("Rotate page error.", e);
-        }
+        double radians = Math.toRadians(angle);
+        rotatePageByRadians(graphics, (float) radians, originX, originY);
     }
 
     /**
@@ -488,61 +483,62 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     }
 
     @Override
-    public void drawString(float x, float y, String text) {
-        for (int i = 0; i < graphics.size(); i++) {
-            if (log.isDebugEnabled()) {
-                log.debug("Draw string in page {}, x:{}, y:{}, text:{}", i, x, y, text);
-            }
-            PDPageContentStream pdPageContentStream = graphics.get(i);
-            try {
-                pdPageContentStream.beginText();
-                pdPageContentStream.newLineAtOffset(x, getFileHeight(i) - y - ascent);
-                pdPageContentStream.showText(text);
-                pdPageContentStream.endText();
-            } catch (IOException e) {
-                log.error("Draw string error.", e);
-                throw new PdfWatermarkHandlerException("Draw string error.", e);
-            }
+    public void drawString(float x, float y, String text, int pageNumber) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw string in page {}, x:{}, y:{}, text:{}", pageNumber, x, y, text);
+        }
+        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
+        try {
+            pdPageContentStream.beginText();
+            pdPageContentStream.newLineAtOffset(x, getFileHeight(pageNumber) - y - ascent);
+            pdPageContentStream.showText(text);
+            pdPageContentStream.endText();
+        } catch (IOException e) {
+            log.error("Draw string error.", e);
+            throw new PdfWatermarkHandlerException("Draw string error.", e);
         }
     }
 
     @Override
-    public void drawMultiLineString(float x, float y, List<String> text) {
-        for (int i = 0; i < graphics.size(); i++) {
-            if (log.isDebugEnabled()) {
-                log.debug("Draw multi-line string in page {}, x:{}, y:{}, text:{}", i, x, y, text);
-            }
-            PDPageContentStream pdPageContentStream = graphics.get(i);
-            try {
-                pdPageContentStream.beginText();
-                pdPageContentStream.newLineAtOffset(x, getFileHeight(i) - y - ascent);
-                for (String s : text) {
-                    pdPageContentStream.showText(s);
-                    pdPageContentStream.newLineAtOffset(0, -getStringHeight());
-                }
-                pdPageContentStream.endText();
-            } catch (IOException e) {
-                log.error("Draw multi-line string error.", e);
-                throw new PdfWatermarkHandlerException("Draw multi-line string error.", e);
-            }
+    public void drawMultiLineString(float x, float y, List<String> text, int pageNumber) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw multi-line string in page {}, x:{}, y:{}, text:{}", pageNumber, x, y, text);
         }
+        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
+        try {
+            pdPageContentStream.beginText();
+            pdPageContentStream.newLineAtOffset(x, getFileHeight(pageNumber) - y - ascent);
+            for (String s : text) {
+                pdPageContentStream.showText(s);
+                pdPageContentStream.newLineAtOffset(0, -getStringHeight());
+            }
+            pdPageContentStream.endText();
+        } catch (IOException e) {
+            log.error("Draw multi-line string error.", e);
+            throw new PdfWatermarkHandlerException("Draw multi-line string error.", e);
+        }
+
     }
 
     @Override
-    public void drawImage(float x, float y, byte[] data) {
+    public void drawImage(float x, float y, byte[] data, int pageNumber) {
         PDImageXObject image = getPdImageXObject(data);
-        for (int i = 0; i < graphics.size(); i++) {
-            if (log.isDebugEnabled()) {
-                log.debug("Draw image in page {}, x:{}, y:{}", i, x, y);
-            }
-            PDPageContentStream pdPageContentStream = graphics.get(i);
-            try {
-                pdPageContentStream.drawImage(image, x, getFileHeight(i) - y - image.getHeight());
-            } catch (IOException e) {
-                log.error("Draw image error.", e);
-                throw new PdfWatermarkHandlerException("Draw image error.", e);
-            }
+        if (log.isDebugEnabled()) {
+            log.debug("Draw image in page {}, x:{}, y:{}", pageNumber, x, y);
         }
+        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
+        try {
+            pdPageContentStream.drawImage(image, x, getFileHeight(pageNumber) - y - image.getHeight());
+        } catch (IOException e) {
+            log.error("Draw image error.", e);
+            throw new PdfWatermarkHandlerException("Draw image error.", e);
+        }
+    }
+
+    @Override
+    public void rotate(float angle, float x, float y, int pageNumber) {
+        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
+        rotatePage(pdPageContentStream, angle, x, y);
     }
 
     private PDImageXObject getPdImageXObject(byte[] data) {
