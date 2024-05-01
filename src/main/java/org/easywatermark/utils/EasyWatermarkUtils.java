@@ -13,4 +13,19 @@ public class EasyWatermarkUtils {
     public static double calcDegrees(double weight, double height) {
         return Math.toDegrees(calcRadians(weight, height));
     }
+
+    /**
+     * @author zhangshukun
+     * @date 2022/11/18
+     */
+    public static class StringUtils {
+
+        public static boolean isEmpty(String text) {
+            return text == null || text.isEmpty();
+        }
+
+        public static boolean isNoEmpty(String text) {
+            return !isEmpty(text);
+        }
+    }
 }

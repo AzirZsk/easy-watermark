@@ -3,8 +3,8 @@ package org.easywatermark.core;
 import lombok.extern.slf4j.Slf4j;
 import org.easywatermark.core.config.FontConfig;
 import org.easywatermark.core.config.WatermarkConfig;
-import org.easywatermark.core.font.FontProvider;
-import org.easywatermark.core.graphics.GraphicsProvider;
+import org.easywatermark.core.provider.FontProvider;
+import org.easywatermark.core.provider.GraphicsProvider;
 import org.easywatermark.entity.Point;
 import org.easywatermark.entity.WatermarkBox;
 import org.easywatermark.enums.CenterLocationTypeEnum;
@@ -14,9 +14,12 @@ import org.easywatermark.exception.EasyWatermarkException;
 import org.easywatermark.exception.ImageWatermarkHandlerException;
 import org.easywatermark.exception.WatermarkHandlerException;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
+ * AbstractWatermarkHandler is an abstract class for handling watermark-related operations.
+ *
  * @param <F> Font
  * @param <G> Graphics
  * @author zhangshukun
@@ -39,7 +42,7 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
 
     protected WatermarkConfig watermarkConfig;
 
-    protected CustomDraw customDraw;
+    protected EasyWatermarkCustomDraw easyWatermarkCustomDraw;
 
     public AbstractWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         loadFile(data);
@@ -100,8 +103,8 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
      */
     protected abstract byte[] export(EasyWatermarkTypeEnum watermarkType);
 
-    public void setCustomDraw(CustomDraw customDraw) {
-        this.customDraw = customDraw;
+    public void setCustomDraw(EasyWatermarkCustomDraw easyWatermarkCustomDraw) {
+        this.easyWatermarkCustomDraw = easyWatermarkCustomDraw;
     }
 
     public void watermark(String watermarkText) {
@@ -124,7 +127,7 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
         }
         switch (watermarkType) {
             case CUSTOM:
-                customDraw(customDraw);
+                customDraw(easyWatermarkCustomDraw);
                 break;
             case CENTER:
                 drawCenterWatermark();
@@ -141,6 +144,24 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
         byte[] res = export(watermarkType);
         log.info("Add watermark success.");
         return res;
+    }
+
+    @Override
+    public WatermarkBox getStringBox(String... text) {
+        if (text.length == 0) {
+            throw new NullPointerException("Text is null.");
+        }
+        if (text.length == 1) {
+            return new WatermarkBox(getStringWidth(text[0]), getStringHeight());
+        } else {
+            float width = 0;
+            float height = 0;
+            for (String s : text) {
+                width = Math.max(width, getStringWidth(s));
+                height += getStringHeight();
+            }
+            return new WatermarkBox(width, height);
+        }
     }
 
     private void init() {
@@ -160,8 +181,10 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
             return WatermarkTypeEnum.SINGLE_TEXT;
         } else if (watermarkTextList != null) {
             return WatermarkTypeEnum.MULTI_TEXT;
-        } else {
+        } else if (watermarkImage != null) {
             return WatermarkTypeEnum.IMAGE;
+        } else {
+            return WatermarkTypeEnum.CUSTOM_DRAW;
         }
     }
 
@@ -215,24 +238,6 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
     }
 
 
-    @Override
-    public WatermarkBox getStringBox(String... text) {
-        if (text.length == 0) {
-            throw new NullPointerException("Text is null.");
-        }
-        if (text.length == 1) {
-            return new WatermarkBox(getStringWidth(text[0]), getStringHeight());
-        } else {
-            float width = 0;
-            float height = 0;
-            for (String s : text) {
-                width = Math.max(width, getStringWidth(s));
-                height += getStringHeight();
-            }
-            return new WatermarkBox(width, height);
-        }
-    }
-
     /**
      * m: The width/height of the watermark from both sides
      * n: The width/height between watermarks
@@ -279,5 +284,18 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
             throw new WatermarkHandlerException("Watermark box size is greater than image size.");
         }
         return watermarkBox;
+    }
+
+    @Override
+    public String toString() {
+        return "WatermarkHandler{" +
+                "watermarkText='" + watermarkText + '\'' +
+                ", watermarkTextList=" + watermarkTextList +
+                ", watermarkImage=" + Arrays.toString(watermarkImage) +
+                ", font=" + font +
+                ", graphics=" + graphics +
+                ", fontConfig=" + fontConfig +
+                ", watermarkConfig=" + watermarkConfig +
+                '}';
     }
 }

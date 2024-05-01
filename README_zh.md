@@ -1,11 +1,7 @@
 # Easy-Watermark
-
 Easy Watermark是一个简单易用的水印添加框架，框架抽象了各个文件类型的对于水印添加的方法。仅使用几行代码即可为不同类型的文件添加相同样式的水印。
-
 # 快速开始
-
 ## 1. 添加依赖
-
 ```xml
 
 <dependency>
@@ -14,18 +10,14 @@ Easy Watermark是一个简单易用的水印添加框架，框架抽象了各个
   <version>最新版本</version>
 </dependency>
 ```
-
 ## 2. 添加水印
-
 ```java
 byte[]result=EasyWatermark.create()
         .file(fileData)
         .text("Easy-Watermark")
         .execute();
 ```
-
 # 更多配置
-
 ## 预制水印类型
 
 - CUSTOM：自定义水印，使用框架抽象的统一方法，对传入文件的每个页面进行特殊处理（开发中）
@@ -42,9 +34,7 @@ byte[]result=EasyWatermark.create()
 - DIAGONAL：页面对角水印
   - TOP_TO_BOTTOM：文字从上到下
   - BOTTOM_TO_TOP：文字从下到上
-
 ## 水印配置
-
 对应`WatermarkConfig`类，该类会对水印的各项属性进行设置。
 
 ```java
@@ -69,9 +59,7 @@ public class WatermarkConfig {
   private float angle = 0;
 }
 ```
-
 ## 字体配置
-
 对应`FontConfig`类，该类会对水印文字的各项属性进行设置。
 
 ```java
@@ -98,11 +86,8 @@ public class FontConfig {
   private int fontStyle = Font.PLAIN;
 }
 ```
-
 # 进阶用法
-
 ## 使用预设水印类型
-
 ```java
 byte[]result=EasyWatermark.create()
         .file(fileData)
@@ -111,7 +96,6 @@ byte[]result=EasyWatermark.create()
         .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
         .execute();
 ```
-
 ## 自定义水印配置以及字体配置
 
 ```java
@@ -133,6 +117,16 @@ WatermarkConfig watermarkConfig=new WatermarkConfig();
         .text("Easy-Watermark")
         .executor();
 ```
+
+# 开发计划
+
+- [x] 图片类型文件添加水印
+- [x] PDF类型文件添加水印
+- [x] 用户自定义水印方法完善
+- [ ] Word文件添加水印
+- [ ] Excel文件添加水印
+- [ ] PowerPoint文件添加水印
+- [ ] 隐藏水印
 
 # 其他
 

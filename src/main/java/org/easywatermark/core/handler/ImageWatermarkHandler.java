@@ -2,9 +2,10 @@ package org.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.easywatermark.core.AbstractWatermarkHandler;
-import org.easywatermark.core.CustomDraw;
+import org.easywatermark.core.EasyWatermarkCustomDraw;
 import org.easywatermark.core.config.FontConfig;
 import org.easywatermark.core.config.WatermarkConfig;
+import org.easywatermark.entity.PageInfo;
 import org.easywatermark.entity.Point;
 import org.easywatermark.entity.WatermarkBox;
 import org.easywatermark.enums.*;
@@ -109,12 +110,9 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
-    public void customDraw(CustomDraw customDraw) {
-        if (customDraw == null) {
-            log.warn("Custom draw is null.");
-            return;
-        }
-        customDraw.draw(font, graphics, getFileWidth(0), getFileHeight(0), this);
+    public void customDraw(EasyWatermarkCustomDraw easyWatermarkCustomDraw) {
+        PageInfo pageInfo = new PageInfo(getFileWidth(0), getFileHeight(0), 0);
+        easyWatermarkCustomDraw.draw(pageInfo, this, this);
     }
 
     @Override
@@ -151,20 +149,20 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             case SINGLE_TEXT:
                 x = (getFileWidth(0) - getStringWidth(watermarkText)) / 2;
                 y = (getFileHeight(0) - getStringHeight()) / 2;
-                drawString(x, y, watermarkText);
+                drawString(x, y, watermarkText, 0);
                 break;
             case MULTI_TEXT:
                 WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0);
                 y = (getFileHeight(0) - watermarkBox.getHeight()) / 2;
                 for (int i = 0; i < watermarkTextList.size(); i++) {
                     x = (getFileWidth(0) - getStringWidth(watermarkTextList.get(i))) / 2;
-                    drawString(x, y + i * getStringHeight(), watermarkTextList.get(i));
+                    drawString(x, y + i * getStringHeight(), watermarkTextList.get(i), 0);
                 }
                 break;
             case IMAGE:
                 x = (getFileWidth(0) - getWatermarkImageWidth()) / 2;
                 y = (getFileHeight(0) - getWatermarkImageHeight()) / 2;
-                drawImage(x, y, super.watermarkImage);
+                drawImage(x, y, super.watermarkImage, 0);
                 break;
             default:
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
@@ -178,7 +176,7 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         switch (watermarkType) {
             case SINGLE_TEXT:
                 point = calcCenterWatermarkPoint(watermarkText, 0);
-                drawString(point.getX(), point.getY(), watermarkText);
+                drawString(point.getX(), point.getY(), watermarkText, 0);
                 break;
             case MULTI_TEXT:
                 WatermarkBox watermarkBox = getWatermarkBox(watermarkType, 0);
@@ -192,12 +190,12 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 for (int i = 0; i < watermarkTextList.size(); i++) {
                     String curWatermarkText = watermarkTextList.get(i);
                     point = calcCenterWatermarkPoint(curWatermarkText, 0);
-                    drawString(point.getX(), startY + (i * getStringHeight()), curWatermarkText);
+                    drawString(point.getX(), startY + (i * getStringHeight()), curWatermarkText, 0);
                 }
                 break;
             case IMAGE:
                 point = calcCenterWatermarkPoint(watermarkBufferedImage);
-                drawImage(point.getX(), point.getY(), super.watermarkImage);
+                drawImage(point.getX(), point.getY(), super.watermarkImage, 0);
                 break;
             default:
                 throw new ImageWatermarkHandlerException("Unsupported watermark type.");
@@ -247,13 +245,13 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         for (int i = 0; i < columns * rows; i++) {
             switch (getWatermarkType()) {
                 case SINGLE_TEXT:
-                    drawString(x, y, watermarkText);
+                    drawString(x, y, watermarkText, 0);
                     break;
                 case MULTI_TEXT:
-                    drawMultiLineString(x, y, watermarkTextList);
+                    drawMultiLineString(x, y, watermarkTextList, 0);
                     break;
                 case IMAGE:
-                    drawImage(x, y, super.watermarkImage);
+                    drawImage(x, y, super.watermarkImage, 0);
                     break;
                 default:
                     throw new ImageWatermarkHandlerException("Unsupported watermark type.");
@@ -264,6 +262,72 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
                 y += watermarkBox.getHeight() + heightWatermarkDistance;
             }
         }
+    }
+
+    @Override
+    public void loadFile(byte[] data) {
+        try (InputStream inputStream = new ByteArrayInputStream(data)) {
+            this.image = ImageIO.read(inputStream);
+        } catch (IOException e) {
+            log.error("Load image file error.", e);
+            throw new EasyWatermarkException("Load image file error.", e);
+        }
+    }
+
+    @Override
+    public void close() {
+        graphics.dispose();
+    }
+
+    @Override
+    public float getStringWidth(String text) {
+        return fontMetrics.stringWidth(text);
+    }
+
+    @Override
+    public float getStringHeight() {
+        return fontHeight;
+    }
+
+    @Override
+    public void drawString(float x, float y, String text, int pageNumber) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw text. x:{},y:{},text:{},pageNo:{}", x, y, text, pageNumber);
+        }
+        graphics.drawString(text, x, (int) (y + ascent));
+    }
+
+    @Override
+    public void drawMultiLineString(float x, float y, List<String> text, int pageNumber) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw multi-line text. x:{},y:{},text:{}", x, y, text);
+        }
+        for (int i = 0; i < text.size(); i++) {
+            drawString(x, y + i * getStringHeight(), text.get(i), 0);
+        }
+    }
+
+    @Override
+    public void drawImage(float x, float y, byte[] data, int pageNumber) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw image. x:{},y:{}", x, y);
+        }
+        BufferedImage bufferedImage;
+        try {
+            bufferedImage = ImageIO.read(new ByteArrayInputStream(data));
+            graphics.drawImage(bufferedImage, (int) x, (int) y, null);
+        } catch (IOException e) {
+            log.warn("Load image error.", e);
+            throw new LoadFileException("Load image error.", e);
+        }
+    }
+
+    @Override
+    public void rotate(float angle, float x, float y, int pageNumber) {
+        if (log.isDebugEnabled()) {
+            log.debug("Rotate. angle:{},x:{},y:{}", angle, x, y);
+        }
+        graphics.rotate(Math.toRadians(angle), x, y);
     }
 
     private void drawOverspreadWatermarkForAngle(float angle) {
@@ -305,13 +369,13 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
             for (; y > 0 - getFileHeight(0) / 2; y -= watermarkBox.getHeight() + heightWatermarkDistance) {
                 switch (getWatermarkType()) {
                     case SINGLE_TEXT:
-                        drawString(x, y, watermarkText);
+                        drawString(x, y, watermarkText, 0);
                         break;
                     case MULTI_TEXT:
-                        drawMultiLineString(x, y, watermarkTextList);
+                        drawMultiLineString(x, y, watermarkTextList, 0);
                         break;
                     case IMAGE:
-                        drawImage(x, y, super.watermarkImage);
+                        drawImage(x, y, super.watermarkImage, 0);
                         break;
                     default:
                         throw new PdfWatermarkHandlerException("Unsupported watermark type.");
@@ -322,63 +386,5 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     private Point calcCenterWatermarkPoint(BufferedImage watermarkImage) {
         return calcCenterWatermarkPoint(watermarkImage.getWidth(), watermarkImage.getHeight(), 0);
-    }
-
-    @Override
-    public void loadFile(byte[] data) {
-        try (InputStream inputStream = new ByteArrayInputStream(data)) {
-            this.image = ImageIO.read(inputStream);
-        } catch (IOException e) {
-            log.error("Load image file error.", e);
-            throw new EasyWatermarkException("Load image file error.", e);
-        }
-    }
-
-    @Override
-    public void close() {
-        graphics.dispose();
-    }
-
-    @Override
-    public float getStringWidth(String text) {
-        return fontMetrics.stringWidth(text);
-    }
-
-    @Override
-    public float getStringHeight() {
-        return fontHeight;
-    }
-
-    @Override
-    public void drawString(float x, float y, String text) {
-        if (log.isDebugEnabled()) {
-            log.debug("Draw text. x:{},y:{},text:{}", x, y, text);
-        }
-        graphics.drawString(text, x, (int) (y + ascent));
-    }
-
-    @Override
-    public void drawMultiLineString(float x, float y, List<String> text) {
-        if (log.isDebugEnabled()) {
-            log.debug("Draw multi-line text. x:{},y:{},text:{}", x, y, text);
-        }
-        for (int i = 0; i < text.size(); i++) {
-            drawString(x, y + i * getStringHeight(), text.get(i));
-        }
-    }
-
-    @Override
-    public void drawImage(float x, float y, byte[] data) {
-        if (log.isDebugEnabled()) {
-            log.debug("Draw image. x:{},y:{}", x, y);
-        }
-        BufferedImage bufferedImage;
-        try {
-            bufferedImage = ImageIO.read(new ByteArrayInputStream(data));
-            graphics.drawImage(bufferedImage, (int) x, (int) y, null);
-        } catch (IOException e) {
-            log.warn("Load image error.", e);
-            throw new LoadFileException("Load image error.", e);
-        }
     }
 }
