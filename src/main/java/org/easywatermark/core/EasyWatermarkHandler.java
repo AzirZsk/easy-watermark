@@ -9,9 +9,9 @@ public interface EasyWatermarkHandler extends WatermarkHandler {
     /**
      * Custom draw.
      *
-     * @param customDraw custom draw
+     * @param easyWatermarkCustomDraw custom draw
      */
-    void customDraw(CustomDraw customDraw);
+    void customDraw(EasyWatermarkCustomDraw easyWatermarkCustomDraw);
 
     /**
      * Draw center watermark.

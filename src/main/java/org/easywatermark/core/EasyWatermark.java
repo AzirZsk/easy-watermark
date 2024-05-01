@@ -46,7 +46,7 @@ public class EasyWatermark {
 
     private EasyWatermarkTypeEnum watermarkType = EasyWatermarkTypeEnum.CENTER;
 
-    private CustomDraw customDraw;
+    private EasyWatermarkCustomDraw easyWatermarkCustomDraw;
 
     private EasyWatermark() {
     }
@@ -109,11 +109,16 @@ public class EasyWatermark {
         return this;
     }
 
-    public EasyWatermark customDraw(CustomDraw customDraw) {
-        this.customDraw = customDraw;
+    public EasyWatermark customDraw(EasyWatermarkCustomDraw easyWatermarkCustomDraw) {
+        this.easyWatermarkCustomDraw = easyWatermarkCustomDraw;
         return this;
     }
 
+    /**
+     * Watermark executor.
+     *
+     * @return Watermark byte data.
+     */
     public byte[] executor() {
         checkParam();
         if (file != null) {
@@ -133,8 +138,8 @@ public class EasyWatermark {
             } else {
                 handler.watermark(imageByte);
             }
-            if (customDraw != null) {
-                handler.setCustomDraw(customDraw);
+            if (easyWatermarkCustomDraw != null) {
+                handler.setCustomDraw(easyWatermarkCustomDraw);
             }
             return handler.execute(watermarkType);
         } catch (IOException e) {
@@ -144,11 +149,11 @@ public class EasyWatermark {
     }
 
     private void checkParam() {
-        if (this.file == null || this.fileData == null) {
-            throw new LoadFileException("File is null.");
+        if (this.file == null && this.fileData == null) {
+            throw new LoadFileException("File and FileData is null.");
         }
-        if (this.file != null && this.fileData != null) {
-            throw new LoadFileException("File and fileData must not be null.");
+        if (easyWatermarkCustomDraw != null) {
+            return;
         }
         if (text == null && textList == null && imageByte == null) {
             throw new NullPointerException("Watermark text or image file is null.");

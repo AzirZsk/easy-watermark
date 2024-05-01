@@ -137,6 +137,16 @@ WatermarkConfig watermarkConfig=new WatermarkConfig();
         .executor();
 ```
 
+# Development Plan
+
+- [x] Add watermark to image files
+- [x] Add watermark to PDF files
+- [x] Improve user-defined watermark methods
+- [ ] Add watermark to Word files
+- [ ] Add watermark to Excel files
+- [ ] Add watermark to PowerPoint files
+- [ ] Hidden watermark
+
 # Others
 
 If you have more suggestions, feel free to raise an issue😊
