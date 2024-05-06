@@ -11,4 +11,6 @@ public enum WatermarkTypeEnum {
     SINGLE_TEXT,
 
     MULTI_TEXT,
+
+    CUSTOM_DRAW
 }

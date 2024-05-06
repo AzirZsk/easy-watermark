@@ -20,7 +20,7 @@ types of files.
 ## 2. Add Watermark
 
 ```java
-byte[] result = EasyWatermark.create()
+byte[]result=EasyWatermark.create()
         .file(fileData)
         .text("Easy-Watermark")
         .execute();
@@ -107,7 +107,7 @@ public class FontConfig {
 ## Using Preset Watermark Types
 
 ```java
-byte[] result = EasyWatermark.create()
+byte[]result=EasyWatermark.create()
         .file(fileData)
         .text("Easy-Watermark")
         // Choose different watermark types
@@ -118,33 +118,34 @@ byte[] result = EasyWatermark.create()
 ## Custom Watermark Configuration and Font Configuration
 
 ```java
-WatermarkConfig watermarkConfig = new WatermarkConfig();
+WatermarkConfig watermarkConfig=new WatermarkConfig();
 // Set the transparency of the watermark
-watermarkConfig.setAlpha(0.5f);
+        watermarkConfig.setAlpha(0.5f);
 
-FontConfig fontConfig=new FontConfig();
+        FontConfig fontConfig=new FontConfig();
 // Set the size of the watermark text
-fontConfig.setFontSize(30);
+        fontConfig.setFontSize(30);
 
-byte[] result = EasyWatermark.create()
-            .file(fileData)
-            // Custom configuration
-            .config(watermarkConfig)
-            .config(fontConfig)
-            // Watermark type
-            .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
-            .text("Easy-Watermark")
-            .executor();
+        byte[]result=EasyWatermark.create()
+        .file(fileData)
+        // Custom configuration
+        .config(watermarkConfig)
+        .config(fontConfig)
+        // Watermark type
+        .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
+        .text("Easy-Watermark")
+        .executor();
 ```
 
 # Development Plan
 
 - [x] Add watermark to image files
 - [x] Add watermark to PDF files
-- [ ] Improve user-defined watermark methods
+- [x] Improve user-defined watermark methods
 - [ ] Add watermark to Word files
 - [ ] Add watermark to Excel files
 - [ ] Add watermark to PowerPoint files
+- [ ] Hidden watermark
 
 # Others
 

@@ -2,9 +2,10 @@ package org.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.easywatermark.core.AbstractWatermarkHandler;
-import org.easywatermark.core.CustomDraw;
+import org.easywatermark.core.EasyWatermarkCustomDraw;
 import org.easywatermark.core.config.FontConfig;
 import org.easywatermark.core.config.WatermarkConfig;
+import org.easywatermark.entity.PageInfo;
 import org.easywatermark.entity.Point;
 import org.easywatermark.entity.WatermarkBox;
 import org.easywatermark.enums.*;
@@ -14,7 +15,10 @@ import org.easywatermark.utils.EasyWatermarkUtils;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -106,11 +110,9 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
     }
 
     @Override
-    public void customDraw(CustomDraw customDraw) {
-        if (customDraw == null) {
-            log.warn("Custom draw is null.");
-            return;
-        }
+    public void customDraw(EasyWatermarkCustomDraw easyWatermarkCustomDraw) {
+        PageInfo pageInfo = new PageInfo(getFileWidth(0), getFileHeight(0), 0);
+        easyWatermarkCustomDraw.draw(pageInfo, this, this);
     }
 
     @Override
@@ -262,64 +264,6 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
         }
     }
 
-    private void drawOverspreadWatermarkForAngle(float angle) {
-        WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), 0);
-        OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
-        float coverage = overspreadType.getCoverage();
-        float curPageWidth = getFileWidth(0);
-        float curPageHeight = getFileHeight(0);
-        // calculate the maximum width and height of the page after rotation
-        if (curPageWidth < curPageHeight) {
-            curPageWidth = curPageHeight;
-        } else if (curPageHeight < curPageWidth) {
-            curPageHeight = curPageWidth;
-        }
-
-        float watermarkWidth = coverage * curPageWidth;
-        int columns = (int) (watermarkWidth / watermarkBox.getWidth());
-        float blankWidth = curPageWidth - columns * watermarkBox.getWidth();
-        // calculate the distance between watermarks
-        float k = curPageWidth * 0.01f;
-        float widthWatermarkDistance = calcDistanceBetweenWatermarks(blankWidth, k, columns);
-        float widthWatermarkDistanceFromPageBorder = widthWatermarkDistance - k;
-
-        float watermarkHeight = coverage * curPageHeight;
-        int rows = (int) (watermarkHeight / watermarkBox.getHeight());
-        float blankHeight = curPageHeight - rows * watermarkBox.getHeight();
-        // calculate the distance between watermarks
-        float heightWatermarkDistance = calcDistanceBetweenWatermarks(blankHeight, k, rows);
-        float heightWatermarkDistanceFromPageBorder = heightWatermarkDistance - k;
-
-        float newOriginX = getFileWidth(0) / 2;
-        float newOriginY = getFileHeight(0) / 2;
-        graphics.rotate(Math.toRadians(angle), newOriginX, newOriginY);
-        // Why x/y add or reduce half of the width or height?
-        // Because after rotating the page, there may be airstrikes in the four corners of the page
-        float x = widthWatermarkDistanceFromPageBorder - getFileWidth(0) / 2;
-        for (; x < getFileWidth(0) * 3 / 2; x += watermarkBox.getWidth() + widthWatermarkDistance) {
-            float y = getFileHeight(0) - heightWatermarkDistanceFromPageBorder - watermarkBox.getHeight() + getFileHeight(0) / 2;
-            for (; y > 0 - getFileHeight(0) / 2; y -= watermarkBox.getHeight() + heightWatermarkDistance) {
-                switch (getWatermarkType()) {
-                    case SINGLE_TEXT:
-                        drawString(x, y, watermarkText, 0);
-                        break;
-                    case MULTI_TEXT:
-                        drawMultiLineString(x, y, watermarkTextList, 0);
-                        break;
-                    case IMAGE:
-                        drawImage(x, y, super.watermarkImage, 0);
-                        break;
-                    default:
-                        throw new PdfWatermarkHandlerException("Unsupported watermark type.");
-                }
-            }
-        }
-    }
-
-    private Point calcCenterWatermarkPoint(BufferedImage watermarkImage) {
-        return calcCenterWatermarkPoint(watermarkImage.getWidth(), watermarkImage.getHeight(), 0);
-    }
-
     @Override
     public void loadFile(byte[] data) {
         try (InputStream inputStream = new ByteArrayInputStream(data)) {
@@ -380,6 +324,67 @@ public class ImageWatermarkHandler extends AbstractWatermarkHandler<Font, Graphi
 
     @Override
     public void rotate(float angle, float x, float y, int pageNumber) {
+        if (log.isDebugEnabled()) {
+            log.debug("Rotate. angle:{},x:{},y:{}", angle, x, y);
+        }
         graphics.rotate(Math.toRadians(angle), x, y);
+    }
+
+    private void drawOverspreadWatermarkForAngle(float angle) {
+        WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), 0);
+        OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
+        float coverage = overspreadType.getCoverage();
+        float curPageWidth = getFileWidth(0);
+        float curPageHeight = getFileHeight(0);
+        // calculate the maximum width and height of the page after rotation
+        if (curPageWidth < curPageHeight) {
+            curPageWidth = curPageHeight;
+        } else if (curPageHeight < curPageWidth) {
+            curPageHeight = curPageWidth;
+        }
+
+        float watermarkWidth = coverage * curPageWidth;
+        int columns = (int) (watermarkWidth / watermarkBox.getWidth());
+        float blankWidth = curPageWidth - columns * watermarkBox.getWidth();
+        // calculate the distance between watermarks
+        float k = curPageWidth * 0.01f;
+        float widthWatermarkDistance = calcDistanceBetweenWatermarks(blankWidth, k, columns);
+        float widthWatermarkDistanceFromPageBorder = widthWatermarkDistance - k;
+
+        float watermarkHeight = coverage * curPageHeight;
+        int rows = (int) (watermarkHeight / watermarkBox.getHeight());
+        float blankHeight = curPageHeight - rows * watermarkBox.getHeight();
+        // calculate the distance between watermarks
+        float heightWatermarkDistance = calcDistanceBetweenWatermarks(blankHeight, k, rows);
+        float heightWatermarkDistanceFromPageBorder = heightWatermarkDistance - k;
+
+        float newOriginX = getFileWidth(0) / 2;
+        float newOriginY = getFileHeight(0) / 2;
+        graphics.rotate(Math.toRadians(angle), newOriginX, newOriginY);
+        // Why x/y add or reduce half of the width or height?
+        // Because after rotating the page, there may be airstrikes in the four corners of the page
+        float x = widthWatermarkDistanceFromPageBorder - getFileWidth(0) / 2;
+        for (; x < getFileWidth(0) * 3 / 2; x += watermarkBox.getWidth() + widthWatermarkDistance) {
+            float y = getFileHeight(0) - heightWatermarkDistanceFromPageBorder - watermarkBox.getHeight() + getFileHeight(0) / 2;
+            for (; y > 0 - getFileHeight(0) / 2; y -= watermarkBox.getHeight() + heightWatermarkDistance) {
+                switch (getWatermarkType()) {
+                    case SINGLE_TEXT:
+                        drawString(x, y, watermarkText, 0);
+                        break;
+                    case MULTI_TEXT:
+                        drawMultiLineString(x, y, watermarkTextList, 0);
+                        break;
+                    case IMAGE:
+                        drawImage(x, y, super.watermarkImage, 0);
+                        break;
+                    default:
+                        throw new PdfWatermarkHandlerException("Unsupported watermark type.");
+                }
+            }
+        }
+    }
+
+    private Point calcCenterWatermarkPoint(BufferedImage watermarkImage) {
+        return calcCenterWatermarkPoint(watermarkImage.getWidth(), watermarkImage.getHeight(), 0);
     }
 }

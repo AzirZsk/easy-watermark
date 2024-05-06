@@ -11,9 +11,10 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.util.Matrix;
 import org.easywatermark.core.AbstractWatermarkHandler;
-import org.easywatermark.core.CustomDraw;
+import org.easywatermark.core.EasyWatermarkCustomDraw;
 import org.easywatermark.core.config.FontConfig;
 import org.easywatermark.core.config.WatermarkConfig;
+import org.easywatermark.entity.PageInfo;
 import org.easywatermark.entity.Point;
 import org.easywatermark.entity.WatermarkBox;
 import org.easywatermark.enums.*;
@@ -140,7 +141,11 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
     }
 
     @Override
-    public void customDraw(CustomDraw customDraw) {
+    public void customDraw(EasyWatermarkCustomDraw easyWatermarkCustomDraw) {
+        for (int i = 0; i < graphics.size(); i++) {
+            PageInfo pageInfo = new PageInfo(getFileWidth(i), getFileHeight(i), i);
+            easyWatermarkCustomDraw.draw(pageInfo, this, this);
+        }
     }
 
     @Override
@@ -233,6 +238,154 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
                 }
             }
         }
+    }
+
+    @Override
+    public void drawDiagonalWatermark() {
+        for (int i = 0; i < graphics.size(); i++) {
+            float fileWidth = getFileWidth(i);
+            float fileHeight = getFileHeight(i);
+            double radians = EasyWatermarkUtils.calcRadians(fileWidth, fileHeight);
+            DiagonalDirectionTypeEnum diagonalDirectionType = watermarkConfig.getDiagonalDirectionType();
+            switch (diagonalDirectionType) {
+                case TOP_TO_BOTTOM:
+                    radians = -radians;
+                    break;
+                case BOTTOM_TO_TOP:
+                    break;
+                default:
+                    throw new ImageWatermarkHandlerException("Unsupported diagonal watermark type.");
+            }
+            PDPageContentStream pdPageContentStream = graphics.get(i);
+            rotatePageByRadians(pdPageContentStream, (float) radians, fileWidth / 2, fileHeight / 2);
+            WatermarkTypeEnum watermarkType = getWatermarkType();
+            switch (watermarkType) {
+                case SINGLE_TEXT:
+                    directDrawString(-getStringWidth(watermarkText) / 2, -getStringHeight() + ascent, watermarkText, pdPageContentStream);
+                    break;
+                case MULTI_TEXT:
+                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i);
+                    for (int j = 0; j < watermarkTextList.size(); j++) {
+                        String curWatermarkText = watermarkTextList.get(j);
+                        float tx = -getStringWidth(curWatermarkText) / 2;
+                        float ty = (watermarkBox.getHeight() + ascent) / 2 - getStringHeight() - j * getStringHeight();
+                        directDrawString(tx, ty, curWatermarkText, pdPageContentStream);
+                    }
+                    break;
+                case IMAGE:
+                    directDrawImage(-getWatermarkImageWidth() / 2, -getWatermarkImageHeight() / 2, watermarkImage, pdPageContentStream);
+                    break;
+                default:
+                    throw new ImageWatermarkHandlerException("Unsupported watermark type.");
+            }
+        }
+    }
+
+    @Override
+    public byte[] export(EasyWatermarkTypeEnum watermarkType) {
+        try {
+            for (PDPageContentStream pdPageContentStream : graphics) {
+                pdPageContentStream.close();
+            }
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            pdDocument.save(byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            log.error("Save file error.", e);
+            throw new PdfWatermarkHandlerException("Save file error.", e);
+        }
+    }
+
+    @Override
+    public void loadFile(byte[] data) {
+        try {
+            this.pdDocument = PDDocument.load(data);
+        } catch (IOException e) {
+            log.error("Load file error.", e);
+            throw new LoadFileException("Load file error.", e);
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        pdDocument.close();
+    }
+
+    @Override
+    public float getStringWidth(String text) {
+        try {
+            return font.getStringWidth(text) / 1000 * fontConfig.getFontSize();
+        } catch (IOException e) {
+            log.error("Get string width error.", e);
+            throw new PdfWatermarkHandlerException("Get string width error.", e);
+        }
+    }
+
+    @Override
+    public float getStringHeight() {
+        return font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontConfig.getFontSize();
+    }
+
+    @Override
+    public void drawString(float x, float y, String text, int pageNumber) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw string in page {}, x:{}, y:{}, text:{}", pageNumber, x, y, text);
+        }
+        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
+        try {
+            pdPageContentStream.beginText();
+            pdPageContentStream.newLineAtOffset(x, getFileHeight(pageNumber) - y - ascent);
+            pdPageContentStream.showText(text);
+            pdPageContentStream.endText();
+        } catch (IOException e) {
+            log.error("Draw string error.", e);
+            throw new PdfWatermarkHandlerException("Draw string error.", e);
+        }
+    }
+
+    @Override
+    public void drawMultiLineString(float x, float y, List<String> text, int pageNumber) {
+        if (log.isDebugEnabled()) {
+            log.debug("Draw multi-line string in page {}, x:{}, y:{}, text:{}", pageNumber, x, y, text);
+        }
+        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
+        try {
+            pdPageContentStream.beginText();
+            pdPageContentStream.newLineAtOffset(x, getFileHeight(pageNumber) - y - ascent);
+            for (String s : text) {
+                pdPageContentStream.showText(s);
+                pdPageContentStream.newLineAtOffset(0, -getStringHeight());
+            }
+            pdPageContentStream.endText();
+        } catch (IOException e) {
+            log.error("Draw multi-line string error.", e);
+            throw new PdfWatermarkHandlerException("Draw multi-line string error.", e);
+        }
+
+    }
+
+    @Override
+    public void drawImage(float x, float y, byte[] data, int pageNumber) {
+        PDImageXObject image = getPdImageXObject(data);
+        if (log.isDebugEnabled()) {
+            log.debug("Draw image in page {}, x:{}, y:{}", pageNumber, x, y);
+        }
+        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
+        try {
+            pdPageContentStream.drawImage(image, x, getFileHeight(pageNumber) - y - image.getHeight());
+        } catch (IOException e) {
+            log.error("Draw image error.", e);
+            throw new PdfWatermarkHandlerException("Draw image error.", e);
+        }
+    }
+
+    @Override
+    public void rotate(float angle, float x, float y, int pageNumber) {
+        if (log.isDebugEnabled()) {
+            log.debug("Rotate page {}, angle:{}, x:{}, y:{}", pageNumber, angle, x, y);
+        }
+        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
+        rotatePage(pdPageContentStream, angle, x, y);
     }
 
     /**
@@ -394,151 +547,6 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
             log.error("Draw image error.", e);
             throw new PdfWatermarkHandlerException("Draw image error.", e);
         }
-    }
-
-    @Override
-    public void drawDiagonalWatermark() {
-        for (int i = 0; i < graphics.size(); i++) {
-            float fileWidth = getFileWidth(i);
-            float fileHeight = getFileHeight(i);
-            double radians = EasyWatermarkUtils.calcRadians(fileWidth, fileHeight);
-            DiagonalDirectionTypeEnum diagonalDirectionType = watermarkConfig.getDiagonalDirectionType();
-            switch (diagonalDirectionType) {
-                case TOP_TO_BOTTOM:
-                    radians = -radians;
-                    break;
-                case BOTTOM_TO_TOP:
-                    break;
-                default:
-                    throw new ImageWatermarkHandlerException("Unsupported diagonal watermark type.");
-            }
-            PDPageContentStream pdPageContentStream = graphics.get(i);
-            rotatePageByRadians(pdPageContentStream, (float) radians, fileWidth / 2, fileHeight / 2);
-            WatermarkTypeEnum watermarkType = getWatermarkType();
-            switch (watermarkType) {
-                case SINGLE_TEXT:
-                    directDrawString(-getStringWidth(watermarkText) / 2, -getStringHeight() + ascent, watermarkText, pdPageContentStream);
-                    break;
-                case MULTI_TEXT:
-                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, i);
-                    for (int j = 0; j < watermarkTextList.size(); j++) {
-                        String curWatermarkText = watermarkTextList.get(j);
-                        float tx = -getStringWidth(curWatermarkText) / 2;
-                        float ty = (watermarkBox.getHeight() + ascent) / 2 - getStringHeight() - j * getStringHeight();
-                        directDrawString(tx, ty, curWatermarkText, pdPageContentStream);
-                    }
-                    break;
-                case IMAGE:
-                    directDrawImage(-getWatermarkImageWidth() / 2, -getWatermarkImageHeight() / 2, watermarkImage, pdPageContentStream);
-                    break;
-                default:
-                    throw new ImageWatermarkHandlerException("Unsupported watermark type.");
-            }
-        }
-    }
-
-    @Override
-    public byte[] export(EasyWatermarkTypeEnum watermarkType) {
-        try {
-            for (PDPageContentStream pdPageContentStream : graphics) {
-                pdPageContentStream.close();
-            }
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            pdDocument.save(byteArrayOutputStream);
-            return byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            log.error("Save file error.", e);
-            throw new PdfWatermarkHandlerException("Save file error.", e);
-        }
-    }
-
-    @Override
-    public void loadFile(byte[] data) {
-        try {
-            this.pdDocument = PDDocument.load(data);
-        } catch (IOException e) {
-            log.error("Load file error.", e);
-            throw new LoadFileException("Load file error.", e);
-        }
-    }
-
-    @Override
-    public void close() throws IOException {
-        pdDocument.close();
-    }
-
-    @Override
-    public float getStringWidth(String text) {
-        try {
-            return font.getStringWidth(text) / 1000 * fontConfig.getFontSize();
-        } catch (IOException e) {
-            log.error("Get string width error.", e);
-            throw new PdfWatermarkHandlerException("Get string width error.", e);
-        }
-    }
-
-    @Override
-    public float getStringHeight() {
-        return font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontConfig.getFontSize();
-    }
-
-    @Override
-    public void drawString(float x, float y, String text, int pageNumber) {
-        if (log.isDebugEnabled()) {
-            log.debug("Draw string in page {}, x:{}, y:{}, text:{}", pageNumber, x, y, text);
-        }
-        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
-        try {
-            pdPageContentStream.beginText();
-            pdPageContentStream.newLineAtOffset(x, getFileHeight(pageNumber) - y - ascent);
-            pdPageContentStream.showText(text);
-            pdPageContentStream.endText();
-        } catch (IOException e) {
-            log.error("Draw string error.", e);
-            throw new PdfWatermarkHandlerException("Draw string error.", e);
-        }
-    }
-
-    @Override
-    public void drawMultiLineString(float x, float y, List<String> text, int pageNumber) {
-        if (log.isDebugEnabled()) {
-            log.debug("Draw multi-line string in page {}, x:{}, y:{}, text:{}", pageNumber, x, y, text);
-        }
-        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
-        try {
-            pdPageContentStream.beginText();
-            pdPageContentStream.newLineAtOffset(x, getFileHeight(pageNumber) - y - ascent);
-            for (String s : text) {
-                pdPageContentStream.showText(s);
-                pdPageContentStream.newLineAtOffset(0, -getStringHeight());
-            }
-            pdPageContentStream.endText();
-        } catch (IOException e) {
-            log.error("Draw multi-line string error.", e);
-            throw new PdfWatermarkHandlerException("Draw multi-line string error.", e);
-        }
-
-    }
-
-    @Override
-    public void drawImage(float x, float y, byte[] data, int pageNumber) {
-        PDImageXObject image = getPdImageXObject(data);
-        if (log.isDebugEnabled()) {
-            log.debug("Draw image in page {}, x:{}, y:{}", pageNumber, x, y);
-        }
-        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
-        try {
-            pdPageContentStream.drawImage(image, x, getFileHeight(pageNumber) - y - image.getHeight());
-        } catch (IOException e) {
-            log.error("Draw image error.", e);
-            throw new PdfWatermarkHandlerException("Draw image error.", e);
-        }
-    }
-
-    @Override
-    public void rotate(float angle, float x, float y, int pageNumber) {
-        PDPageContentStream pdPageContentStream = graphics.get(pageNumber);
-        rotatePage(pdPageContentStream, angle, x, y);
     }
 
     private PDImageXObject getPdImageXObject(byte[] data) {
