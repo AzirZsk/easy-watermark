@@ -10,7 +10,6 @@ types of files.
 ## 1. Add Dependency
 
 ```xml
-
 <dependency>
     <groupId>org.easywatermark</groupId>
     <artifactId>easy-watermark</artifactId>
