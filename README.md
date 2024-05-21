@@ -20,7 +20,7 @@ types of files.
 ## 2. Add Watermark
 
 ```java
-byte[]result=EasyWatermark.create()
+byte[] result = EasyWatermark.create()
         .file(fileData)
         .text("Easy-Watermark")
         .execute();
@@ -30,21 +30,21 @@ byte[]result=EasyWatermark.create()
 
 ## Preset Watermark Types
 
-- CUSTOM: Custom watermark, using the unified method abstracted by the framework, special processing is performed on
+- **CUSTOM:** Custom watermark, using the unified method abstracted by the framework, special processing is performed on
   each page of the incoming file (under development)
-- CENTER: Centered, added at various centered positions on the page.
-    - VERTICAL_CENTER: The watermark is vertically centered
-    - LEFT_CENTER: Left centered
-    - RIGHT_CENTER: Right centered
-    - TOP_CENTER: Top centered
-    - BOTTOM_CENTER: Bottom centered
-- OVERSPREAD: Full page, the tilt angle can be set
-    - LOW: Low spread, watermark content accounts for 33%
-    - NORMAL: Generally spread, watermark content accounts for 66%
-    - HIGH: High spread, watermark content accounts for 99%
-- DIAGONAL: Diagonal watermark on the page
-    - TOP_TO_BOTTOM: Text from top to bottom
-    - BOTTOM_TO_TOP: Text from bottom to top
+- **CENTER:** Centered, added at various centered positions on the page.
+    - **VERTICAL_CENTER:** The watermark is vertically centered
+    - **LEFT_CENTER:** Left centered
+    - **RIGHT_CENTER:** Right centered
+    - **TOP_CENTER:** Top centered
+    - **BOTTOM_CENTER:** Bottom centered
+- **OVERSPREAD:** Full page, the tilt angle can be set
+    - **LOW:** Low spread, watermark content accounts for 33%
+    - **NORMAL:** Generally spread, watermark content accounts for 66%
+    - **HIGH:** High spread, watermark content accounts for 90%
+- **DIAGONAL:** Diagonal watermark on the page
+    - **TOP_TO_BOTTOM:** Text from top to bottom
+    - **BOTTOM_TO_TOP:** Text from bottom to top
 
 ## Watermark Configuration
 
@@ -107,7 +107,7 @@ public class FontConfig {
 ## Using Preset Watermark Types
 
 ```java
-byte[]result=EasyWatermark.create()
+byte[] result = EasyWatermark.create()
         .file(fileData)
         .text("Easy-Watermark")
         // Choose different watermark types
@@ -118,15 +118,15 @@ byte[]result=EasyWatermark.create()
 ## Custom Watermark Configuration and Font Configuration
 
 ```java
-WatermarkConfig watermarkConfig=new WatermarkConfig();
+WatermarkConfig watermarkConfig = new WatermarkConfig();
 // Set the transparency of the watermark
-        watermarkConfig.setAlpha(0.5f);
+watermarkConfig.setAlpha(0.5f);
 
-        FontConfig fontConfig=new FontConfig();
+FontConfig fontConfig = new FontConfig();
 // Set the size of the watermark text
-        fontConfig.setFontSize(30);
+fontConfig.setFontSize(30);
 
-        byte[]result=EasyWatermark.create()
+byte[] result = EasyWatermark.create()
         .file(fileData)
         // Custom configuration
         .config(watermarkConfig)
