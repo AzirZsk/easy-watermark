@@ -34,6 +34,7 @@ byte[] result = EasyWatermark.create()
 - **DIAGONAL**：页面对角水印
   - **TOP_TO_BOTTOM**：文字从上到下
   - **BOTTOM_TO_TOP**：文字从下到上
+
 ## 水印配置
 对应`WatermarkConfig`类，该类会对水印的各项属性进行设置。
 
