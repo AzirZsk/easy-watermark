@@ -1,5 +1,7 @@
-# Easy-Watermark
+# EasyWatermark
+
 [中文文档](README_zh.md) <br/>
+[Example](doc/ImageWatermarkExample.md) <br/>
 
 Easy Watermark is a simple and easy-to-use watermark addition framework. The framework abstracts the methods of adding
 watermarks for various file types. With just a few lines of code, you can add the same style of watermark to different
