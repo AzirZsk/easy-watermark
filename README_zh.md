@@ -3,7 +3,6 @@ Easy Watermark是一个简单易用的水印添加框架，框架抽象了各个
 # 快速开始
 ## 1. 添加依赖
 ```xml
-
 <dependency>
   <groupId>org.easywatermark</groupId>
   <artifactId>easy-watermark</artifactId>
@@ -12,7 +11,7 @@ Easy Watermark是一个简单易用的水印添加框架，框架抽象了各个
 ```
 ## 2. 添加水印
 ```java
-byte[]result=EasyWatermark.create()
+byte[] result = EasyWatermark.create()
         .file(fileData)
         .text("Easy-Watermark")
         .execute();
@@ -20,20 +19,21 @@ byte[]result=EasyWatermark.create()
 # 更多配置
 ## 预制水印类型
 
-- CUSTOM：自定义水印，使用框架抽象的统一方法，对传入文件的每个页面进行特殊处理（开发中）
-- CENTER：居中，在页面的各个居中位置上添加。
-  - VERTICAL_CENTER：水印垂直居中
-  - LEFT_CENTER：靠左居中
-  - RIGHT_CENTER：靠右居中
-  - TOP_CENTER：顶部居中
-  - BOTTOM_CENTER：底部居中
-- OVERSPREAD：页面铺满，可设置倾斜角度
-  - LOW：低铺满，水印内容占比33%
-  - NORMAL：一般铺满，水印内容占比66%
-  - HIGH：高铺满，水印内容占比99%
-- DIAGONAL：页面对角水印
-  - TOP_TO_BOTTOM：文字从上到下
-  - BOTTOM_TO_TOP：文字从下到上
+- **CUSTOM**：自定义水印，使用框架抽象的统一方法，对传入文件的每个页面进行特殊处理（开发中）
+- **CENTER**：居中，在页面的各个居中位置上添加。
+  - **VERTICAL_CENTER**：水印垂直居中
+  - **LEFT_CENTER**：靠左居中
+  - **RIGHT_CENTER**：靠右居中
+  - **TOP_CENTER**：顶部居中
+  - **BOTTOM_CENTER**：底部居中
+- **OVERSPREAD**：页面铺满，可设置倾斜角度
+  - **LOW**：低铺满，水印内容占比33%
+  - **NORMAL**：一般铺满，水印内容占比66%
+  - **HIGH**：高铺满，水印内容占比90%
+- **DIAGONAL**：页面对角水印
+  - **TOP_TO_BOTTOM**：文字从上到下
+  - **BOTTOM_TO_TOP**：文字从下到上
+
 ## 水印配置
 对应`WatermarkConfig`类，该类会对水印的各项属性进行设置。
 
@@ -89,7 +89,7 @@ public class FontConfig {
 # 进阶用法
 ## 使用预设水印类型
 ```java
-byte[]result=EasyWatermark.create()
+byte[] result = EasyWatermark.create()
         .file(fileData)
         .text("Easy-Watermark")
         // 选择不同的水印类型
@@ -99,15 +99,15 @@ byte[]result=EasyWatermark.create()
 ## 自定义水印配置以及字体配置
 
 ```java
-WatermarkConfig watermarkConfig=new WatermarkConfig();
+WatermarkConfig watermarkConfig = new WatermarkConfig();
 // 设置水印透明度
-        watermarkConfig.setAlpha(0.5f);
+watermarkConfig.setAlpha(0.5f);
 
-        FontConfig fontConfig=new FontConfig();
+FontConfig fontConfig = new FontConfig();
 // 设置水印文字大小
-        fontConfig.setFontSize(30);
+fontConfig.setFontSize(30);
 
-        byte[]result=EasyWatermark.create()
+byte[] result = EasyWatermark.create()
         .file(fileData)
         // 自定义配置
         .config(watermarkConfig)
