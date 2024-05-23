@@ -1,6 +1,6 @@
 # EasyWatermark
 
-[图片样例](doc/ImageWatermarkExample.md)
+[图片水印样例](doc/ImageWatermarkExample.md)
 
 EasyWatermark是一个简单易用的水印添加框架，框架抽象了各个文件类型的对于水印添加的方法。仅使用几行代码即可为不同类型的文件添加相同样式的水印。
 
