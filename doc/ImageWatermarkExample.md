@@ -1,0 +1,28 @@
+> The demonstration watermark style is not the final effect, and the final rendering result depends on the corresponding
+> file.<br/>
+> 演示水印样式并非最终效果，最终渲染结果需看对应文件。
+
+# CENTER/居中
+
+| subType/子类型          | result/结果                                                                                                                                                                                                                                                                                                 |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| VERTICAL_CENTER/垂直居中 | ![VerticalCenterSingleWatermark.jpeg](file/image/centerwatermark/VerticalCenterSingleWatermark.jpeg)![VerticalCenterMultiWatermark.jpeg](file/image/centerwatermark/VerticalCenterMultiWatermark.jpeg) ![VerticalCenterImageWatermark.jpeg](file/image/centerwatermark/VerticalCenterImageWatermark.jpeg) |
+| LEFT_CENTER/左居中      | ![LeftCenterSingleWatermark.jpeg](file/image/centerwatermark/LeftCenterSingleWatermark.jpeg) ![LeftCenterMultiWatermark.jpeg](file/image/centerwatermark/LeftCenterMultiWatermark.jpeg) ![LeftCenterImageWatermark.jpeg](file/image/centerwatermark/LeftCenterImageWatermark.jpeg)                        |
+| RIGHT_CENTER/右居中     | ![RightCenterSingleWatermark.jpeg](file/image/centerwatermark/RightCenterSingleWatermark.jpeg) ![RightCenterMultiWatermark.jpeg](file/image/centerwatermark/RightCenterMultiWatermark.jpeg) ![RightCenterImageWatermark.jpeg](file/image/centerwatermark/RightCenterImageWatermark.jpeg)                  |
+| TOP_CENTER/上居中       | ![TopCenterSingleWatermark.jpeg](file/image/centerwatermark/TopCenterSingleWatermark.jpeg)![TopCenterMultiWatermark.jpeg](file/image/centerwatermark/TopCenterMultiWatermark.jpeg) ![TopCenterImageWatermark.jpeg](file/image/centerwatermark/TopCenterImageWatermark.jpeg)                               |
+| BOTTOM_CENTER/下居中    | ![BottomCenterSingleWatermark.jpeg](file/image/centerwatermark/BottomCenterSingleWatermark.jpeg)  ![BottomCenterMultiWatermark.jpeg](file/image/centerwatermark/BottomCenterMultiWatermark.jpeg)  ![BottomCenterImageWatermark.jpeg](file/image/centerwatermark/BottomCenterImageWatermark.jpeg)          |
+
+# DIAGONAL/斜对角
+
+| subType/子类型      | result/结果                                                                                                                                                                                                                                                                                                                                      |
+|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| TopToBottom/从上到下 | ![DiagonalTopToBottomSingleWatermark.jpeg](file/image/diagonalwatermark/DiagonalTopToBottomSingleWatermark.jpeg)![DiagonalTopToBottomMultiWatermark.jpeg](file/image/diagonalwatermark/DiagonalTopToBottomMultiWatermark.jpeg) ![DiagonalTopToBottomImageWatermark.jpeg](file/image/diagonalwatermark/DiagonalTopToBottomImageWatermark.jpeg)  |
+| BottomToTop/从下到上 | ![DiagonalBottomToTopSingleWatermark.jpeg](file/image/diagonalwatermark/DiagonalBottomToTopSingleWatermark.jpeg) ![DiagonalBottomToTopMultiWatermark.jpeg](file/image/diagonalwatermark/DiagonalBottomToTopMultiWatermark.jpeg) ![DiagonalBottomToTopImageWatermark.jpeg](file/image/diagonalwatermark/DiagonalBottomToTopImageWatermark.jpeg) |
+
+# OVERSPREAD/铺满
+
+| subType/子类型 | result/结果                                                                                                                                                                                                                                                                                                                          |
+|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| LOW/低       | ![LowOverspreadSingleWatermark.jpeg](file/image/overspreadwatermark/LowOverspreadSingleWatermark.jpeg) ![LowOverspreadMultiWatermark.jpeg](file/image/overspreadwatermark/LowOverspreadMultiWatermark.jpeg) ![LowOverspreadImageWatermark.jpeg](file/image/overspreadwatermark/LowOverspreadImageWatermark.jpeg)                   |
+| NORMAL/中    | ![NormalOverspreadSingleWatermark.jpeg](file/image/overspreadwatermark/NormalOverspreadSingleWatermark.jpeg) ![NormalOverspreadMultiWatermark.jpeg](file/image/overspreadwatermark/NormalOverspreadMultiWatermark.jpeg) ![NormalOverspreadImageWatermark.jpeg](file/image/overspreadwatermark/NormalOverspreadImageWatermark.jpeg) |
+| HIGH/高      | ![HighOverspreadSingleWatermark.jpeg](file/image/overspreadwatermark/HighOverspreadSingleWatermark.jpeg) ![HighOverspreadMultiWatermark.jpeg](file/image/overspreadwatermark/HighOverspreadMultiWatermark.jpeg) ![HighOverspreadImageWatermark.jpeg](file/image/overspreadwatermark/HighOverspreadImageWatermark.jpeg)             |
