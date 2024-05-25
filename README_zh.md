@@ -10,7 +10,6 @@ EasyWatermark是一个简单易用的水印添加框架，框架抽象了各个�
 ## 1. 添加依赖
 
 ```xml
-
 <dependency>
   <groupId>org.easywatermark</groupId>
   <artifactId>easy-watermark</artifactId>
