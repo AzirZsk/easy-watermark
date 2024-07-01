@@ -55,6 +55,17 @@
             <version>1.7.36</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-core</artifactId>
+            <version>8.3.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+            <version>8.3.11</version>
+        </dependency>
+
     </dependencies>
 
     <licenses>
