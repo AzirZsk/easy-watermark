@@ -1,5 +1,7 @@
 package org.easywatermark.utils;
 
+import java.awt.*;
+
 /**
  * @author zhangshukun
  * @since 2024/04/09
@@ -14,18 +16,10 @@ public class EasyWatermarkUtils {
         return Math.toDegrees(calcRadians(weight, height));
     }
 
-    /**
-     * @author zhangshukun
-     * @date 2022/11/18
-     */
-    public static class StringUtils {
-
-        public static boolean isEmpty(String text) {
-            return text == null || text.isEmpty();
+    public static String hexColor(Color color) {
+        if (color == null) {
+            throw new NullPointerException("color is null");
         }
-
-        public static boolean isNoEmpty(String text) {
-            return !isEmpty(text);
-        }
+        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
     }
 }
