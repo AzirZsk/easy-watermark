@@ -1,7 +1,6 @@
 package org.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.docx4j.XmlUtils;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.structure.SectionWrapper;
@@ -50,6 +49,8 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     private static final String SHAPE_TYPE = "#_x0000_t136";
 
+    private static final String WARP = "\\n";
+
     private static final ObjectFactory FACTORY = Context.getWmlObjectFactory();
 
     private WordprocessingMLPackage file;
@@ -74,9 +75,10 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
     @Override
     protected void initGraphics() {
         this.textWatermarkControl = new CTTextPath();
+        textWatermarkControl.setStyle("font-family:\"宋体\";");
         this.ctShape = new CTShape();
         ctShape.setFillcolor(EasyWatermarkUtils.hexColor(watermarkConfig.getColor()));
-        ctShape.setVmlId(RandomStringUtils.random(10));
+        ctShape.setVmlId("asdfasdfzxcv");
         ctShape.setStroked(org.docx4j.vml.STTrueFalse.F);
         ctShape.setSpid(SHAPE_SPID);
         ctShape.setType(SHAPE_TYPE);
@@ -94,7 +96,7 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
             this.font = font.deriveFont(fontConfig.getFontStyle(), (float) fontConfig.getFontSize());
             BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
             Graphics graphics = image.getGraphics();
-            this.fontMetrics = graphics.getFontMetrics(font);
+            this.fontMetrics = graphics.getFontMetrics(this.font);
         } catch (FontFormatException | IOException e) {
             log.error("Load font error. Font file:{}", fontConfig.getFontFile(), e);
             throw new LoadFontException("Load font error.", e);
@@ -154,7 +156,7 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     private void addWatermarkToFile() {
         try {
-            Relationship watermarkRelationship = createWatermarkHeaderPart(file);
+            Relationship watermarkRelationship = createWatermarkRelationship(file);
 
             List<SectionWrapper> sections = file.getDocumentModel().getSections();
             SectionWrapper lastSectionWrapper = sections.get(sections.size() - 1);
@@ -182,7 +184,7 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawCenterWatermark() {
-
+        drawString(0, 0, "asdfasdf", 0);
     }
 
     @Override
@@ -222,12 +224,14 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawString(float x, float y, String text, int pageNumber) {
-
+        // todo pageNumber no use
+        textWatermarkControl.setString(text);
+        ctShape.setStyle("position:absolute;left:10;top:10;width:468pt;height:300pt;");
     }
 
     @Override
     public void drawMultiLineString(float x, float y, List<String> text, int pageNumber) {
-
+        textWatermarkControl.setString(String.join(WARP, text));
     }
 
     @Override
@@ -246,7 +250,7 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
      * @param wordprocessingMLPackage file
      * @return docx xml relationship
      */
-    private Relationship createWatermarkHeaderPart(WordprocessingMLPackage wordprocessingMLPackage) throws InvalidFormatException {
+    private Relationship createWatermarkRelationship(WordprocessingMLPackage wordprocessingMLPackage) throws InvalidFormatException {
         HeaderPart headerPart = new HeaderPart();
         Hdr hdr = getWatermarkHdr();
         headerPart.setJaxbElement(hdr);
@@ -255,8 +259,8 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     private Hdr getWatermarkHdr() {
         Hdr res = FACTORY.createHdr();
-        P qq = createDocxHeader();
-        res.getContent().add(qq);
+        P watermarkHeader = createDocxHeader();
+        res.getContent().add(watermarkHeader);
         return res;
     }
 

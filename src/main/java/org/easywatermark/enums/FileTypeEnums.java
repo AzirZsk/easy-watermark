@@ -1,6 +1,6 @@
 package org.easywatermark.enums;
 
-import org.easywatermark.exception.FileTypeUnSupportException;
+import org.easywatermark.exception.FileTypeUnsupportException;
 
 /**
  * @author Azir
@@ -35,8 +35,7 @@ public enum FileTypeEnums {
 
     private static final byte[] PDF_BYTE = {(byte) '%', (byte) 'P', (byte) 'D', (byte) 'F'};
 
-    private static final byte[] OFFICE_BYTE = {(byte) 0xD0, (byte) 0xCF, (byte) 0x11, (byte) 0xE0,
-            (byte) 0xA1, (byte) 0xB1, (byte) 0x1A, (byte) 0xE1};
+    private static final byte[] OFFICE_BYTE = {(byte) 0x50, (byte) 0x4B, (byte) 0x03, (byte) 0x04};
 
     /**
      * Parse byte steam data type.
@@ -54,7 +53,7 @@ public enum FileTypeEnums {
         if (isImage(date)) {
             return IMAGE;
         }
-        throw new FileTypeUnSupportException("Byte data file is not support.");
+        throw new FileTypeUnsupportException("File type is not support.");
     }
 
     private static boolean isOffice(byte[] data) {
