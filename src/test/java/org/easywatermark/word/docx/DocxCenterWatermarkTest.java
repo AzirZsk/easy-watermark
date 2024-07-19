@@ -44,7 +44,7 @@ public class DocxCenterWatermarkTest extends AbstractTest {
     @Test
     public void testVerticalCenterSingleWatermark() {
         WATERMARK_CONFIG.setCenterLocationType(CenterLocationTypeEnum.VERTICAL_CENTER);
-        byte[] executor = EASY_WATERMARK.text("AaCcGgQqJjMmPp")
+        byte[] executor = EASY_WATERMARK.text("AaCcGgQqJjMmPp啊手动阀手动阀")
                 .executor();
         // 输出到桌面
         saveOutPutFile(executor, DIR, TYPE);

@@ -1,12 +1,12 @@
 package org.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.docx4j.XmlUtils;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.structure.SectionWrapper;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.PartName;
 import org.docx4j.openpackaging.parts.WordprocessingML.HeaderPart;
 import org.docx4j.relationships.Relationship;
 import org.docx4j.vml.*;
@@ -17,14 +17,11 @@ import org.easywatermark.core.AbstractWatermarkHandler;
 import org.easywatermark.core.EasyWatermarkCustomDraw;
 import org.easywatermark.core.config.FontConfig;
 import org.easywatermark.core.config.WatermarkConfig;
-import org.easywatermark.entity.PageInfo;
 import org.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.easywatermark.exception.DocxWatermarkHandlerException;
 import org.easywatermark.exception.LoadFontException;
 import org.easywatermark.utils.DocxUtils;
 import org.easywatermark.utils.EasyWatermarkUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.*;
 
 import javax.xml.bind.JAXBElement;
 import java.awt.*;
@@ -32,7 +29,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,8 +39,6 @@ import java.util.List;
 
 public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object> {
 
-    private static final String TAG_NAME_PG_SZ = "w:pgSz";
-
     private static final String SHAPE_SPID = "_x0000_s2049";
 
     private static final String SHAPE_TYPE = "#_x0000_t136";
@@ -53,20 +47,20 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     private static final ObjectFactory FACTORY = Context.getWmlObjectFactory();
 
+    private int headerXmlCount = 0;
+
     private WordprocessingMLPackage file;
-
-    /**
-     * docx file xml format.
-     */
-    private Document document;
-
-    private List<PageInfo> pageInfoList;
 
     private FontMetrics fontMetrics;
 
-    private CTTextPath textWatermarkControl;
-
-    private CTShape ctShape;
+    /**
+     * docx file section wrapper.
+     * include:
+     * 1. header info
+     * 2. footer info
+     * 3. page info
+     */
+    private List<SectionWrapper> sectionWrapperList;
 
     public DocxWatermarkHandler(byte[] data, FontConfig fontConfig, WatermarkConfig watermarkConfig) {
         super(data, fontConfig, watermarkConfig);
@@ -74,14 +68,6 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     protected void initGraphics() {
-        this.textWatermarkControl = new CTTextPath();
-        textWatermarkControl.setStyle("font-family:\"宋体\";");
-        this.ctShape = new CTShape();
-        ctShape.setFillcolor(EasyWatermarkUtils.hexColor(watermarkConfig.getColor()));
-        ctShape.setVmlId("asdfasdfzxcv");
-        ctShape.setStroked(org.docx4j.vml.STTrueFalse.F);
-        ctShape.setSpid(SHAPE_SPID);
-        ctShape.setType(SHAPE_TYPE);
     }
 
     @Override
@@ -105,30 +91,19 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     protected void initEnvironment() {
-        this.document = XmlUtils.marshaltoW3CDomDocument(this.file.getMainDocumentPart().getJaxbElement());
-        NodeList pgSzNodeList = document.getElementsByTagName(TAG_NAME_PG_SZ);
-        List<PageInfo> pageInfoList = new ArrayList<>();
-        for (int i = 0; i < pgSzNodeList.getLength(); i++) {
-            Node item = pgSzNodeList.item(i);
-            NamedNodeMap attributes = item.getAttributes();
-            Node heightNode = attributes.getNamedItem("w:h");
-            Node widthNode = attributes.getNamedItem("w:w");
-            PageInfo pageInfo = new PageInfo(Float.parseFloat(widthNode.getTextContent()), Float.parseFloat(heightNode.getTextContent()), i);
-            pageInfoList.add(pageInfo);
-        }
-        this.pageInfoList = pageInfoList;
+        this.sectionWrapperList = file.getDocumentModel().getSections();
     }
 
     @Override
     protected float getFileWidth(int page) {
         checkPageInfoList();
-        return pageInfoList.get(page).getWidth();
+        return sectionWrapperList.get(page).getPageDimensions().getPgSz().getW().floatValue();
     }
 
     @Override
     protected float getFileHeight(int page) {
         checkPageInfoList();
-        return pageInfoList.get(page).getHeight();
+        return sectionWrapperList.get(page).getPageDimensions().getPgSz().getH().floatValue();
     }
 
     @Override
@@ -143,7 +118,6 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     protected byte[] export(EasyWatermarkTypeEnum watermarkType) {
-        addWatermarkToFile();
         ByteArrayOutputStream res = new ByteArrayOutputStream();
         try {
             file.save(res);
@@ -154,17 +128,16 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
         return res.toByteArray();
     }
 
-    private void addWatermarkToFile() {
+    private void addWatermark(CTTextPath textPath, CTShape shape, Integer pageNumber) {
         try {
-            Relationship watermarkRelationship = createWatermarkRelationship(file);
-
-            List<SectionWrapper> sections = file.getDocumentModel().getSections();
-            SectionWrapper lastSectionWrapper = sections.get(sections.size() - 1);
-            SectPr sectPr = lastSectionWrapper.getSectPr();
+            Hdr hdr = createWatermarkHdr(textPath, shape);
+            Relationship watermarkRelationship = createWatermarkRelationship(file, hdr);
+            SectionWrapper sectionWrapper = sectionWrapperList.get(pageNumber);
+            SectPr sectPr = sectionWrapper.getSectPr();
             if (sectPr == null) {
                 sectPr = FACTORY.createSectPr();
                 file.getMainDocumentPart().addObject(sectPr);
-                lastSectionWrapper.setSectPr(sectPr);
+                sectionWrapper.setSectPr(sectPr);
             }
 
             HeaderReference headerReference = FACTORY.createHeaderReference();
@@ -184,7 +157,8 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawCenterWatermark() {
-        drawString(0, 0, "asdfasdf", 0);
+        drawString(0, 0, "第一页", 0);
+        drawString(0, 0, "第二页", 1);
     }
 
     @Override
@@ -224,14 +198,15 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawString(float x, float y, String text, int pageNumber) {
-        // todo pageNumber no use
-        textWatermarkControl.setString(text);
-        ctShape.setStyle("position:absolute;left:10;top:10;width:468pt;height:300pt;");
+        CTTextPath normalTextPath = createNormalTextPath(text);
+        CTShape normalShape = createNormalShape();
+        normalShape.setStyle("position:absolute;left:10;top:10;width:468pt;height:300pt;");
+        addWatermark(normalTextPath, normalShape, pageNumber);
     }
 
     @Override
     public void drawMultiLineString(float x, float y, List<String> text, int pageNumber) {
-        textWatermarkControl.setString(String.join(WARP, text));
+        //        textWatermarkControl.setString(String.join(WARP, text));
     }
 
     @Override
@@ -248,29 +223,36 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
      * create watermark header part
      *
      * @param wordprocessingMLPackage file
-     * @return docx xml relationship
+     * @param hdr                     header xml
+     * @return docx relationship
      */
-    private Relationship createWatermarkRelationship(WordprocessingMLPackage wordprocessingMLPackage) throws InvalidFormatException {
-        HeaderPart headerPart = new HeaderPart();
-        Hdr hdr = getWatermarkHdr();
+    private Relationship createWatermarkRelationship(WordprocessingMLPackage wordprocessingMLPackage, Hdr hdr) throws InvalidFormatException {
+        HeaderPart headerPart = new HeaderPart(new PartName("/word/easy-watermark-header" + headerXmlCount++ + ".xml"));
         headerPart.setJaxbElement(hdr);
         return wordprocessingMLPackage.getMainDocumentPart().addTargetPart(headerPart);
     }
 
-    private Hdr getWatermarkHdr() {
+    /**
+     * create watermark xml
+     *
+     * @param textPath watermark text
+     * @param ctShape  watermark shape
+     * @return watermark xml
+     */
+    private Hdr createWatermarkHdr(CTTextPath textPath, CTShape ctShape) {
         Hdr res = FACTORY.createHdr();
-        P watermarkHeader = createDocxHeader();
+        P watermarkHeader = createDocxHeader(textPath, ctShape);
         res.getContent().add(watermarkHeader);
         return res;
     }
 
     private void checkPageInfoList() {
-        if (this.pageInfoList == null || this.pageInfoList.isEmpty()) {
+        if (this.sectionWrapperList == null || this.sectionWrapperList.isEmpty()) {
             throw new DocxWatermarkHandlerException("Page info list is empty.");
         }
     }
 
-    private P createDocxHeader() {
+    private P createDocxHeader(CTTextPath textPath, CTShape ctShape) {
         CTFill ctFill = new CTFill();
         ctFill.setOn(org.docx4j.vml.STTrueFalse.T);
         ctFill.setOpacity(String.valueOf(watermarkConfig.getAlpha()));
@@ -288,7 +270,7 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
         JAXBElement<CTLock> lock = DocxUtils.createJAXBElement(ctLock);
 
         // watermark text
-        JAXBElement<CTTextPath> textpath = DocxUtils.createJAXBElement(textWatermarkControl);
+        JAXBElement<CTTextPath> textpath = DocxUtils.createJAXBElement(textPath);
 
         // watermark shape
         List<JAXBElement<?>> egShapeElements = ctShape.getEGShapeElements();
@@ -308,5 +290,22 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
         P p = new P();
         p.getContent().add(r);
         return p;
+    }
+
+    private CTTextPath createNormalTextPath(String watermark) {
+        CTTextPath res = new CTTextPath();
+        res.setStyle(String.format("font-family:\"%s\";", font.getFontName()));
+        res.setString(watermark);
+        return res;
+    }
+
+    private CTShape createNormalShape() {
+        CTShape res = new CTShape();
+        res.setFillcolor(EasyWatermarkUtils.hexColor(watermarkConfig.getColor()));
+        res.setVmlId("easy-watermark framework");
+        res.setStroked(org.docx4j.vml.STTrueFalse.F);
+        res.setSpid(SHAPE_SPID);
+        res.setType(SHAPE_TYPE);
+        return res;
     }
 }
