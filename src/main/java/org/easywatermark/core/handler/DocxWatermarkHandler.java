@@ -17,6 +17,7 @@ import org.easywatermark.core.AbstractWatermarkHandler;
 import org.easywatermark.core.EasyWatermarkCustomDraw;
 import org.easywatermark.core.config.FontConfig;
 import org.easywatermark.core.config.WatermarkConfig;
+import org.easywatermark.core.constant.DocxConstant;
 import org.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.easywatermark.exception.DocxWatermarkHandlerException;
 import org.easywatermark.exception.LoadFontException;
@@ -30,6 +31,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+
+import static org.easywatermark.core.constant.DocxConstant.TWIP_TO_POINT;
 
 /**
  * @author zhangshukun
@@ -307,5 +310,15 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
         res.setSpid(SHAPE_SPID);
         res.setType(SHAPE_TYPE);
         return res;
+    }
+
+    /**
+     * Use 'margin-left:-70pt;margin-top:-30pt;'
+     *
+     * @param topMargin  margin-top
+     * @param leftMargin margin-left
+     */
+    private String resetToOrigin(float topMargin, float leftMargin) {
+        return String.format(DocxConstant.RESET_ORIGIN, topMargin / TWIP_TO_POINT, leftMargin / TWIP_TO_POINT);
     }
 }
