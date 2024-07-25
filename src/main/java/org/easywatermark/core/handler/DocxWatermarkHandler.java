@@ -39,7 +39,6 @@ import static org.easywatermark.core.constant.DocxConstant.TWIP_TO_POINT;
  * @since 2024/07/02
  */
 @Slf4j
-
 public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object> {
 
     private static final String SHAPE_SPID = "_x0000_s2049";
@@ -49,6 +48,8 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
     private static final String WARP = "\\n";
 
     private static final ObjectFactory FACTORY = Context.getWmlObjectFactory();
+
+    private StringBuilder watermarkShapeStyle;
 
     private int headerXmlCount = 0;
 
@@ -160,8 +161,9 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawCenterWatermark() {
-        drawString(0, 0, "第一页", 0);
-        drawString(0, 0, "第二页", 1);
+        for (int i = 0; i < sectionWrapperList.size(); i++) {
+            drawString(0, 0, watermarkText, i);
+        }
     }
 
     @Override
@@ -201,10 +203,16 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawString(float x, float y, String text, int pageNumber) {
-        CTTextPath normalTextPath = createNormalTextPath(text);
         CTShape normalShape = createNormalShape();
-        normalShape.setStyle("position:absolute;left:10;top:10;width:468pt;height:300pt;");
-        addWatermark(normalTextPath, normalShape, pageNumber);
+        initWatermarkShapeStyle();
+        watermarkShapeStyle.append(String.format(DocxConstant.WATERMARK_LOCATION, x, y));
+        watermarkShapeStyle.append(String.format(DocxConstant.WATERMARK_SIZE, getStringWidth(text), getStringHeight()));
+        SectionWrapper sectionWrapper = sectionWrapperList.get(pageNumber);
+        SectPr.PgMar pgMar = sectionWrapper.getSectPr().getPgMar();
+        watermarkShapeStyle.append(resetToOrigin(pgMar.getHeader().floatValue(), pgMar.getLeft().floatValue()));
+
+        normalShape.setStyle(watermarkShapeStyle.toString());
+        addWatermark(createNormalTextPath(text), normalShape, pageNumber);
     }
 
     @Override
@@ -313,12 +321,19 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
     }
 
     /**
+     * Init watermark shape style
+     */
+    private void initWatermarkShapeStyle() {
+        watermarkShapeStyle = new StringBuilder(DocxConstant.DEFAULT_POSITION_TYPE);
+    }
+
+    /**
      * Use 'margin-left:-70pt;margin-top:-30pt;'
      *
      * @param topMargin  margin-top
      * @param leftMargin margin-left
      */
     private String resetToOrigin(float topMargin, float leftMargin) {
-        return String.format(DocxConstant.RESET_ORIGIN, topMargin / TWIP_TO_POINT, leftMargin / TWIP_TO_POINT);
+        return String.format(DocxConstant.RESET_ORIGIN, leftMargin / TWIP_TO_POINT, topMargin / TWIP_TO_POINT);
     }
 }
