@@ -18,7 +18,9 @@ import org.easywatermark.core.EasyWatermarkCustomDraw;
 import org.easywatermark.core.config.FontConfig;
 import org.easywatermark.core.config.WatermarkConfig;
 import org.easywatermark.core.constant.DocxConstant;
+import org.easywatermark.entity.Point;
 import org.easywatermark.enums.EasyWatermarkTypeEnum;
+import org.easywatermark.enums.WatermarkTypeEnum;
 import org.easywatermark.exception.DocxWatermarkHandlerException;
 import org.easywatermark.exception.LoadFontException;
 import org.easywatermark.utils.DocxUtils;
@@ -35,6 +37,9 @@ import java.util.List;
 import static org.easywatermark.core.constant.DocxConstant.TWIP_TO_POINT;
 
 /**
+ * Office docx watermark handler.
+ * The origin is in the upper left corner
+ *
  * @author zhangshukun
  * @since 2024/07/02
  */
@@ -56,6 +61,10 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
     private WordprocessingMLPackage file;
 
     private FontMetrics fontMetrics;
+
+    private float ascent;
+
+    private float descent;
 
     /**
      * docx file section wrapper.
@@ -84,9 +93,6 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
                 font = new Font(fontConfig.getFontName(), fontConfig.getFontStyle(), fontConfig.getFontSize());
             }
             this.font = font.deriveFont(fontConfig.getFontStyle(), (float) fontConfig.getFontSize());
-            BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-            Graphics graphics = image.getGraphics();
-            this.fontMetrics = graphics.getFontMetrics(this.font);
         } catch (FontFormatException | IOException e) {
             log.error("Load font error. Font file:{}", fontConfig.getFontFile(), e);
             throw new LoadFontException("Load font error.", e);
@@ -96,18 +102,23 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
     @Override
     protected void initEnvironment() {
         this.sectionWrapperList = file.getDocumentModel().getSections();
+        BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        Graphics graphics = image.getGraphics();
+        this.fontMetrics = graphics.getFontMetrics(this.font);
+        this.ascent = fontMetrics.getAscent();
+        this.descent = fontMetrics.getDescent();
     }
 
     @Override
     protected float getFileWidth(int page) {
         checkPageInfoList();
-        return sectionWrapperList.get(page).getPageDimensions().getPgSz().getW().floatValue();
+        return sectionWrapperList.get(page).getPageDimensions().getPgSz().getW().floatValue() / TWIP_TO_POINT;
     }
 
     @Override
     protected float getFileHeight(int page) {
         checkPageInfoList();
-        return sectionWrapperList.get(page).getPageDimensions().getPgSz().getH().floatValue();
+        return sectionWrapperList.get(page).getPageDimensions().getPgSz().getH().floatValue() / TWIP_TO_POINT;
     }
 
     @Override
@@ -134,6 +145,9 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     private void addWatermark(CTTextPath textPath, CTShape shape, Integer pageNumber) {
         try {
+            if (log.isDebugEnabled()) {
+                log.debug("Page:{},Shape style:'{}'", pageNumber, shape.getStyle());
+            }
             Hdr hdr = createWatermarkHdr(textPath, shape);
             Relationship watermarkRelationship = createWatermarkRelationship(file, hdr);
             SectionWrapper sectionWrapper = sectionWrapperList.get(pageNumber);
@@ -161,8 +175,21 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawCenterWatermark() {
-        for (int i = 0; i < sectionWrapperList.size(); i++) {
-            drawString(0, 0, watermarkText, i);
+        WatermarkTypeEnum watermarkType = getWatermarkType();
+        switch (watermarkType) {
+            case SINGLE_TEXT:
+                for (int i = 0; i < sectionWrapperList.size(); i++) {
+                    Point point = calcCenterWatermarkPoint(watermarkText, i);
+                    drawString(point.getX(), point.getY(), watermarkText, i);
+                }
+                break;
+            case MULTI_TEXT:
+                break;
+            case IMAGE:
+
+                break;
+            default:
+                throw new UnsupportedOperationException("Not support watermark type.");
         }
     }
 
@@ -205,19 +232,18 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
     public void drawString(float x, float y, String text, int pageNumber) {
         CTShape normalShape = createNormalShape();
         initWatermarkShapeStyle();
-        watermarkShapeStyle.append(String.format(DocxConstant.WATERMARK_LOCATION, x, y));
-        watermarkShapeStyle.append(String.format(DocxConstant.WATERMARK_SIZE, getStringWidth(text), getStringHeight()));
         SectionWrapper sectionWrapper = sectionWrapperList.get(pageNumber);
         SectPr.PgMar pgMar = sectionWrapper.getSectPr().getPgMar();
-        watermarkShapeStyle.append(resetToOrigin(pgMar.getHeader().floatValue(), pgMar.getLeft().floatValue()));
-
+        watermarkShapeStyle.append(setLocation(pgMar.getHeader().floatValue(), pgMar.getLeft().floatValue(), x, y));
+        watermarkShapeStyle.append(String.format(DocxConstant.WATERMARK_SIZE, getStringWidth(text), getStringHeight()));
         normalShape.setStyle(watermarkShapeStyle.toString());
         addWatermark(createNormalTextPath(text), normalShape, pageNumber);
     }
 
     @Override
     public void drawMultiLineString(float x, float y, List<String> text, int pageNumber) {
-        //        textWatermarkControl.setString(String.join(WARP, text));
+        String watermarkText = String.join(WARP, text);
+        drawString(x, y, watermarkText, pageNumber);
     }
 
     @Override
@@ -330,10 +356,18 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
     /**
      * Use 'margin-left:-70pt;margin-top:-30pt;'
      *
-     * @param topMargin  margin-top
-     * @param leftMargin margin-left
+     * @param headerTopMargin  The distance between the header top of the docx document and the top
+     * @param headerLeftMargin The distance between the header left of the docx document and the top
+     * @param x                draw x
+     * @param y                draw y
+     * @return watermark location:'margin-left:-70pt;margin-top:-30pt;'
      */
-    private String resetToOrigin(float topMargin, float leftMargin) {
-        return String.format(DocxConstant.RESET_ORIGIN, leftMargin / TWIP_TO_POINT, topMargin / TWIP_TO_POINT);
+    private String setLocation(float headerTopMargin, float headerLeftMargin, float x, float y) {
+        float leftMargin = -headerLeftMargin / TWIP_TO_POINT;
+        float topMargin = -headerTopMargin / TWIP_TO_POINT;
+
+        leftMargin += x;
+        topMargin += y;
+        return String.format(DocxConstant.WATERMARK_LOCATION, leftMargin, topMargin);
     }
 }

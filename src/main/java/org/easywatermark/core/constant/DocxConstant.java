@@ -8,9 +8,7 @@ public class DocxConstant {
 
     public static final float TWIP_TO_POINT = 20;
 
-    public static final String RESET_ORIGIN = "margin-left:-%spt;margin-top:-%spt;";
-
-    public static final String WATERMARK_LOCATION = "top:%spt;left:%spt;";
+    public static final String WATERMARK_LOCATION = "margin-left:%spt;margin-top:%spt;";
 
     public static final String WATERMARK_SIZE = "width:%spt;height:%spt;";
 
