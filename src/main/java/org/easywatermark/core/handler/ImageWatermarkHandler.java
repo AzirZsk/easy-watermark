@@ -22,6 +22,9 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
+ * Image watermark handler.
+ * The origin is in the upper left corner
+ *
  * @author zhangshukun
  * @date 2023/02/28
  */
