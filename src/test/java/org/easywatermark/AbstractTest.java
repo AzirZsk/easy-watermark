@@ -1,6 +1,9 @@
 package org.easywatermark;
 
 import lombok.extern.slf4j.Slf4j;
+import org.easywatermark.core.EasyWatermark;
+import org.easywatermark.core.config.FontConfig;
+import org.easywatermark.core.config.WatermarkConfig;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +19,17 @@ import java.util.Objects;
 public abstract class AbstractTest {
 
     protected static final String OUT_PUT_DIR = System.getProperty("user.home") + "/Desktop/easywatermark/";
+
+    protected static String type;
+
+    protected static String dir;
+
+    protected static EasyWatermark easyWatermark;
+
+    protected static FontConfig fontConfig;
+
+    protected static WatermarkConfig watermarkConfig;
+
 
     protected static byte[] getByte(String fileName) {
         try (FileInputStream fileInputStream = new FileInputStream(getFile(fileName))) {

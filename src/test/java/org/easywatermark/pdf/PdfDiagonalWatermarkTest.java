@@ -1,90 +1,32 @@
 package org.easywatermark.pdf;
 
-import org.easywatermark.AbstractTest;
+import org.easywatermark.AbstractDiagonalWatermarkTest;
 import org.easywatermark.core.EasyWatermark;
 import org.easywatermark.core.config.FontConfig;
 import org.easywatermark.core.config.WatermarkConfig;
-import org.easywatermark.enums.DiagonalDirectionTypeEnum;
 import org.easywatermark.enums.EasyWatermarkTypeEnum;
-import org.junit.Test;
 
 /**
  * @author zhangshukun
  * @since 2024/04/21
  */
-public class PdfDiagonalWatermarkTest extends AbstractTest {
-
-    private static final String TYPE = "pdf";
-
-    private static final String DIR = TYPE + "/diagonal";
-
-    private static final EasyWatermark EASY_WATERMARK;
-
-    private static final FontConfig FONT_CONFIG;
-
-    private static final WatermarkConfig WATERMARK_CONFIG;
+public class PdfDiagonalWatermarkTest extends AbstractDiagonalWatermarkTest {
 
     static {
-        FONT_CONFIG = new FontConfig();
-        FONT_CONFIG.setFontFile(getFile("STZHONGS.TTF"));
+        type = "pdf";
+        dir = type + "/diagonal";
 
-        WATERMARK_CONFIG = new WatermarkConfig();
-        WATERMARK_CONFIG.setAlpha(0.5f);
+        fontConfig = new FontConfig();
+        fontConfig.setFontFile(getFile("STZHONGS.TTF"));
 
-        EASY_WATERMARK = EasyWatermark.create()
+        watermarkConfig = new WatermarkConfig();
+        watermarkConfig.setAlpha(0.5f);
+
+        easyWatermark = EasyWatermark.create()
                 .file(getFile("test-pdf.pdf"))
-                .config(FONT_CONFIG)
-                .config(WATERMARK_CONFIG)
+                .config(fontConfig)
+                .config(watermarkConfig)
                 .easyWatermarkType(EasyWatermarkTypeEnum.DIAGONAL);
     }
 
-    @Test
-    public void testTopToBottomDiagonalSingleWatermark() {
-        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.TOP_TO_BOTTOM);
-        byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq")
-                .executor();
-
-
-        saveOutPutFile(executor, DIR, TYPE);
-    }
-
-    @Test
-    public void testBottomToTopDiagonalSingleWatermark() {
-        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
-        byte[] executor = EASY_WATERMARK.text("今天天气真不错AaBbCcGgQq")
-                .executor();
-        saveOutPutFile(executor, DIR, TYPE);
-    }
-
-    @Test
-    public void testTopToBottomDiagonalMultiWatermark() {
-        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.TOP_TO_BOTTOM);
-        byte[] executor = EASY_WATERMARK.text("AaBbCcGgQq今天天气真不错AaBbCcGgQq", "ZzXxIiUuYy明天天气真不错AaBbCcGgQqCcVv", "ZzXxIiUuYy明天天气真不错AaBbCcGgQqCcVv")
-                .executor();
-        saveOutPutFile(executor, DIR, TYPE);
-    }
-
-    @Test
-    public void testBottomToTopDiagonalMultiWatermark() {
-        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
-        byte[] executor = EASY_WATERMARK.text("AaBbCcGgQq今天天气真不错AaBbCcGgQq", "ZzXxIiUuYy明天天气真不错AaBbCcGgQqCcVv", "ZzXxIiUuYy明天天气真不错AaBbCcGgQqCcVv", "ZzXxIiUuYy明天天气真不错AaBbCcGgQqCcVv")
-                .executor();
-        saveOutPutFile(executor, DIR, TYPE);
-    }
-
-    @Test
-    public void testTopToBottomDiagonalImageWatermark() {
-        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.TOP_TO_BOTTOM);
-        byte[] executor = EASY_WATERMARK.image(getByte("50-50-blue.png"))
-                .executor();
-        saveOutPutFile(executor, DIR, TYPE);
-    }
-
-    @Test
-    public void testBottomToTopDiagonalImageWatermark() {
-        WATERMARK_CONFIG.setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
-        byte[] executor = EASY_WATERMARK.image(getByte("100-50-blue.png"))
-                .executor();
-        saveOutPutFile(executor, DIR, TYPE);
-    }
 }
