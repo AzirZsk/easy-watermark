@@ -15,9 +15,10 @@ import java.awt.*;
 @Data
 public class WatermarkConfig {
 
+    /**
+     * If it is an image, it will not take effect
+     */
     private Color color = Color.BLACK;
-
-    private boolean ignoreRotation = true;
 
     private float alpha = 1;
 
