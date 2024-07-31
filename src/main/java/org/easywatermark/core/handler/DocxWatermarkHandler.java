@@ -287,7 +287,7 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
             R r = new R();
             Drawing drawing = new Drawing();
             r.getContent().add(drawing);
-            drawing.getAnchorOrInline().add(DocxUtils.createAnchorByInline(imageInline, x, y));
+            drawing.getAnchorOrInline().add(DocxUtils.createAnchorByInline(imageInline, realX, realY));
             watermarkPList.get(pageNumber).getContent().add(r);
         } catch (Exception e) {
             log.error("Draw image error.", e);
