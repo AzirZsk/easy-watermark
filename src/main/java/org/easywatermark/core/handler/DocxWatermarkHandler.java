@@ -21,13 +21,12 @@ import org.easywatermark.core.constant.DocxConstant;
 import org.easywatermark.core.constant.StringConstant;
 import org.easywatermark.entity.Point;
 import org.easywatermark.entity.WatermarkBox;
-import org.easywatermark.enums.CenterLocationTypeEnum;
-import org.easywatermark.enums.EasyWatermarkTypeEnum;
-import org.easywatermark.enums.WatermarkTypeEnum;
+import org.easywatermark.enums.*;
 import org.easywatermark.exception.DocxWatermarkHandlerException;
 import org.easywatermark.exception.LoadFileException;
 import org.easywatermark.exception.LoadFontException;
 import org.easywatermark.utils.DocxUtils;
+import org.easywatermark.utils.EasyWatermarkUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -36,6 +35,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.easywatermark.core.constant.DocxConstant.TWIP_TO_POINT;
@@ -57,7 +57,7 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     private final List<P> watermarkPList = new ArrayList<>();
 
-    private StringBuilder watermarkShapeStyle;
+    private StringBuilder watermarkShapeStyle = new StringBuilder(DocxConstant.DEFAULT_POSITION_TYPE);
 
     private WordprocessingMLPackage file;
 
@@ -224,7 +224,38 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawDiagonalWatermark() {
-
+        for (int pageNumber = 0; pageNumber < sectionWrapperList.size(); pageNumber++) {
+            double degrees;
+            DiagonalDirectionTypeEnum diagonalDirectionType = watermarkConfig.getDiagonalDirectionType();
+            switch (diagonalDirectionType) {
+                case TOP_TO_BOTTOM:
+                    degrees = EasyWatermarkUtils.calcDegrees(getFileWidth(pageNumber), getFileHeight(pageNumber));
+                    break;
+                case BOTTOM_TO_TOP:
+                    degrees = EasyWatermarkUtils.calcDegrees(getFileWidth(pageNumber), -getFileHeight(pageNumber));
+                    break;
+                default:
+                    throw new DocxWatermarkHandlerException("Unsupported diagonal watermark type.");
+            }
+            Point point;
+            WatermarkTypeEnum watermarkType = getWatermarkType();
+            switch (watermarkType) {
+                case SINGLE_TEXT:
+                    point = calcCenterWatermarkPoint(watermarkText, pageNumber);
+                    rotation(degrees);
+                    drawString(point.getX(), point.getY(), watermarkText, pageNumber);
+                    break;
+                case MULTI_TEXT:
+                    WatermarkBox watermarkBox = getWatermarkBox(watermarkType, pageNumber);
+                    point = calcCenterWatermarkPoint(watermarkBox.getWidth(), watermarkBox.getHeight(), pageNumber);
+                    rotation(degrees);
+                    drawMultiLineString(point.getX(), point.getY(), watermarkTextList, pageNumber);
+                    break;
+                case IMAGE:
+                    // todo
+                    break;
+            }
+        }
     }
 
     @Override
@@ -244,6 +275,15 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public float getStringWidth(String text) {
+        // adapt multi-line text
+        if (text.contains(StringConstant.WARP)) {
+            String[] split = text.split(StringConstant.WARP);
+            float res = 0;
+            for (String s : split) {
+                res = Math.max(res, fontMetrics.stringWidth(s));
+            }
+            return res;
+        }
         return fontMetrics.stringWidth(text);
     }
 
@@ -254,20 +294,20 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawString(float x, float y, String text, int pageNumber) {
-        initWatermarkShapeStyle();
-        SectionWrapper sectionWrapper = sectionWrapperList.get(pageNumber);
-        SectPr.PgMar pgMar = sectionWrapper.getSectPr().getPgMar();
-        watermarkShapeStyle.append(setLocation(pgMar.getHeader().floatValue(), pgMar.getLeft().floatValue(), x, y));
-        watermarkShapeStyle.append(String.format(DocxConstant.WATERMARK_SIZE, getStringWidth(text), getStringHeight()));
-        CTShape normalShape = DocxUtils.createNormalShape(watermarkConfig.getColor());
-        normalShape.setStyle(watermarkShapeStyle.toString());
-        addTextWatermark(DocxUtils.createNormalTextPath(text, font.getFontName()), normalShape, pageNumber);
+        drawMultiLineString(x, y, Collections.singletonList(text), pageNumber);
     }
 
     @Override
     public void drawMultiLineString(float x, float y, List<String> text, int pageNumber) {
         String watermarkText = String.join(StringConstant.WARP, text);
-        drawString(x, y, watermarkText, pageNumber);
+        SectionWrapper sectionWrapper = sectionWrapperList.get(pageNumber);
+        SectPr.PgMar pgMar = sectionWrapper.getSectPr().getPgMar();
+        watermarkShapeStyle.append(setLocation(pgMar.getHeader().floatValue(), pgMar.getLeft().floatValue(), x, y));
+        watermarkShapeStyle.append(String.format(DocxConstant.WATERMARK_SIZE, getStringWidth(watermarkText), getStringHeight() * text.size()));
+        CTShape normalShape = DocxUtils.createNormalShape(watermarkConfig.getColor());
+        normalShape.setStyle(watermarkShapeStyle.toString());
+        initWatermarkShapeStyle();
+        addTextWatermark(DocxUtils.createNormalTextPath(watermarkText, font.getFontName()), normalShape, pageNumber);
     }
 
     @Override
@@ -297,7 +337,16 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void rotate(float angle, float x, float y, int pageNumber) {
+        // nothing, use rotation method.
+    }
 
+    /**
+     * rotation watermark.
+     *
+     * @param degrees rotation degrees
+     */
+    private void rotation(double degrees) {
+        watermarkShapeStyle.append(String.format(DocxConstant.ROTATION, degrees));
     }
 
     /**
@@ -330,7 +379,7 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
     private void addTextWatermark(CTTextPath textPath, CTShape shape, Integer pageNumber) {
         try {
             if (log.isDebugEnabled()) {
-                log.debug("Draw text, page number: {}, shape style:'{}'", pageNumber, shape.getStyle());
+                log.debug("Draw text, page number: {}, text: {}, shape style:'{}'", pageNumber, textPath.getString(), shape.getStyle());
             }
             P p = watermarkPList.get(pageNumber);
             R watermarkHeader = DocxUtils.createR(textPath, shape, watermarkConfig.getAlpha());

@@ -13,4 +13,6 @@ public class DocxConstant {
     public static final String WATERMARK_SIZE = "width:%spt;height:%spt;";
 
     public static final String DEFAULT_POSITION_TYPE = "position:absolute;";
+
+    public static final String ROTATION = "rotation:%f;";
 }

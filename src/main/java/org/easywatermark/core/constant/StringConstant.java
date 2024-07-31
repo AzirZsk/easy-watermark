@@ -8,5 +8,5 @@ public class StringConstant {
 
     public static final String EASY_WATERMARK_FRAMEWORK = "easy-watermark framework";
 
-    public static final String WARP = "\\n";
+    public static final String WARP = "\n";
 }
