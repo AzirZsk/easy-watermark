@@ -36,9 +36,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.*;
 
 import static org.easywatermark.core.constant.DocxConstant.TWIP_TO_POINT;
 import static org.easywatermark.core.constant.StringConstant.EASY_WATERMARK_FRAMEWORK;
@@ -58,6 +57,8 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
     private final List<HeaderPart> watermarkHeaderPartList = new ArrayList<>();
 
     private final List<P> watermarkPList = new ArrayList<>();
+
+    private final Map<Integer, BinaryPartAbstractImage> imageWatermarkCacheMap = new HashMap<>();
 
     private StringBuilder watermarkShapeStyle = new StringBuilder(DocxConstant.DEFAULT_POSITION_TYPE);
 
@@ -221,7 +222,9 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawOverspreadWatermark() {
-        throw new UnsupportedOperationException("Not support docx type overspread watermark.");
+        for (int pageNumber = 0; pageNumber < sectionWrapperList.size(); pageNumber++) {
+            drawOverspreadWatermark(pageNumber);
+        }
     }
 
     @Override
@@ -310,7 +313,8 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
         CTShape normalShape = DocxUtils.createNormalShape(watermarkConfig.getColor());
         normalShape.setStyle(watermarkShapeStyle.toString());
         initWatermarkShapeStyle();
-        addTextWatermark(DocxUtils.createNormalTextPath(watermarkText, font.getFontName()), normalShape, pageNumber);
+        CTTextPath normalTextPath = DocxUtils.createNormalTextPath(watermarkText, font.getFontName());
+        addTextWatermark(normalTextPath, normalShape, pageNumber);
     }
 
     @Override
@@ -329,7 +333,11 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
                         pageNumber, x, realX, y, realY);
             }
             HeaderPart headerPart = watermarkHeaderPartList.get(pageNumber);
-            BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(this.file, headerPart, data);
+            if (!imageWatermarkCacheMap.containsKey(pageNumber)) {
+                BinaryPartAbstractImage tmpImage = BinaryPartAbstractImage.createImagePart(this.file, headerPart, data);
+                imageWatermarkCacheMap.put(pageNumber, tmpImage);
+            }
+            BinaryPartAbstractImage imagePart = imageWatermarkCacheMap.get(pageNumber);
             Inline imageInline = imagePart.createImageInline(EASY_WATERMARK_FRAMEWORK, EASY_WATERMARK_FRAMEWORK, 111L, 111, false);
             R r = new R();
             Drawing drawing = new Drawing();

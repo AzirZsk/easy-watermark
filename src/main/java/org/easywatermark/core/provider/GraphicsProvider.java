@@ -38,6 +38,7 @@ public interface GraphicsProvider {
      * Draw multi-line text.
      * <p>
      * The upper left corner is the origin.
+     * Default style: text-align:left;
      * <p>
      * x, y is text upper left corner coordinate.
      *

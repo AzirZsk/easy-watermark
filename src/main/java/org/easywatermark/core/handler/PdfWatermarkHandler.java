@@ -196,47 +196,8 @@ public class PdfWatermarkHandler extends AbstractWatermarkHandler<PDFont, List<P
             drawOverspreadWatermarkForAngle(watermarkConfig.getAngle());
             return;
         }
-        for (int i = 0; i < graphics.size(); i++) {
-            WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), i);
-            OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
-            float coverage = overspreadType.getCoverage();
-            float watermarkWidth = coverage * getFileWidth(i);
-            int columns = (int) (watermarkWidth / watermarkBox.getWidth());
-            float blankWidth = getFileWidth(i) - columns * watermarkBox.getWidth();
-            // calculate the distance between watermarks
-            float k = getFileWidth(i) * 0.01f;
-            float widthWatermarkDistance = calcDistanceBetweenWatermarks(blankWidth, k, columns);
-            float widthWatermarkDistanceFromPageBorder = widthWatermarkDistance - k;
-
-            float watermarkHeight = coverage * getFileHeight(i);
-            int rows = (int) (watermarkHeight / watermarkBox.getHeight());
-            float blankHeight = getFileHeight(i) - rows * watermarkBox.getHeight();
-            // calculate the distance between watermarks
-            float heightWatermarkDistance = calcDistanceBetweenWatermarks(blankHeight, k, rows);
-            float heightWatermarkDistanceFromPageBorder = heightWatermarkDistance - k;
-
-            float x = widthWatermarkDistanceFromPageBorder;
-            float y = getFileHeight(i) - heightWatermarkDistanceFromPageBorder - watermarkBox.getHeight();
-            for (int j = 0; j < columns * rows; j++) {
-                switch (getWatermarkType()) {
-                    case SINGLE_TEXT:
-                        drawString(x, y, watermarkText, i);
-                        break;
-                    case MULTI_TEXT:
-                        drawMultiLineString(x, y, watermarkTextList, i);
-                        break;
-                    case IMAGE:
-                        drawImage(x, y, super.watermarkImage, i);
-                        break;
-                    default:
-                        throw new PdfWatermarkHandlerException("Unsupported watermark type.");
-                }
-                x += watermarkBox.getWidth() + widthWatermarkDistance;
-                if (x > getFileWidth(i)) {
-                    x = widthWatermarkDistanceFromPageBorder;
-                    y -= watermarkBox.getHeight() + heightWatermarkDistance;
-                }
-            }
+        for (int pageNumber = 0; pageNumber < graphics.size(); pageNumber++) {
+            drawOverspreadWatermark(pageNumber);
         }
     }
 

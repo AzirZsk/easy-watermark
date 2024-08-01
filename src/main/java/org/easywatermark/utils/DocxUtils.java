@@ -22,7 +22,7 @@ public class DocxUtils {
 
     private static final String SHAPE_TYPE = "#_x0000_t136";
 
-    private static final String TEXT_PATH_FONT_NAME = "font-family:\"%s\";";
+    private static final String TEXT_PATH_FONT_NAME = "v-text-align:left;font-family:\"%s\";";
 
     public static CTTextPath createNormalTextPath(String watermark, String fontName) {
         CTTextPath res = new CTTextPath();

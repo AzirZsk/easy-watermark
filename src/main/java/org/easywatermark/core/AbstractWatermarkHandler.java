@@ -7,9 +7,7 @@ import org.easywatermark.core.provider.FontProvider;
 import org.easywatermark.core.provider.GraphicsProvider;
 import org.easywatermark.entity.Point;
 import org.easywatermark.entity.WatermarkBox;
-import org.easywatermark.enums.CenterLocationTypeEnum;
-import org.easywatermark.enums.EasyWatermarkTypeEnum;
-import org.easywatermark.enums.WatermarkTypeEnum;
+import org.easywatermark.enums.*;
 import org.easywatermark.exception.EasyWatermarkException;
 import org.easywatermark.exception.ImageWatermarkHandlerException;
 import org.easywatermark.exception.WatermarkHandlerException;
@@ -94,6 +92,54 @@ public abstract class AbstractWatermarkHandler<F, G> implements EasyWatermarkHan
      * @return watermark image height
      */
     protected abstract float getWatermarkImageHeight();
+
+    /**
+     * normal draw overspread watermark
+     *
+     * @param pageNumber page number
+     */
+    protected void drawOverspreadWatermark(int pageNumber) {
+        WatermarkBox watermarkBox = getWatermarkBox(getWatermarkType(), pageNumber);
+        OverspreadTypeEnum overspreadType = watermarkConfig.getOverspreadType();
+        float coverage = overspreadType.getCoverage();
+        float watermarkWidth = coverage * getFileWidth(pageNumber);
+        int columns = (int) (watermarkWidth / watermarkBox.getWidth());
+        float blankWidth = getFileWidth(pageNumber) - columns * watermarkBox.getWidth();
+        // calculate the distance between watermarks
+        float k = getFileWidth(pageNumber) * 0.01f;
+        float widthWatermarkDistance = calcDistanceBetweenWatermarks(blankWidth, k, columns);
+        float widthWatermarkDistanceFromPageBorder = widthWatermarkDistance - k;
+
+        float watermarkHeight = coverage * getFileHeight(pageNumber);
+        int rows = (int) (watermarkHeight / watermarkBox.getHeight());
+        float blankHeight = getFileHeight(pageNumber) - rows * watermarkBox.getHeight();
+        // calculate the distance between watermarks
+        float heightWatermarkDistance = calcDistanceBetweenWatermarks(blankHeight, k, rows);
+        float heightWatermarkDistanceFromPageBorder = heightWatermarkDistance - k;
+
+        float x = widthWatermarkDistanceFromPageBorder;
+        float y = getFileHeight(pageNumber) - heightWatermarkDistanceFromPageBorder - watermarkBox.getHeight();
+        for (int curCount = 0; curCount < columns * rows; curCount++) {
+            switch (getWatermarkType()) {
+                case SINGLE_TEXT:
+                    drawString(x, y, watermarkText, pageNumber);
+                    break;
+                case MULTI_TEXT:
+                    drawMultiLineString(x, y, watermarkTextList, pageNumber);
+                    break;
+                case IMAGE:
+                    drawImage(x, y, watermarkImage, pageNumber);
+                    break;
+                default:
+                    throw new WatermarkHandlerException("Unsupported watermark type.");
+            }
+            x += watermarkBox.getWidth() + widthWatermarkDistance;
+            if (x > getFileWidth(pageNumber)) {
+                x = widthWatermarkDistanceFromPageBorder;
+                y -= watermarkBox.getHeight() + heightWatermarkDistance;
+            }
+        }
+    }
 
     /**
      * export handle data to byte array
