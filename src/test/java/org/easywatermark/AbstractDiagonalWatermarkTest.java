@@ -28,7 +28,7 @@ public abstract class AbstractDiagonalWatermarkTest extends AbstractTest {
     @Test
     public void testDiagonalTopToBottomMultiWatermark() {
         watermarkConfig.setDiagonalDirectionType(DiagonalDirectionTypeEnum.TOP_TO_BOTTOM);
-        byte[] executor = easyWatermark.text("今天天气真不错", "明天天气也不错", "后天天气也不错")
+        byte[] executor = easyWatermark.text("今天天气真不错1", "明天天气也不错22", "后天天气也不错333")
                 .executor();
         saveOutPutFile(executor, dir, type);
     }
@@ -36,7 +36,7 @@ public abstract class AbstractDiagonalWatermarkTest extends AbstractTest {
     @Test
     public void testDiagonalBottomToTopMultiWatermark() {
         watermarkConfig.setDiagonalDirectionType(DiagonalDirectionTypeEnum.BOTTOM_TO_TOP);
-        byte[] executor = easyWatermark.text("今天天气真不错", "明天天气也不错", "后天天气也不错")
+        byte[] executor = easyWatermark.text("今天天气真不错1", "明天天气也不错22", "后天天气也不错333")
                 .executor();
         saveOutPutFile(executor, dir, type);
     }
