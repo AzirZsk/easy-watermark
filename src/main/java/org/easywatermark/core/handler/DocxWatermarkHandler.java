@@ -1,6 +1,8 @@
 package org.easywatermark.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.docx4j.dml.CTTransform2D;
+import org.docx4j.dml.wordprocessingDrawing.Anchor;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.structure.SectionWrapper;
@@ -252,7 +254,8 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
                     drawMultiLineString(point.getX(), point.getY(), watermarkTextList, pageNumber);
                     break;
                 case IMAGE:
-                    // todo
+                    point = calcCenterWatermarkPoint(watermarkBufferedImage.getWidth(), watermarkBufferedImage.getHeight(), pageNumber);
+                    drawImage0(point.getX(), point.getY(), watermarkImage, pageNumber, degrees);
                     break;
             }
         }
@@ -312,6 +315,10 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void drawImage(float x, float y, byte[] data, int pageNumber) {
+        drawImage0(x, y, data, pageNumber, null);
+    }
+
+    private void drawImage0(float x, float y, byte[] data, int pageNumber, Double degrees) {
         // If there is a margin: x and y needs to delete the margin
         SectPr.PgMar pgMar = sectionWrapperList.get(pageNumber).getSectPr().getPgMar();
         float realX = x - pgMar.getLeft().floatValue() / TWIP_TO_POINT;
@@ -327,8 +334,16 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
             R r = new R();
             Drawing drawing = new Drawing();
             r.getContent().add(drawing);
-            drawing.getAnchorOrInline().add(DocxUtils.createAnchorByInline(imageInline, realX, realY));
+            Anchor anchor = DocxUtils.createAnchorByInline(imageInline, realX, realY);
+            drawing.getAnchorOrInline().add(anchor);
             watermarkPList.get(pageNumber).getContent().add(r);
+
+            if (degrees != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Draw image, page number: {}, degrees: {}", pageNumber, degrees);
+                }
+                rotation(degrees, anchor);
+            }
         } catch (Exception e) {
             log.error("Draw image error.", e);
             throw new DocxWatermarkHandlerException("Draw image error.", e);
@@ -347,6 +362,17 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
      */
     private void rotation(double degrees) {
         watermarkShapeStyle.append(String.format(DocxConstant.ROTATION, degrees));
+    }
+
+    /**
+     * rotation image watermark.
+     *
+     * @param degrees rotation degrees
+     * @param anchor  image anchor
+     */
+    private void rotation(double degrees, Anchor anchor) {
+        CTTransform2D xfrm = anchor.getGraphic().getGraphicData().getPic().getSpPr().getXfrm();
+        xfrm.setRot((int) degrees * DocxConstant.UNITS_PER_DEGREE);
     }
 
     /**
