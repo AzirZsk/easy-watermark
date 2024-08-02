@@ -6,6 +6,7 @@ import org.docx4j.vml.officedrawing.CTLock;
 import org.docx4j.vml.wordprocessingDrawing.CTWrap;
 import org.docx4j.wml.Pict;
 import org.docx4j.wml.R;
+import org.easywatermark.core.constant.DocxConstant;
 import org.easywatermark.core.constant.StringConstant;
 
 import javax.xml.bind.JAXBElement;
@@ -22,11 +23,34 @@ public class DocxUtils {
 
     private static final String SHAPE_TYPE = "#_x0000_t136";
 
-    private static final String TEXT_PATH_FONT_NAME = "v-text-align:left;font-family:\"%s\";";
+    private static final String TEXT_PATH_FONT_NAME = "font-family:\"%s\";";
 
+    /**
+     * create normal textPath object
+     * text left align
+     *
+     * @param watermark watermark text
+     * @param fontName  font name
+     * @return textPath object
+     */
     public static CTTextPath createNormalTextPath(String watermark, String fontName) {
         CTTextPath res = new CTTextPath();
-        res.setStyle(String.format(TEXT_PATH_FONT_NAME, fontName));
+        res.setStyle(String.format(DocxConstant.DEFAULT_TEXT_ALIGN + TEXT_PATH_FONT_NAME, fontName));
+        res.setString(watermark);
+        return res;
+    }
+
+    /**
+     * create center textPath object
+     * text center align
+     *
+     * @param watermark watermark text
+     * @param fontName  font name
+     * @return textPath object
+     */
+    public static CTTextPath createCenterTextPath(String watermark, String fontName) {
+        CTTextPath res = new CTTextPath();
+        res.setStyle(String.format(DocxConstant.CENTER_TEXT_ALIGN + TEXT_PATH_FONT_NAME, fontName));
         res.setString(watermark);
         return res;
     }

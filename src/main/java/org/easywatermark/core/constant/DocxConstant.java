@@ -16,5 +16,9 @@ public class DocxConstant {
 
     public static final String DEFAULT_POSITION_TYPE = "position:absolute;";
 
+    public static final String DEFAULT_TEXT_ALIGN = "v-text-align:left;";
+
+    public static final String CENTER_TEXT_ALIGN = "v-text-align:center;";
+
     public static final String ROTATION = "rotation:%f;";
 }

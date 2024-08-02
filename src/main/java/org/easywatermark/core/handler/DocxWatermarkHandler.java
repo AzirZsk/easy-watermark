@@ -254,7 +254,7 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
                     WatermarkBox watermarkBox = getWatermarkBox(watermarkType, pageNumber);
                     point = calcCenterWatermarkPoint(watermarkBox.getWidth(), watermarkBox.getHeight(), pageNumber);
                     rotation(degrees);
-                    drawMultiLineString(point.getX(), point.getY(), watermarkTextList, pageNumber);
+                    drawCenterMultiLineString(point.getX(), point.getY(), watermarkTextList, pageNumber);
                     break;
                 case IMAGE:
                     point = calcCenterWatermarkPoint(watermarkBufferedImage.getWidth(), watermarkBufferedImage.getHeight(), pageNumber);
@@ -306,6 +306,36 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
     @Override
     public void drawMultiLineString(float x, float y, List<String> text, int pageNumber) {
         String watermarkText = String.join(StringConstant.WARP, text);
+        CTTextPath normalTextPath = DocxUtils.createNormalTextPath(watermarkText, font.getFontName());
+        drawMultiLineString(x, y, text, pageNumber, normalTextPath);
+    }
+
+    /**
+     * draw center multi-line text
+     *
+     * @param x          x, unit pt
+     * @param y          y, unit pt
+     * @param text       watermark text list
+     * @param pageNumber page number
+     */
+    private void drawCenterMultiLineString(float x, float y, List<String> text, int pageNumber) {
+        String watermarkText = String.join(StringConstant.WARP, text);
+        CTTextPath centerTextPath = DocxUtils.createCenterTextPath(watermarkText, font.getFontName());
+        drawMultiLineString(x, y, text, pageNumber, centerTextPath);
+    }
+
+    /**
+     * use textpath draw multi-line text.
+     * text align use {@code textpath} style.
+     *
+     * @param x          x, unit pt
+     * @param y          y, unit pt
+     * @param text       watermark text list
+     * @param pageNumber page number
+     * @param textPath   textpath
+     */
+    private void drawMultiLineString(float x, float y, List<String> text, int pageNumber, CTTextPath textPath) {
+        String watermarkText = String.join(StringConstant.WARP, text);
         SectionWrapper sectionWrapper = sectionWrapperList.get(pageNumber);
         SectPr.PgMar pgMar = sectionWrapper.getSectPr().getPgMar();
         watermarkShapeStyle.append(setLocation(pgMar.getHeader().floatValue(), pgMar.getLeft().floatValue(), x, y));
@@ -313,8 +343,7 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
         CTShape normalShape = DocxUtils.createNormalShape(watermarkConfig.getColor());
         normalShape.setStyle(watermarkShapeStyle.toString());
         initWatermarkShapeStyle();
-        CTTextPath normalTextPath = DocxUtils.createNormalTextPath(watermarkText, font.getFontName());
-        addTextWatermark(normalTextPath, normalShape, pageNumber);
+        addTextWatermark(textPath, normalShape, pageNumber);
     }
 
     @Override
