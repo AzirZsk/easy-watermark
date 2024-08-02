@@ -52,7 +52,7 @@ public abstract class AbstractCenterWatermarkTest extends AbstractTest {
     @Test
     public void testVerticalCenterMultiWatermark() {
         watermarkConfig.setCenterLocationType(CenterLocationTypeEnum.VERTICAL_CENTER);
-        byte[] executor = easyWatermark.text("今天天气真不错", "明天天气也不错")
+        byte[] executor = easyWatermark.text("a今天天气真不错a", "aabb明天天气也不错aabb", "aabbcc后天天气也不错aabbcc")
                 .executor();
         saveOutPutFile(executor, dir, type);
     }
@@ -60,7 +60,7 @@ public abstract class AbstractCenterWatermarkTest extends AbstractTest {
     @Test
     public void testTopCenterMultiWatermark() {
         watermarkConfig.setCenterLocationType(CenterLocationTypeEnum.TOP_CENTER);
-        byte[] executor = easyWatermark.text("今天天气真不错", "明天天气也不错")
+        byte[] executor = easyWatermark.text("a今天天气真不错a", "aabb明天天气也不错aabb", "aabbcc后天天气也不错aabbcc")
                 .executor();
         saveOutPutFile(executor, dir, type);
     }
@@ -68,7 +68,7 @@ public abstract class AbstractCenterWatermarkTest extends AbstractTest {
     @Test
     public void testBottomCenterMultiWatermark() {
         watermarkConfig.setCenterLocationType(CenterLocationTypeEnum.BOTTOM_CENTER);
-        byte[] executor = easyWatermark.text("今天天气真不错", "明天天气也不错")
+        byte[] executor = easyWatermark.text("a今天天气真不错a", "aabb明天天气也不错aabb", "aabbcc后天天气也不错aabbcc")
                 .executor();
         saveOutPutFile(executor, dir, type);
     }
@@ -76,7 +76,7 @@ public abstract class AbstractCenterWatermarkTest extends AbstractTest {
     @Test
     public void testLeftCenterMultiWatermark() {
         watermarkConfig.setCenterLocationType(CenterLocationTypeEnum.LEFT_CENTER);
-        byte[] executor = easyWatermark.text("今天天气真不错", "明天天气也不错")
+        byte[] executor = easyWatermark.text("a今天天气真不错a", "aabb明天天气也不错aabb", "aabbcc后天天气也不错aabbcc")
                 .executor();
         saveOutPutFile(executor, dir, type);
     }
@@ -84,7 +84,7 @@ public abstract class AbstractCenterWatermarkTest extends AbstractTest {
     @Test
     public void testRightCenterMultiWatermark() {
         watermarkConfig.setCenterLocationType(CenterLocationTypeEnum.RIGHT_CENTER);
-        byte[] executor = easyWatermark.text("今天天气真不错", "明天天气也不错")
+        byte[] executor = easyWatermark.text("a今天天气真不错a", "aabb明天天气也不错aabb", "aabbcc后天天气也不错aabbcc")
                 .executor();
         saveOutPutFile(executor, dir, type);
     }
