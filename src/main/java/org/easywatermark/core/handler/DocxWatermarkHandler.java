@@ -21,9 +21,13 @@ import org.easywatermark.core.config.FontConfig;
 import org.easywatermark.core.config.WatermarkConfig;
 import org.easywatermark.core.constant.DocxConstant;
 import org.easywatermark.core.constant.StringConstant;
+import org.easywatermark.entity.PageInfo;
 import org.easywatermark.entity.Point;
 import org.easywatermark.entity.WatermarkBox;
-import org.easywatermark.enums.*;
+import org.easywatermark.enums.CenterLocationTypeEnum;
+import org.easywatermark.enums.DiagonalDirectionTypeEnum;
+import org.easywatermark.enums.EasyWatermarkTypeEnum;
+import org.easywatermark.enums.WatermarkTypeEnum;
 import org.easywatermark.exception.DocxWatermarkHandlerException;
 import org.easywatermark.exception.LoadFileException;
 import org.easywatermark.exception.LoadFontException;
@@ -179,7 +183,10 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
 
     @Override
     public void customDraw(EasyWatermarkCustomDraw easyWatermarkCustomDraw) {
-
+        for (int pageNumber = 0; pageNumber < sectionWrapperList.size(); pageNumber++) {
+            PageInfo pageInfo = new PageInfo(getFileWidth(pageNumber), getFileHeight(pageNumber), pageNumber);
+            easyWatermarkCustomDraw.draw(pageInfo, this, this);
+        }
     }
 
     @Override

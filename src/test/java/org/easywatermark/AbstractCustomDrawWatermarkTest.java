@@ -8,6 +8,7 @@ import org.junit.Test;
  */
 public abstract class AbstractCustomDrawWatermarkTest extends AbstractTest {
 
+    @Test
     public void testDrawSingleWatermarkText() {
         byte[] executor = easyWatermark.customDraw((pageInfo, graphicsProvider, fontProvider) -> {
             int pageNo = pageInfo.getPageNo();
