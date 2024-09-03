@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.docx4j.dml.CTTransform2D;
 import org.docx4j.dml.wordprocessingDrawing.Anchor;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
-import org.docx4j.jaxb.Context;
 import org.docx4j.model.structure.SectionWrapper;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
@@ -55,8 +54,6 @@ import static org.easywatermark.core.constant.StringConstant.EASY_WATERMARK_FRAM
  */
 @Slf4j
 public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object> {
-
-    private static final ObjectFactory FACTORY = Context.getWmlObjectFactory();
 
     private final List<HeaderPart> watermarkHeaderPartList = new ArrayList<>();
 
@@ -116,20 +113,20 @@ public class DocxWatermarkHandler extends AbstractWatermarkHandler<Font, Object>
             this.watermarkPList.add(p);
 
             // init header
-            Hdr hdr = FACTORY.createHdr();
+            Hdr hdr = new Hdr();
             hdr.getContent().add(p);
             // add header file in to docx
             Relationship watermarkRelationship = createEasyWatermarkRelationship(file, hdr, i);
             SectionWrapper sectionWrapper = sectionWrapperList.get(i);
             SectPr sectPr = sectionWrapper.getSectPr();
             if (sectPr == null) {
-                sectPr = FACTORY.createSectPr();
+                sectPr = new SectPr();
                 file.getMainDocumentPart().addObject(sectPr);
                 sectionWrapper.setSectPr(sectPr);
             }
             // create header reference
             List<CTRel> egHdrFtrReferences = sectPr.getEGHdrFtrReferences();
-            HeaderReference headerReference = FACTORY.createHeaderReference();
+            HeaderReference headerReference = new HeaderReference();
             headerReference.setId(watermarkRelationship.getId());
             headerReference.setType(HdrFtrRef.DEFAULT);
             egHdrFtrReferences.add(headerReference);
