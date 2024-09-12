@@ -16,33 +16,33 @@
     </tr>
     <tr>
         <td>VERTICAL_CENTER/垂直居中</td>
-        <td><a href="./file/pdf/centerwatermark/VerticalCenterSingleWatermark.pdf">Click me</a></td>
-        <td><a href="file/pdf/centerwatermark/VerticalCenterMultiWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/centerwatermark/VerticalCenterImageWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="./file/pdf/centerwatermark/VerticalCenterSingleWatermark.pdf">Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/VerticalCenterMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/VerticalCenterImageWatermark.pdf" >Click me</a></td>
     </tr>
     <tr>
         <td>LEFT_CENTER/左居中</td>
-        <td><a href="file/pdf/centerwatermark/LeftCenterSingleWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/centerwatermark/LeftCenterMultiWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/centerwatermark/LeftCenterImageWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/LeftCenterSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/LeftCenterMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/LeftCenterImageWatermark.pdf" >Click me</a></td>
     </tr>
     <tr>
         <td>RIGHT_CENTER/右居中</td>
-        <td><a href="file/pdf/centerwatermark/RightCenterSingleWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/centerwatermark/RightCenterMultiWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/centerwatermark/RightCenterImageWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/RightCenterSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/RightCenterMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/RightCenterImageWatermark.pdf" >Click me</a></td>
     </tr>
     <tr>
         <td>TOP_CENTER/上居中</td>
-        <td><a href="file/pdf/centerwatermark/TopCenterSingleWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/centerwatermark/TopCenterMultiWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/centerwatermark/TopCenterImageWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/TopCenterSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/TopCenterMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/TopCenterImageWatermark.pdf" >Click me</a></td>
     </tr>
     <tr>
         <td>BOTTOM_CENTER/下居中</td>
-        <td><a href="file/pdf/centerwatermark/BottomCenterSingleWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/centerwatermark/BottomCenterMultiWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/centerwatermark/BottomCenterImageWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/BottomCenterSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/BottomCenterMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/BottomCenterImageWatermark.pdf" >Click me</a></td>
     </tr>
 </table>
 
@@ -60,15 +60,15 @@
     </tr>
     <tr>
         <td>TopToBottom/从上到下</td>
-        <td><a href="./file/pdf/diagonalwatermark/TopToBottomDiagonalSingleWatermark.pdf">Click me</a></td>
-        <td><a href="file/pdf/diagonalwatermark/TopToBottomDiagonalMultiWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/diagonalwatermark/TopToBottomDiagonalImageWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="./file/pdf/diagonalwatermark/TopToBottomDiagonalSingleWatermark.pdf">Click me</a></td>
+        <td><a target="_blank" href="file/pdf/diagonalwatermark/TopToBottomDiagonalMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/diagonalwatermark/TopToBottomDiagonalImageWatermark.pdf" >Click me</a></td>
     </tr>
     <tr>
         <td>BottomToTop/从下到上</td>
-        <td><a href="file/pdf/diagonalwatermark/BottomToTopDiagonalSingleWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/diagonalwatermark/BottomToTopDiagonalMultiWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/diagonalwatermark/BottomToTopDiagonalImageWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/diagonalwatermark/BottomToTopDiagonalSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/diagonalwatermark/BottomToTopDiagonalMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/diagonalwatermark/BottomToTopDiagonalImageWatermark.pdf" >Click me</a></td>
     </tr>
 </table>
 
@@ -86,20 +86,20 @@
     </tr>
     <tr>
         <td>LOW/低</td>
-        <td><a href="./file/pdf/overspreadwatermark/LowOverspreadSingleWatermark.pdf">Click me</a></td>
-        <td><a href="file/pdf/overspreadwatermark/LowOverspreadMultiWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/overspreadwatermark/LowOverspreadImageWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="./file/pdf/overspreadwatermark/LowOverspreadSingleWatermark.pdf">Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/LowOverspreadMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/LowOverspreadImageWatermark.pdf" >Click me</a></td>
     </tr>
     <tr>
         <td>NORMAL/中</td>
-        <td><a href="file/pdf/overspreadwatermark/NormalOverspreadSingleWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/overspreadwatermark/NormalOverspreadMultiWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/overspreadwatermark/NormalOverspreadImageWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/NormalOverspreadSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/NormalOverspreadMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/NormalOverspreadImageWatermark.pdf" >Click me</a></td>
     </tr>
     <tr>
         <td>HIGH/高</td>
-        <td><a href="file/pdf/overspreadwatermark/HighOverspreadSingleWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/overspreadwatermark/HighOverspreadMultiWatermark.pdf" >Click me</a></td>
-        <td><a href="file/pdf/overspreadwatermark/HighOverspreadImageWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/HighOverspreadSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/HighOverspreadMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/HighOverspreadImageWatermark.pdf" >Click me</a></td>
     </tr>
 </table>
