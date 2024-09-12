@@ -4,25 +4,129 @@
 
 # CENTER/居中
 
-| subType/子类型          | result/结果                                                                                                                                                                                                                                                                                                 |
-|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| VERTICAL_CENTER/垂直居中 | ![VerticalCenterSingleWatermark.jpeg](file/image/centerwatermark/VerticalCenterSingleWatermark.jpeg)![VerticalCenterMultiWatermark.jpeg](file/image/centerwatermark/VerticalCenterMultiWatermark.jpeg) ![VerticalCenterImageWatermark.jpeg](file/image/centerwatermark/VerticalCenterImageWatermark.jpeg) |
-| LEFT_CENTER/左居中      | ![LeftCenterSingleWatermark.jpeg](file/image/centerwatermark/LeftCenterSingleWatermark.jpeg) ![LeftCenterMultiWatermark.jpeg](file/image/centerwatermark/LeftCenterMultiWatermark.jpeg) ![LeftCenterImageWatermark.jpeg](file/image/centerwatermark/LeftCenterImageWatermark.jpeg)                        |
-| RIGHT_CENTER/右居中     | ![RightCenterSingleWatermark.jpeg](file/image/centerwatermark/RightCenterSingleWatermark.jpeg) ![RightCenterMultiWatermark.jpeg](file/image/centerwatermark/RightCenterMultiWatermark.jpeg) ![RightCenterImageWatermark.jpeg](file/image/centerwatermark/RightCenterImageWatermark.jpeg)                  |
-| TOP_CENTER/上居中       | ![TopCenterSingleWatermark.jpeg](file/image/centerwatermark/TopCenterSingleWatermark.jpeg)![TopCenterMultiWatermark.jpeg](file/image/centerwatermark/TopCenterMultiWatermark.jpeg) ![TopCenterImageWatermark.jpeg](file/image/centerwatermark/TopCenterImageWatermark.jpeg)                               |
-| BOTTOM_CENTER/下居中    | ![BottomCenterSingleWatermark.jpeg](file/image/centerwatermark/BottomCenterSingleWatermark.jpeg)  ![BottomCenterMultiWatermark.jpeg](file/image/centerwatermark/BottomCenterMultiWatermark.jpeg)  ![BottomCenterImageWatermark.jpeg](file/image/centerwatermark/BottomCenterImageWatermark.jpeg)          |
+<table>
+    <tr>
+        <th rowspan="2">subType/子类型</th>
+        <th colspan="3">result/结果</th>
+    </tr>
+    <tr>
+        <td style="text-align: center;">single-text/单行文本</td>
+        <td style="text-align: center;">multi-text/多行文本</td>
+        <td style="text-align: center;">image/图片</td>
+    </tr>
+    <tr>
+        <td>VERTICAL_CENTER/垂直居中</td>
+        <td><img src="file/image/centerwatermark/VerticalCenterSingleWatermark.jpeg" alt="VerticalCenterSingleWatermark"/></td>
+        <td><img src="file/image/centerwatermark/VerticalCenterMultiWatermark.jpeg" alt="VerticalCenterMultiWatermark"/></td>
+        <td><img src="file/image/centerwatermark/VerticalCenterImageWatermark.jpeg" alt="VerticalCenterImageWatermark"></td>
+    </tr>
+    <tr>
+        <td>LEFT_CENTER/左居中</td>
+        <td><img src="file/image/centerwatermark/LeftCenterSingleWatermark.jpeg" alt="LeftCenterSingleWatermark"/></td>
+        <td><img src="file/image/centerwatermark/LeftCenterMultiWatermark.jpeg" alt="LeftCenterMultiWatermark"/></td>
+        <td><img src="file/image/centerwatermark/LeftCenterImageWatermark.jpeg" alt="LeftCenterImageWatermark"></td>
+    </tr>
+    <tr>
+        <td>RIGHT_CENTER/右居中</td>
+        <td><img src="file/image/centerwatermark/RightCenterSingleWatermark.jpeg" alt="RightCenterSingleWatermark"/></td>
+        <td><img src="file/image/centerwatermark/RightCenterMultiWatermark.jpeg" alt="RightCenterMultiWatermark"/></td>
+        <td><img src="file/image/centerwatermark/RightCenterImageWatermark.jpeg" alt="RightCenterImageWatermark"></td>
+    </tr>
+    <tr>
+        <td>TOP_CENTER/上居中</td>
+        <td><img src="file/image/centerwatermark/TopCenterSingleWatermark.jpeg" alt="TopCenterSingleWatermark"/></td>
+        <td><img src="file/image/centerwatermark/TopCenterMultiWatermark.jpeg" alt="TopCenterMultiWatermark"/></td>
+        <td><img src="file/image/centerwatermark/TopCenterImageWatermark.jpeg" alt="TopCenterImageWatermark"></td>
+    </tr>
+    <tr>
+        <td>BOTTOM_CENTER/下居中</td>
+        <td><img src="file/image/centerwatermark/BottomCenterSingleWatermark.jpeg" alt="BottomCenterSingleWatermark"/></td>
+        <td><img src="file/image/centerwatermark/BottomCenterMultiWatermark.jpeg" alt="BottomCenterMultiWatermark"/></td>
+        <td><img src="file/image/centerwatermark/BottomCenterImageWatermark.jpeg" alt="BottomCenterImageWatermark"></td>
+    </tr>
+</table>
 
 # DIAGONAL/斜对角
 
-| subType/子类型      | result/结果                                                                                                                                                                                                                                                                                                                                      |
-|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| TopToBottom/从上到下 | ![DiagonalTopToBottomSingleWatermark.jpeg](file/image/diagonalwatermark/DiagonalTopToBottomSingleWatermark.jpeg)![DiagonalTopToBottomMultiWatermark.jpeg](file/image/diagonalwatermark/DiagonalTopToBottomMultiWatermark.jpeg) ![DiagonalTopToBottomImageWatermark.jpeg](file/image/diagonalwatermark/DiagonalTopToBottomImageWatermark.jpeg)  |
-| BottomToTop/从下到上 | ![DiagonalBottomToTopSingleWatermark.jpeg](file/image/diagonalwatermark/DiagonalBottomToTopSingleWatermark.jpeg) ![DiagonalBottomToTopMultiWatermark.jpeg](file/image/diagonalwatermark/DiagonalBottomToTopMultiWatermark.jpeg) ![DiagonalBottomToTopImageWatermark.jpeg](file/image/diagonalwatermark/DiagonalBottomToTopImageWatermark.jpeg) |
+<table>
+    <tr>
+        <th rowspan="2">subType/子类型</th>
+        <th colspan="3">result/结果</th>
+    </tr>
+    <tr>
+        <td style="text-align: center;">single-text/单行文本</td>
+        <td style="text-align: center;">multi-text/多行文本</td>
+        <td style="text-align: center;">image/图片</td>
+    </tr>
+    <tr>
+        <td>TopToBottom/从上到下</td>
+        <td><img src="file/image/diagonalwatermark/DiagonalTopToBottomSingleWatermark.jpeg" alt="DiagonalTopToBottomSingleWatermark"/></td>
+        <td><img src="file/image/diagonalwatermark/DiagonalTopToBottomMultiWatermark.jpeg" alt="DiagonalTopToBottomMultiWatermark"/></td>
+        <td><img src="file/image/diagonalwatermark/DiagonalTopToBottomImageWatermark.jpeg" alt="DiagonalTopToBottomImageWatermark"></td>
+    </tr>
+    <tr>
+        <td>BottomToTop/从下到上</td>
+        <td><img src="file/image/diagonalwatermark/DiagonalBottomToTopSingleWatermark.jpeg" alt="DiagonalBottomToTopSingleWatermark"/></td>
+        <td><img src="file/image/diagonalwatermark/DiagonalBottomToTopMultiWatermark.jpeg" alt="DiagonalBottomToTopMultiWatermark"/></td>
+        <td><img src="file/image/diagonalwatermark/DiagonalBottomToTopImageWatermark.jpeg" alt="DiagonalBottomToTopImageWatermark"></td>
+    </tr>
+</table>
 
 # OVERSPREAD/铺满
 
-| subType/子类型 | result/结果                                                                                                                                                                                                                                                                                                                          |
-|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| LOW/低       | ![LowOverspreadSingleWatermark.jpeg](file/image/overspreadwatermark/LowOverspreadSingleWatermark.jpeg) ![LowOverspreadMultiWatermark.jpeg](file/image/overspreadwatermark/LowOverspreadMultiWatermark.jpeg) ![LowOverspreadImageWatermark.jpeg](file/image/overspreadwatermark/LowOverspreadImageWatermark.jpeg)                   |
-| NORMAL/中    | ![NormalOverspreadSingleWatermark.jpeg](file/image/overspreadwatermark/NormalOverspreadSingleWatermark.jpeg) ![NormalOverspreadMultiWatermark.jpeg](file/image/overspreadwatermark/NormalOverspreadMultiWatermark.jpeg) ![NormalOverspreadImageWatermark.jpeg](file/image/overspreadwatermark/NormalOverspreadImageWatermark.jpeg) |
-| HIGH/高      | ![HighOverspreadSingleWatermark.jpeg](file/image/overspreadwatermark/HighOverspreadSingleWatermark.jpeg) ![HighOverspreadMultiWatermark.jpeg](file/image/overspreadwatermark/HighOverspreadMultiWatermark.jpeg) ![HighOverspreadImageWatermark.jpeg](file/image/overspreadwatermark/HighOverspreadImageWatermark.jpeg)             |
+<table>
+    <tr>
+        <th rowspan="2">subType/子类型</th>
+        <th colspan="3">result/结果</th>
+    </tr>
+    <tr>
+        <td style="text-align: center;">single-text/单行文本</td>
+        <td style="text-align: center;">multi-text/多行文本</td>
+        <td style="text-align: center;">image/图片</td>
+    </tr>
+    <tr>
+        <td>LOW/低</td>
+        <td><img src="file/image/overspreadwatermark/LowOverspreadSingleWatermark.jpeg" alt="LowOverspreadSingleWatermark"/></td>
+        <td><img src="file/image/overspreadwatermark/LowOverspreadMultiWatermark.jpeg" alt="LowOverspreadMultiWatermark"/></td>
+        <td><img src="file/image/overspreadwatermark/LowOverspreadImageWatermark.jpeg" alt="LowOverspreadImageWatermark"></td>
+    </tr>
+    <tr>
+        <td>NORMAL/中</td>
+        <td><img src="file/image/overspreadwatermark/NormalOverspreadSingleWatermark.jpeg" alt="NormalOverspreadSingleWatermark"/></td>
+        <td><img src="file/image/overspreadwatermark/NormalOverspreadMultiWatermark.jpeg" alt="NormalOverspreadMultiWatermark"/></td>
+        <td><img src="file/image/overspreadwatermark/NormalOverspreadImageWatermark.jpeg" alt="NormalOverspreadImageWatermark"></td>
+    </tr>
+    <tr>
+        <td>HIGH/高</td>
+        <td><img src="file/image/overspreadwatermark/HighOverspreadSingleWatermark.jpeg" alt="HighOverspreadSingleWatermark"/></td>
+        <td><img src="file/image/overspreadwatermark/HighOverspreadMultiWatermark.jpeg" alt="HighOverspreadMultiWatermark"/></td>
+        <td><img src="file/image/overspreadwatermark/HighOverspreadImageWatermark.jpeg" alt="HighOverspreadImageWatermark"></td>
+    </tr>
+</table>
+
+## Add Rotation/添加旋转
+
+<table>
+    <tr>
+        <th>subType/子类型</th>
+        <th colspan="3">result/结果</th>
+    </tr>
+    <tr>
+        <td style="text-align: center;">rotation/角度</td>
+        <td style="text-align: center;">single-text/单行文本</td>
+        <td style="text-align: center;">multi-text/多行文本</td>
+        <td style="text-align: center;">image/图片</td>
+    </tr>
+    <tr>
+        <td>30°</td>
+        <td><img src="file/image/overspreadwatermark/angle/test30AngleHighOverspreadSingleWatermark.jpeg" alt="AngleHighOverspreadSingleWatermark"/></td>
+        <td><img src="file/image/overspreadwatermark/angle/test30AngleHighOverspreadMultiWatermark.jpeg" alt="AngleHighOverspreadMultiWatermark"/></td>
+        <td><img src="file/image/overspreadwatermark/angle/test30AngleHighOverspreadImageWatermark.jpeg" alt="AngleHighOverspreadImageWatermark"></td>
+    </tr>
+    <tr>
+        <td>150°</td>
+        <td><img src="file/image/overspreadwatermark/angle/test150AngleHighOverspreadSingleWatermark.jpeg" alt="AngleHighOverspreadSingleWatermark"/></td>
+        <td><img src="file/image/overspreadwatermark/angle/test150AngleHighOverspreadMultiWatermark.jpeg" alt="AngleHighOverspreadMultiWatermark"/></td>
+        <td><img src="file/image/overspreadwatermark/angle/test150AngleHighOverspreadImageWatermark.jpeg" alt="AngleHighOverspreadImageWatermark"></td>
+    </tr>
+</table>
