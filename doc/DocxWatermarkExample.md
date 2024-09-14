@@ -19,33 +19,33 @@ Online Preview use Office Online Server, may be restricted in China. <br/>
     </tr>
     <tr>
         <td>VERTICAL_CENTER/垂直居中</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testVerticalCenterSingleWatermark.docx">Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testVerticalCenterMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testVerticalCenterImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testVerticalCenterSingleWatermark.docx">Online preview</a> | <a target="_blank" href="file/docx/center/testVerticalCenterSingleWatermark.docx">Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testVerticalCenterMultiWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testVerticalCenterMultiWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testVerticalCenterImageWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testVerticalCenterImageWatermark.docx" >Source</a></td>
     </tr>
     <tr>
         <td>LEFT_CENTER/左居中</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testLeftCenterSingleWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testLeftCenterMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testLeftCenterImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testLeftCenterSingleWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testLeftCenterSingleWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testLeftCenterMultiWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testLeftCenterMultiWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testLeftCenterImageWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testLeftCenterImageWatermark.docx" >Source</a></td>
     </tr>
     <tr>
         <td>RIGHT_CENTER/右居中</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testRightCenterSingleWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testRightCenterMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testRightCenterImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testRightCenterSingleWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testRightCenterSingleWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testRightCenterMultiWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testRightCenterMultiWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testRightCenterImageWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testRightCenterImageWatermark.docx" >Source</a></td>
     </tr>
     <tr>
         <td>TOP_CENTER/上居中</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testTopCenterSingleWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testTopCenterMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testTopCenterImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testTopCenterSingleWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testTopCenterSingleWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testTopCenterMultiWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testTopCenterMultiWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testTopCenterImageWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testTopCenterImageWatermark.docx" >Source</a></td>
     </tr>
     <tr>
         <td>BOTTOM_CENTER/下居中</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testBottomCenterSingleWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testBottomCenterMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testBottomCenterImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testBottomCenterSingleWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testBottomCenterSingleWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testBottomCenterMultiWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testBottomCenterMultiWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testBottomCenterImageWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/center/testBottomCenterImageWatermark.docx" >Source</a></td>
     </tr>
 </table>
 
@@ -63,15 +63,15 @@ Online Preview use Office Online Server, may be restricted in China. <br/>
     </tr>
     <tr>
         <td>TopToBottom/从上到下</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalTopToBottomSingleWatermark.docx">Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalTopToBottomMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalTopToBottomImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalTopToBottomSingleWatermark.docx">Online preview</a> | <a target="_blank" href="file/docx/diagonal/testDiagonalTopToBottomSingleWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalTopToBottomMultiWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/diagonal/testDiagonalTopToBottomMultiWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalTopToBottomImageWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/diagonal/testDiagonalTopToBottomImageWatermark.docx" >Source</a></td>
     </tr>
     <tr>
         <td>BottomToTop/从下到上</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalBottomToTopSingleWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalBottomToTopMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalBottomToTopImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalBottomToTopSingleWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/diagonal/testDiagonalBottomToTopSingleWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalBottomToTopMultiWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/diagonal/testDiagonalBottomToTopMultiWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/diagonal/testDiagonalBottomToTopImageWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/diagonal/testDiagonalBottomToTopImageWatermark.docx" >Source</a></td>
     </tr>
 </table>
 
@@ -89,20 +89,20 @@ Online Preview use Office Online Server, may be restricted in China. <br/>
     </tr>
     <tr>
         <td>LOW/低</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testLowOverspreadSingleWatermark.docx">Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testLowOverspreadMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testLowOverspreadImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testLowOverspreadSingleWatermark.docx">Online preview</a> | <a target="_blank" href="file/docx/overspread/testLowOverspreadSingleWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testLowOverspreadMultiWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/overspread/testLowOverspreadMultiWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testLowOverspreadImageWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/overspread/testLowOverspreadImageWatermark.docx" >Source</a></td>
     </tr>
     <tr>
         <td>NORMAL/中</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testNormalOverspreadSingleWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testNormalOverspreadMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testNormalOverspreadImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testNormalOverspreadSingleWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/overspread/testNormalOverspreadSingleWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testNormalOverspreadMultiWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/overspread/testNormalOverspreadMultiWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testNormalOverspreadImageWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/overspread/testNormalOverspreadImageWatermark.docx" >Source</a></td>
     </tr>
     <tr>
         <td>HIGH/高</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testHighOverspreadSingleWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testHighOverspreadMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testHighOverspreadImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testHighOverspreadSingleWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/overspread/testHighOverspreadSingleWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testHighOverspreadMultiWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/overspread/testHighOverspreadMultiWatermark.docx" >Source</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testHighOverspreadImageWatermark.docx" >Online preview</a> | <a target="_blank" href="file/docx/overspread/testHighOverspreadImageWatermark.docx" >Source</a></td>
     </tr>
 </table>
