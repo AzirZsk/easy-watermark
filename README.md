@@ -23,10 +23,16 @@ types of files.
 ## 2. Add Watermark
 
 ```java
-byte[] result = EasyWatermark.create()
-        .file(fileData)
-        .text("Easy-Watermark")
-        .execute();
+public class WatermarkExample {
+
+    public static void main(String[] args) {
+        byte[] result = EasyWatermark.create()
+                .file(fileData)
+                .text("Easy-Watermark")
+                .execute();
+    }
+    
+}
 ```
 
 # More Configurations
@@ -97,9 +103,6 @@ public class FontConfig {
 
     /**
      * Font style: bold, italic, normal
-     * @see Font#PLAIN
-     * @see Font#BOLD
-     * @see Font#ITALIC
      */
     private int fontStyle = Font.PLAIN;
 }
@@ -110,42 +113,54 @@ public class FontConfig {
 ## Using Preset Watermark Types
 
 ```java
-byte[] result = EasyWatermark.create()
-        .file(fileData)
-        .text("Easy-Watermark")
-        // Choose different watermark types
-        .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
-        .execute();
+public class UsingPresetWatermarkType {
+
+    public static void main(String[] args) {
+        byte[] result = EasyWatermark.create()
+                .file(fileData)
+                .text("Easy-Watermark")
+                // Choose different watermark types
+                .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
+                .execute();
+    }
+  
+}
 ```
 
 ## Custom Watermark Configuration and Font Configuration
 
 ```java
-WatermarkConfig watermarkConfig = new WatermarkConfig();
-// Set the transparency of the watermark
-watermarkConfig.setAlpha(0.5f);
+public class CustomWatermarkExample {
 
-FontConfig fontConfig = new FontConfig();
-// Set the size of the watermark text
-fontConfig.setFontSize(30);
-
-byte[] result = EasyWatermark.create()
-        .file(fileData)
-        // Custom configuration
-        .config(watermarkConfig)
-        .config(fontConfig)
-        // Watermark type
-        .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
-        .text("Easy-Watermark")
-        .executor();
+    public static void main(String[] args) {
+        WatermarkConfig watermarkConfig = new WatermarkConfig();
+        // Set the transparency of the watermark
+        watermarkConfig.setAlpha(0.5f);
+  
+        FontConfig fontConfig = new FontConfig();
+        // Set the size of the watermark text
+        fontConfig.setFontSize(30);
+  
+        byte[] result = EasyWatermark.create()
+                .file(fileData)
+                // Custom configuration
+                .config(watermarkConfig)
+                .config(fontConfig)
+                // Watermark type
+                .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
+                .text("Easy-Watermark")
+                .executor();
+    }
+    
+}
 ```
 
 # Development Plan
 
 - [x] Add watermark to image files
 - [x] Add watermark to PDF files
-- [x] Improve user-defined watermark methods
-- [ ] Add watermark to Word files
+- [x] Add watermark to Word files
+- [ ] Improve user-defined watermark methods
 - [ ] Add watermark to Excel files
 - [ ] Add watermark to PowerPoint files
 - [ ] Hidden watermark
