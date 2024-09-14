@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 定义上下文名称 -->
+    <contextName>myApp</contextName>
+
+    <!-- 控制台日志输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss:SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 设置日志级别 -->
+    <root level="debug">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- 为特定包或类设置日志级别 -->
+    <logger name="org.easywatermark" level="debug"/>
+    <logger name="org.docx4j" level="OFF"/>
+
+</configuration>

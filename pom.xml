@@ -6,7 +6,7 @@
 
     <groupId>org.easywatermark</groupId>
     <artifactId>easy-watermark</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>
@@ -19,6 +19,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <pdfbox.version>2.0.27</pdfbox.version>
+        <docx4j.version>8.3.11</docx4j.version>
     </properties>
 
     <dependencies>
@@ -53,6 +54,17 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.36</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-core</artifactId>
+            <version>${docx4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+            <version>${docx4j.version}</version>
         </dependency>
 
     </dependencies>

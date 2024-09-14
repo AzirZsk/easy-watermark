@@ -4,25 +4,102 @@
 
 # CENTER/居中
 
-| subType/子类型          | result/结果                                                                                                                                                                                                                                                                                     |
-|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| VERTICAL_CENTER/垂直居中 | [VerticalCenterSingleWatermark.pdf](file/pdf/centerwatermark/VerticalCenterSingleWatermark.pdf) [VerticalCenterSingleWatermark.pdf](file/pdf/centerwatermark/VerticalCenterSingleWatermark.pdf) [VerticalCenterImageWatermark.pdf](file/pdf/centerwatermark/VerticalCenterImageWatermark.pdf) |
-| LEFT_CENTER/左居中      | [LeftCenterSingleWatermark.pdf](file/pdf/centerwatermark/LeftCenterSingleWatermark.pdf) [LeftCenterMultiWatermark.pdf](file/pdf/centerwatermark/LeftCenterMultiWatermark.pdf) [LeftCenterImageWatermark.pdf](file/pdf/centerwatermark/LeftCenterImageWatermark.pdf)                           |
-| RIGHT_CENTER/右居中     | [RightCenterSingleWatermark.pdf](file/pdf/centerwatermark/RightCenterSingleWatermark.pdf) [RightCenterMultiWatermark.pdf](file/pdf/centerwatermark/RightCenterMultiWatermark.pdf) [RightCenterImageWatermark.pdf](file/pdf/centerwatermark/RightCenterImageWatermark.pdf)                     |
-| TOP_CENTER/上居中       | [TopCenterSingleWatermark.pdf](file/pdf/centerwatermark/TopCenterSingleWatermark.pdf) [TopCenterMultiWatermark.pdf](file/pdf/centerwatermark/TopCenterMultiWatermark.pdf) [TopCenterImageWatermark.pdf](file/pdf/centerwatermark/TopCenterImageWatermark.pdf)                                 |
-| BOTTOM_CENTER/下居中    | [BottomCenterSingleWatermark.pdf](file/pdf/centerwatermark/BottomCenterSingleWatermark.pdf) [BottomCenterMultiWatermark.pdf](file/pdf/centerwatermark/BottomCenterMultiWatermark.pdf) [BottomCenterImageWatermark.pdf](file/pdf/centerwatermark/BottomCenterImageWatermark.pdf)               |
+<table>
+    <tr>
+        <th rowspan="2">subType/子类型</th>
+        <th colspan="3">result/结果</th>
+    </tr>
+    <tr>
+        <td style="text-align: center;">single-text/单行文本</td>
+        <td style="text-align: center;">multi-text/多行文本</td>
+        <td style="text-align: center;">image/图片</td>
+    </tr>
+    <tr>
+        <td>VERTICAL_CENTER/垂直居中</td>
+        <td><a target="_blank" href="./file/pdf/centerwatermark/VerticalCenterSingleWatermark.pdf">Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/VerticalCenterMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/VerticalCenterImageWatermark.pdf" >Click me</a></td>
+    </tr>
+    <tr>
+        <td>LEFT_CENTER/左居中</td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/LeftCenterSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/LeftCenterMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/LeftCenterImageWatermark.pdf" >Click me</a></td>
+    </tr>
+    <tr>
+        <td>RIGHT_CENTER/右居中</td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/RightCenterSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/RightCenterMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/RightCenterImageWatermark.pdf" >Click me</a></td>
+    </tr>
+    <tr>
+        <td>TOP_CENTER/上居中</td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/TopCenterSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/TopCenterMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/TopCenterImageWatermark.pdf" >Click me</a></td>
+    </tr>
+    <tr>
+        <td>BOTTOM_CENTER/下居中</td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/BottomCenterSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/BottomCenterMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/centerwatermark/BottomCenterImageWatermark.pdf" >Click me</a></td>
+    </tr>
+</table>
 
 # DIAGONAL/斜对角
 
-| subType/子类型      | result/结果                                                                                                                                                                                                                                                                                                                       |
-|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| TopToBottom/从上到下 | [TopToBottomDiagonalSingleWatermark.pdf](file/pdf/diagonalwatermark/TopToBottomDiagonalSingleWatermark.pdf) [TopToBottomDiagonalMultiWatermark.pdf](file/pdf/diagonalwatermark/TopToBottomDiagonalMultiWatermark.pdf) [TopToBottomDiagonalImageWatermark.pdf](file/pdf/diagonalwatermark/TopToBottomDiagonalImageWatermark.pdf) |
-| BottomToTop/从下到上 | [BottomToTopDiagonalSingleWatermark.pdf](file/pdf/diagonalwatermark/BottomToTopDiagonalSingleWatermark.pdf) [BottomToTopDiagonalMultiWatermark.pdf](file/pdf/diagonalwatermark/BottomToTopDiagonalMultiWatermark.pdf) [BottomToTopDiagonalImageWatermark.pdf](file/pdf/diagonalwatermark/BottomToTopDiagonalImageWatermark.pdf) |
+<table>
+    <tr>
+        <th rowspan="2">subType/子类型</th>
+        <th colspan="3">result/结果</th>
+    </tr>
+    <tr>
+        <td style="text-align: center;">single-text/单行文本</td>
+        <td style="text-align: center;">multi-text/多行文本</td>
+        <td style="text-align: center;">image/图片</td>
+    </tr>
+    <tr>
+        <td>TopToBottom/从上到下</td>
+        <td><a target="_blank" href="./file/pdf/diagonalwatermark/TopToBottomDiagonalSingleWatermark.pdf">Click me</a></td>
+        <td><a target="_blank" href="file/pdf/diagonalwatermark/TopToBottomDiagonalMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/diagonalwatermark/TopToBottomDiagonalImageWatermark.pdf" >Click me</a></td>
+    </tr>
+    <tr>
+        <td>BottomToTop/从下到上</td>
+        <td><a target="_blank" href="file/pdf/diagonalwatermark/BottomToTopDiagonalSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/diagonalwatermark/BottomToTopDiagonalMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/diagonalwatermark/BottomToTopDiagonalImageWatermark.pdf" >Click me</a></td>
+    </tr>
+</table>
 
 # OVERSPREAD/铺满
 
-| subType/子类型 | result/结果                                                                                                                                                                                                                                                                                                           |
-|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| LOW/低       | [LowOverspreadSingleWatermark.pdf](file/pdf/overspreadwatermark/LowOverspreadSingleWatermark.pdf) [LowOverspreadMultiWatermark.pdf](file/pdf/overspreadwatermark/LowOverspreadMultiWatermark.pdf) [LowOverspreadImageWatermark.pdf](file/pdf/overspreadwatermark/LowOverspreadImageWatermark.pdf)                   |
-| NORMAL/中    | [NormalOverspreadSingleWatermark.pdf](file/pdf/overspreadwatermark/NormalOverspreadSingleWatermark.pdf) [NormalOverspreadMultiWatermark.pdf](file/pdf/overspreadwatermark/NormalOverspreadMultiWatermark.pdf) [NormalOverspreadImageWatermark.pdf](file/pdf/overspreadwatermark/NormalOverspreadImageWatermark.pdf) |
-| HIGH/高      | [HighOverspreadSingleWatermark.pdf](file/pdf/overspreadwatermark/HighOverspreadSingleWatermark.pdf) [HighOverspreadMultiWatermark.pdf](file/pdf/overspreadwatermark/HighOverspreadMultiWatermark.pdf) [HighOverspreadImageWatermark.pdf](file/pdf/overspreadwatermark/HighOverspreadImageWatermark.pdf)             |
+<table>
+    <tr>
+        <th rowspan="2">subType/子类型</th>
+        <th colspan="3">result/结果</th>
+    </tr>
+    <tr>
+        <td style="text-align: center;">single-text/单行文本</td>
+        <td style="text-align: center;">multi-text/多行文本</td>
+        <td style="text-align: center;">image/图片</td>
+    </tr>
+    <tr>
+        <td>LOW/低</td>
+        <td><a target="_blank" href="./file/pdf/overspreadwatermark/LowOverspreadSingleWatermark.pdf">Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/LowOverspreadMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/LowOverspreadImageWatermark.pdf" >Click me</a></td>
+    </tr>
+    <tr>
+        <td>NORMAL/中</td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/NormalOverspreadSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/NormalOverspreadMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/NormalOverspreadImageWatermark.pdf" >Click me</a></td>
+    </tr>
+    <tr>
+        <td>HIGH/高</td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/HighOverspreadSingleWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/HighOverspreadMultiWatermark.pdf" >Click me</a></td>
+        <td><a target="_blank" href="file/pdf/overspreadwatermark/HighOverspreadImageWatermark.pdf" >Click me</a></td>
+    </tr>
+</table>

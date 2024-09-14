@@ -1,7 +1,6 @@
 # EasyWatermark
 
-[图片水印样例](doc/ImageWatermarkExample.md)
-[Pdf水印样例](doc/PdfWatermarkExample.md)
+[图片水印样例](doc/ImageWatermarkExample.md) | [Pdf水印样例](doc/PdfWatermarkExample.md) | [Docx水印样例](doc/DocxWatermarkExample.md)
 
 EasyWatermark是一个简单易用的水印添加框架，框架抽象了各个文件类型的对于水印添加的方法。仅使用几行代码即可为不同类型的文件添加相同样式的水印。
 
@@ -19,10 +18,16 @@ EasyWatermark是一个简单易用的水印添加框架，框架抽象了各个�
 
 ## 2. 添加水印
 ```java
-byte[] result = EasyWatermark.create()
-        .file(fileData)
-        .text("Easy-Watermark")
-        .execute();
+public class WatermarkExample {
+
+    public static void main(String[] args) {
+        byte[] result = EasyWatermark.create()
+                .file(fileData)
+                .text("Easy-Watermark")
+                .execute();
+    }
+
+}
 ```
 # 更多配置
 ## 预制水印类型
@@ -72,66 +77,75 @@ public class WatermarkConfig {
 
 ```java
 public class FontConfig {
-  // 字体颜色
-  private Color color = Color.BLACK;
-  // 字体文件
-  private File fontFile;
-
-  /**
-   * 默认的字体，目前仅在图片水印中生效
-   * Default font name is Dialog
-   */
-  private String fontName = "Dialog";
-  // 字体大小
-  private int fontSize = 12;
-
-  /**
-   * 字体样式：加粗、斜体、正常
-   * @see Font#PLAIN
-   * @see Font#BOLD
-   * @see Font#ITALIC
-   */
-  private int fontStyle = Font.PLAIN;
+    // 字体颜色
+    private Color color = Color.BLACK;
+    // 字体文件
+    private File fontFile;
+  
+    /**
+     * 默认的字体，目前仅在图片水印中生效
+     * Default font name is Dialog
+     */
+    private String fontName = "Dialog";
+    // 字体大小
+    private int fontSize = 12;
+  
+    /**
+     * 字体样式：加粗、斜体、正常
+     */
+    private int fontStyle = Font.PLAIN;
 }
 ```
 # 进阶用法
 ## 使用预设水印类型
 ```java
-byte[] result = EasyWatermark.create()
-        .file(fileData)
-        .text("Easy-Watermark")
-        // 选择不同的水印类型
-        .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
-        .execute();
+public class UsingPresetWatermarkType {
+
+    public static void main(String[] args) {
+        byte[] result = EasyWatermark.create()
+                .file(fileData)
+                .text("Easy-Watermark")
+                // Choose different watermark types
+                .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
+                .execute();
+    }
+
+}
 ```
 ## 自定义水印配置以及字体配置
 
 ```java
-WatermarkConfig watermarkConfig = new WatermarkConfig();
-// 设置水印透明度
-watermarkConfig.setAlpha(0.5f);
+public class CustomWatermarkExample {
 
-FontConfig fontConfig = new FontConfig();
-// 设置水印文字大小
-fontConfig.setFontSize(30);
+    public static void main(String[] args) {
+        WatermarkConfig watermarkConfig = new WatermarkConfig();
+        // Set the transparency of the watermark
+        watermarkConfig.setAlpha(0.5f);
+    
+        FontConfig fontConfig = new FontConfig();
+        // Set the size of the watermark text
+        fontConfig.setFontSize(30);
+    
+        byte[] result = EasyWatermark.create()
+                .file(fileData)
+                // Custom configuration
+                .config(watermarkConfig)
+                .config(fontConfig)
+                // Watermark type
+                .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
+                .text("Easy-Watermark")
+                .executor();
+    }
 
-byte[] result = EasyWatermark.create()
-        .file(fileData)
-        // 自定义配置
-        .config(watermarkConfig)
-        .config(fontConfig)
-        // 水印类型
-        .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
-        .text("Easy-Watermark")
-        .executor();
+}
 ```
 
 # 开发计划
 
 - [x] 图片类型文件添加水印
 - [x] PDF类型文件添加水印
-- [x] 用户自定义水印方法完善
-- [ ] Word文件添加水印
+- [x] Word文件添加水印
+- [ ] 用户自定义水印方法完善
 - [ ] Excel文件添加水印
 - [ ] PowerPoint文件添加水印
 - [ ] 隐藏水印

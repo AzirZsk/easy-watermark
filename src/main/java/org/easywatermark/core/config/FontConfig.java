@@ -12,8 +12,6 @@ import java.io.File;
 @Data
 public class FontConfig {
 
-    private Color color = Color.BLACK;
-
     private File fontFile;
 
     /**

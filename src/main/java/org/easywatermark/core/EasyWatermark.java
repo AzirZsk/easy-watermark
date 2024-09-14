@@ -4,12 +4,13 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.easywatermark.core.config.FontConfig;
 import org.easywatermark.core.config.WatermarkConfig;
+import org.easywatermark.core.handler.DocxWatermarkHandler;
 import org.easywatermark.core.handler.ImageWatermarkHandler;
 import org.easywatermark.core.handler.PdfWatermarkHandler;
 import org.easywatermark.enums.EasyWatermarkTypeEnum;
 import org.easywatermark.enums.FileTypeEnums;
 import org.easywatermark.exception.EasyWatermarkException;
-import org.easywatermark.exception.FileTypeUnSupportException;
+import org.easywatermark.exception.FileTypeUnsupportException;
 import org.easywatermark.exception.LoadFileException;
 
 import java.io.File;
@@ -178,9 +179,12 @@ public class EasyWatermark {
             case IMAGE:
                 handler = new ImageWatermarkHandler(bytes, fontConfig, watermarkConfig);
                 break;
+            case OFFICE:
+                handler = new DocxWatermarkHandler(bytes, fontConfig, watermarkConfig);
+                break;
             default:
                 log.warn("File type not support.");
-                throw new FileTypeUnSupportException("File type not support.");
+                throw new FileTypeUnsupportException("File type not support.");
         }
         return handler;
     }
