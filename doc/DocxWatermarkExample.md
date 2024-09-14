@@ -89,20 +89,20 @@ Online Preview use Office Online Server, may be restricted in China. <br/>
     </tr>
     <tr>
         <td>LOW/低</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testLowOverspreadSingleWatermark.docx">Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testLowOverspreadMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testLowOverspreadImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testLowOverspreadSingleWatermark.docx">Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testLowOverspreadMultiWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testLowOverspreadImageWatermark.docx" >Click me</a></td>
     </tr>
     <tr>
         <td>NORMAL/中</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testNormalOverspreadSingleWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testNormalOverspreadMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testNormalOverspreadImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testNormalOverspreadSingleWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testNormalOverspreadMultiWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testNormalOverspreadImageWatermark.docx" >Click me</a></td>
     </tr>
     <tr>
         <td>HIGH/高</td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testHighOverspreadSingleWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testHighOverspreadMultiWatermark.docx" >Click me</a></td>
-        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/center/testHighOverspreadImageWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testHighOverspreadSingleWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testHighOverspreadMultiWatermark.docx" >Click me</a></td>
+        <td><a target="_blank" href="https://view.officeapps.live.com/op/view.aspx?src=https://easywatermark.org/doc/file/docx/overspread/testHighOverspreadImageWatermark.docx" >Click me</a></td>
     </tr>
 </table>
