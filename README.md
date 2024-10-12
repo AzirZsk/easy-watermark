@@ -1,15 +1,13 @@
-# EasyWatermark
+# 💧 EasyWatermark
 
-[中文文档](README_zh.md) <br/>
-[Image Watermark Example](doc/ImageWatermarkExample.md) | [Pdf Watermark Example](doc/PdfWatermarkExample.md) | [Docx Watermark Example](doc/DocxWatermarkExample.md)
+[🌍 中文文档](README_zh.md) <br/>
+[📷 Image Watermark Example](doc/ImageWatermarkExample.md) | [📄 Pdf Watermark Example](doc/PdfWatermarkExample.md) | [📝 Docx Watermark Example](doc/DocxWatermarkExample.md)
 
-Easy Watermark is a simple and easy-to-use watermark addition framework. The framework abstracts the methods of adding
-watermarks for various file types. With just a few lines of code, you can add the same style of watermark to different
-types of files.
+**EasyWatermark** is a simple and easy-to-use watermarking framework. It abstracts methods for adding watermarks to various file types. With just a few lines of code, you can add the same style of watermark to different types of files.
 
-# Quick Start
+## 🚀 Quick Start
 
-## 1. Add Dependency
+### 1️⃣ Add Dependency
 
 ```xml
 <dependency>
@@ -19,7 +17,7 @@ types of files.
 </dependency>
 ```
 
-## 2. Add Watermark
+### 2️⃣ Add Watermark
 
 ```java
 public class WatermarkExample {
@@ -34,82 +32,43 @@ public class WatermarkExample {
 }
 ```
 
-# More Configurations
+## 🔧 More Configurations
 
-## Preset Watermark Types
+### 🎯 Preset Watermark Types
 
-- **CUSTOM:** Custom watermark, using the unified method abstracted by the framework, special processing is performed on
-  each page of the incoming file (under development)
-- **CENTER:** Centered, added at various centered positions on the page.
-    - **VERTICAL_CENTER:** The watermark is vertically centered
+- **CUSTOM:** Custom watermark (under development)
+- **CENTER:** Centered watermark
+    - **VERTICAL_CENTER:** Vertically centered
     - **LEFT_CENTER:** Left centered
     - **RIGHT_CENTER:** Right centered
     - **TOP_CENTER:** Top centered
     - **BOTTOM_CENTER:** Bottom centered
-- **OVERSPREAD:** Full page, the tilt angle can be set
-    - **LOW:** Low spread, watermark content accounts for 33%
-    - **NORMAL:** Generally spread, watermark content accounts for 66%
-    - **HIGH:** High spread, watermark content accounts for 90%
-- **DIAGONAL:** Diagonal watermark on the page
-    - **TOP_TO_BOTTOM:** Text from top to bottom
-    - **BOTTOM_TO_TOP:** Text from bottom to top
+- **OVERSPREAD:** Full-page watermark with tilt angle options
+    - **LOW:** Watermark covers 33%
+    - **NORMAL:** Watermark covers 66%
+    - **HIGH:** Watermark covers 90%
+- **DIAGONAL:** Diagonal watermark
+    - **TOP_TO_BOTTOM:** From top to bottom
+    - **BOTTOM_TO_TOP:** From bottom to top
 
-## Watermark Configuration
+### ⚙️ Watermark Configuration
 
-Corresponding to the `WatermarkConfig` class, this class will set various properties of the watermark.
+Use the `WatermarkConfig` class to set properties like opacity, color, font, and more.
 
 ```java
 public class WatermarkConfig {
-    // Watermark color
+    private float alpha = 1.0f;  // Opacity
     private Color color = Color.BLACK;
-    // Ignore rotation, still in development
-    private boolean ignoreRotation = true;
-    // Watermark transparency
-    private float alpha = 1;
-    // Subtype of spread watermark
-    private OverspreadTypeEnum overspreadType = OverspreadTypeEnum.NORMAL;
-    // Subtype of centered watermark
-    private CenterLocationTypeEnum centerLocationType = CenterLocationTypeEnum.VERTICAL_CENTER;
-    // Subtype of diagonal watermark
-    private DiagonalDirectionTypeEnum diagonalDirectionType = DiagonalDirectionTypeEnum.TOP_TO_BOTTOM;
-
-    /**
-     * An angle, in degrees
-     * The angle of clockwise rotation
-     */
-    private float angle = 0;
-}
-```
-
-## Font Configuration
-
-Corresponding to the `FontConfig` class, this class will set various properties of the watermark text.
-
-```java
-public class FontConfig {
-    // Font color
-    private Color color = Color.BLACK;
-    // Font file
     private File fontFile;
-
-    /**
-     * The default font, currently only effective in image watermarks
-     * Default font name is Dialog
-     */
-    private String fontName = "Dialog";
-    // Font size
+    private String fontName = "Dialog";  // Default font
     private int fontSize = 12;
-
-    /**
-     * Font style: bold, italic, normal
-     */
     private int fontStyle = Font.PLAIN;
 }
 ```
 
-# Advanced Usage
+## 🛠️ Advanced Usage
 
-## Using Preset Watermark Types
+### Using Preset Watermark Types
 
 ```java
 public class UsingPresetWatermarkType {
@@ -118,7 +77,6 @@ public class UsingPresetWatermarkType {
         byte[] result = EasyWatermark.create()
                 .file(fileData)
                 .text("Easy-Watermark")
-                // Choose different watermark types
                 .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
                 .execute();
     }
@@ -126,44 +84,40 @@ public class UsingPresetWatermarkType {
 }
 ```
 
-## Custom Watermark Configuration and Font Configuration
+### Custom Watermark and Font Configuration
 
 ```java
 public class CustomWatermarkExample {
 
     public static void main(String[] args) {
         WatermarkConfig watermarkConfig = new WatermarkConfig();
-        // Set the transparency of the watermark
-        watermarkConfig.setAlpha(0.5f);
-  
+        watermarkConfig.setAlpha(0.5f);  // Set transparency
+
         FontConfig fontConfig = new FontConfig();
-        // Set the size of the watermark text
-        fontConfig.setFontSize(30);
-  
+        fontConfig.setFontSize(30);  // Set font size
+
         byte[] result = EasyWatermark.create()
                 .file(fileData)
-                // Custom configuration
                 .config(watermarkConfig)
                 .config(fontConfig)
-                // Watermark type
                 .easyWatermarkType(EasyWatermarkTypeEnum.CENTER)
                 .text("Easy-Watermark")
-                .executor();
+                .execute();
     }
     
 }
 ```
 
-# Development Plan
+## 📅 Development Plan
 
 - [x] Add watermark to image files
 - [x] Add watermark to PDF files
 - [x] Add watermark to Word files
-- [ ] Improve user-defined watermark methods
+- [ ] Improve custom watermark methods
 - [ ] Add watermark to Excel files
 - [ ] Add watermark to PowerPoint files
 - [ ] Hidden watermark
 
-# Others
+## 🙌 Others
 
-If you have more suggestions, feel free to raise an issue😊
+If you have more suggestions, feel free to raise an issue! 😊
